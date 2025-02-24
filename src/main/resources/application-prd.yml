@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: prd
+
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
