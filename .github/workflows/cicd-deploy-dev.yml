@@ -71,9 +71,9 @@ jobs:
 
       - name: 🎯 Ubuntu 서버에서 배포 실행
         run: |
-          ssh ubuntu@${{ secrets.LIGHTSAIL_HOST }} "/home/ubuntu/app/scripts/run_new_was.sh"
+          ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "/home/ubuntu/app/scripts/run_new_was.sh"
 
       - name: 🧹 임시 파일 정리
         run: |
-          ssh ubuntu@${{ secrets.LIGHTSAIL_HOST }} "
+          ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "
             rm -rf /home/ubuntu/deploy.zip /home/ubuntu/before-deploy"
