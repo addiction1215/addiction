@@ -73,6 +73,10 @@ jobs:
         run: |
           ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "/home/ubuntu/app/scripts/run_new_was.sh"
 
+      - name: 🎯 Ubuntu 서버에서 Health Checking
+        run: |
+          ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "/home/ubuntu/app/scripts/health.sh"
+
       - name: 🧹 임시 파일 정리
         run: |
           ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "
