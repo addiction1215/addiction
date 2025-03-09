@@ -5,18 +5,6 @@ SCOUTER=/home/ubuntu/scouter
 
 TARGET_PORT=8080
 
-# 환경 변수 설정
-export DB_ENDPOINT=${DB_ENDPOINT}
-export DB_USERNAME=${DB_USERNAME}
-export DB_PASSWORD=${DB_PASSWORD}
-export JWT_SECRET_KEY=${JWT_SECRET_KEY}
-
-echo "> 사용될 환경 변수들:"
-echo "DB_ENDPOINT: $DB_ENDPOINT"
-echo "DB_USERNAME: $DB_USERNAME"
-echo "DB_PASSWORD: $DB_PASSWORD"
-echo "JWT_SECRET_KEY: $JWT_SECRET_KEY"
-
 echo "> Kill WAS running at ${TARGET_PORT}."
 sudo kill ${TARGET_PID}
 
@@ -35,10 +23,6 @@ echo "> $JAR_NAME 실행"
 nohup java -jar \
           -Dserver.port=${TARGET_PORT} \
           -Dspring.profiles.active=dev \
-          -Ddb.endpoint=${DB_ENDPOINT} \
-          -Ddb.username=${DB_USERNAME} \
-          -Ddb.password=${DB_PASSWORD} \
-          -Djwt.secret-key=${JWT_SECRET_KEY} \
           $JAR_NAME > $LOG_FILE 2>&1 &
 
 echo "> Now new WAS runs at ${TARGET_PORT}."

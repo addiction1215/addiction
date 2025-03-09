@@ -128,3 +128,16 @@ bootJar {
         into 'static/docs'
     }
 }
+
+tasks.processResources {
+    // 환경 변수를 가져와서 replace
+    filesMatching('application-dev.yml') {
+        // build.gradle에 설정된 환경변수들을 주입
+        expand(
+                DB_ENDPOINT: System.getenv('DB_ENDPOINT'),
+                DB_USERNAME: System.getenv('DB_USERNAME'),
+                DB_PASSWORD: System.getenv('DB_PASSWORD'),
+                JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY')
+        )
+    }
+}
