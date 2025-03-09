@@ -38,9 +38,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: 🔨 비밀 설정 파일 복사
-        run: ./gradlew copySecret
-
       - name: 🔨 Gradle 빌드
         run: ./gradlew build --parallel
 
