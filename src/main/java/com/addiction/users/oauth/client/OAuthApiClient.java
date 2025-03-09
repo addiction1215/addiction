@@ -1,4 +1,4 @@
-package com.addiction.users.client;
+package com.addiction.users.oauth.client;
 
 import com.addiction.users.entity.SnsType;
 

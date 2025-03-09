@@ -1,16 +1,17 @@
 spring:
   datasource:
-    url:
-    username:
-    password:
+    url: ${DB_ENDPOINT}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     open-in-view: false
     properties:
       hibernate:
         default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           exception-handling: ignore
 
@@ -32,3 +33,10 @@ oauth:
     api:
       url: https://www.googleapis.com
       name: googleApi
+  naver:
+    api:
+      url: https://openai.naver.com
+      name: naverApi
+
+jwt:
+  secret-key: ${JWT_TOKEN}

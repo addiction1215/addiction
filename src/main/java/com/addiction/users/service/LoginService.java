@@ -12,7 +12,7 @@ import com.addiction.global.exception.AddictionException;
 import com.addiction.jwt.JwtTokenGenerator;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
-import com.addiction.users.client.OAuthApiClient;
+import com.addiction.users.oauth.client.OAuthApiClient;
 import com.addiction.users.dto.service.request.OAuthLoginServiceRequest;
 import com.addiction.users.dto.service.response.OAuthLoginResponse;
 import com.addiction.users.entity.Role;

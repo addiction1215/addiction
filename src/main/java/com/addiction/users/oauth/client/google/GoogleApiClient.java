@@ -1,10 +1,10 @@
-package com.addiction.users.client.google;
+package com.addiction.users.oauth.client.google;
 
 import org.springframework.stereotype.Component;
 
-import com.addiction.users.client.OAuthApiClient;
+import com.addiction.users.oauth.client.OAuthApiClient;
 import com.addiction.users.entity.SnsType;
-import com.addiction.users.feign.google.GoogleApiFeignCall;
+import com.addiction.users.oauth.feign.google.GoogleApiFeignCall;
 
 import lombok.RequiredArgsConstructor;
 

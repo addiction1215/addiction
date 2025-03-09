@@ -20,8 +20,8 @@ import com.addiction.users.dto.service.response.OAuthLoginResponse;
 import com.addiction.users.entity.SettingStatus;
 import com.addiction.users.entity.SnsType;
 import com.addiction.users.entity.User;
-import com.addiction.users.feign.google.response.GoogleUserInfoResponse;
-import com.addiction.users.feign.kakao.response.KakaoUserInfoResponse;
+import com.addiction.users.oauth.feign.google.response.GoogleUserInfoResponse;
+import com.addiction.users.oauth.feign.kakao.response.KakaoUserInfoResponse;
 import com.addiction.users.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 

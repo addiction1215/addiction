@@ -17,6 +17,10 @@ oauth:
     api:
       url: https://www.googleapis.com
       name: googleApi
+  naver:
+    api:
+      url: https://openai.naver.com
+      name: naverApi
 
 jwt:
   secret-key: 4a0pPV9g4/6OvKKzV1MpVdIchBeTfcjd/TRKbuWUgpNY3jyh6YA/aBnpe4kPsAY5WJoBBzOG358zqS5/E0TSag==

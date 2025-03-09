@@ -9,8 +9,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import com.addiction.users.entity.SettingStatus;
 import com.addiction.users.entity.SnsType;
 import com.addiction.users.entity.User;
-import com.addiction.users.feign.google.GoogleApiFeignCall;
-import com.addiction.users.feign.kakao.KakaoApiFeignCall;
+import com.addiction.users.oauth.feign.google.GoogleApiFeignCall;
+import com.addiction.users.oauth.feign.kakao.KakaoApiFeignCall;
 
 @ActiveProfiles("test")
 @SpringBootTest

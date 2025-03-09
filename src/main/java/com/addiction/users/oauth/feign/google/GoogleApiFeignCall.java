@@ -1,4 +1,4 @@
-package com.addiction.users.feign.google;
+package com.addiction.users.oauth.feign.google;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.addiction.global.config.FeignConfig;
-import com.addiction.users.feign.google.response.GoogleUserInfoResponse;
+import com.addiction.users.oauth.feign.google.response.GoogleUserInfoResponse;
 
 @Component
 @FeignClient(name = "${oauth.google.api.name}", url = "${oauth.google.api.url}", configuration = FeignConfig.class)

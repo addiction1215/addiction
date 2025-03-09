@@ -1,4 +1,4 @@
-package com.addiction.users.feign.kakao.response;
+package com.addiction.users.oauth.feign.kakao.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
