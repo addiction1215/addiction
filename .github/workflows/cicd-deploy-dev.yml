@@ -16,6 +16,12 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       JWT_TOKEN: ${{ secrets.JWT_TOKEN }}
     steps:
+      - name: 🔍 환경 변수 확인
+        run: |
+          echo "DB_ENDPOINT: $DB_ENDPOINT"
+          echo "DB_USERNAME: $DB_USERNAME"
+          echo "DB_PASSWORD: $DB_PASSWORD"
+          echo "JWT_TOKEN: $JWT_TOKEN"
       - name: Checkout Code
         uses: actions/checkout@v3
 
