@@ -11,9 +11,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      spring.database.url: ${{ secrets.DB_ENDPOINT }}
-      spring.database.username: ${{ secrets.DB_USERNAME }}
-      spring.database.password: ${{ secrets.DB_PASSWORD }}
+      db.endpoint: ${{ secrets.DB_ENDPOINT }}
+      db.username: ${{ secrets.DB_USERNAME }}
+      db.password: ${{ secrets.DB_PASSWORD }}
       jwt.secret-key: ${{ secrets.JWT_SECRET_KEY }}
     steps:
       - name: Checkout Code

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DB_ENDPOINT}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${db.endpoint}
+    username: ${db.username}
+    password: ${db.password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -39,4 +39,4 @@ oauth:
       name: naverApi
 
 jwt:
-  secret-key: ${JWT_TOKEN}
+  secret-key: ${jwt.secret-key}
