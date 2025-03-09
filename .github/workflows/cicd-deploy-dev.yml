@@ -2,7 +2,10 @@ name: 🚀 배포
 
 on:
   pull_request:
-    types: [ closed, synchronize ]
+    types: [ closed ]
+    branches: [ "dev" ]
+  push:
+    types: [ synchronize ]
     branches: [ "dev" ]
 
 jobs:
