@@ -11,10 +11,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      db.endpoint: ${{ secrets.DB_ENDPOINT }}
-      db.username: ${{ secrets.DB_USERNAME }}
-      db.password: ${{ secrets.DB_PASSWORD }}
-      jwt.secret-key: ${{ secrets.JWT_SECRET_KEY }}
+      DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

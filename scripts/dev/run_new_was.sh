@@ -23,10 +23,10 @@ echo "> $JAR_NAME 실행"
 nohup java -jar \
           -Dserver.port=${TARGET_PORT} \
           -Dspring.profiles.active=dev \
-          -Ddb.endpoint=${db.endpoint} \
-          -Ddb.username=${db.username} \
-          -Ddb.password=${db.password} \
-          -Djwt.secret-key=${jwt.secret-key} \
+          -Ddb.endpoint=${DB_ENDPOINT} \
+          -Ddb.username=${DB_USERNAME} \
+          -Ddb.password=${DB_PASSWORD} \
+          -Djwt.secret-key=${JWT_SECRET_KEY} \
           $JAR_NAME > $LOG_FILE 2>&1 &
 
 echo "> Now new WAS runs at ${TARGET_PORT}."
