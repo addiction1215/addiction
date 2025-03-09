@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:~/addction;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DB_ENDPOINT}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     open-in-view: false
     properties:
       hibernate:
@@ -14,6 +14,15 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           exception-handling: ignore
+
+    logging:
+      level:
+        p6spy: info
+
+      decorator:
+        datasource:
+          p6spy:
+            enable-logging: true
 
 oauth:
   kakao:
@@ -30,4 +39,4 @@ oauth:
       name: naverApi
 
 jwt:
-  secret-key: 4a0pPV9g4/6OvKKzV1MpVdIchBeTfcjd/TRKbuWUgpNY3jyh6YA/aBnpe4kPsAY5WJoBBzOG358zqS5/E0TSag==
+  secret-key: ${JWT_TOKEN}
