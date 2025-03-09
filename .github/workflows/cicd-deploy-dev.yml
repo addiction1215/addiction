@@ -21,6 +21,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: 🔍 현재 디렉토리 보기
+        run: ls -al
+
       - name: 🔨 gradlew 실행 권한 설정
         run: chmod +x gradlew
 
