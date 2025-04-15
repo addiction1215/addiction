@@ -1,13 +1,11 @@
 package com.addiction.users.repository;
 
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.addiction.users.entity.User;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository {
+	User save(User user);
 
-	Optional<User> findByEmail(String email);
+	User findByEmail(String email);
 
+	void deleteAllInBatch();
 }
