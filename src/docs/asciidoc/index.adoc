@@ -14,3 +14,8 @@ endif::[]
 
 include::api/login/login.adoc[]
 
+[[User-API]]
+== User API
+
+include::api/user/user.adoc[]
+
