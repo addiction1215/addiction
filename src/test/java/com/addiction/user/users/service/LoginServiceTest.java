@@ -5,15 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.IntegrationTestSupport;
-import com.addiction.user.push.repository.PushRepository;
-import com.addiction.user.refreshToken.repository.RefreshTokenRepository;
 import com.addiction.user.users.dto.service.request.OAuthLoginServiceRequest;
 import com.addiction.user.users.dto.service.response.OAuthLoginResponse;
 import com.addiction.user.users.entity.User;
@@ -21,26 +18,12 @@ import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.oauth.feign.google.response.GoogleUserInfoResponse;
 import com.addiction.user.users.oauth.feign.kakao.response.KakaoUserInfoResponse;
-import com.addiction.user.users.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class LoginServiceTest extends IntegrationTestSupport {
 
 	@Autowired
 	private LoginService loginService;
-	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private PushRepository pushRepository;
-
-	@AfterEach
-	void tearDown() {
-		refreshTokenRepository.deleteAllInBatch();
-		pushRepository.deleteAllInBatch();
-		userRepository.deleteAllInBatch();
-	}
 
 	@DisplayName("카카오 로그인을 한다.")
 	@Test
