@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import com.addiction.ControllerTestSupport;
 import com.addiction.users.dto.controller.request.LoginOauthRequest;
-import com.addiction.users.entity.SnsType;
+import com.addiction.users.entity.enums.SnsType;
 
 public class LoginControllerTest extends ControllerTestSupport {
 

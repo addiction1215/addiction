@@ -1,7 +1,7 @@
 package com.addiction.users.dto.controller.request;
 
 import com.addiction.users.dto.service.request.OAuthLoginServiceRequest;
-import com.addiction.users.entity.SnsType;
+import com.addiction.users.entity.enums.SnsType;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.addiction.users.dto.service.request;
 
-import com.addiction.users.entity.SnsType;
+import com.addiction.users.entity.enums.SnsType;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -6,8 +6,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.addiction.users.entity.SettingStatus;
-import com.addiction.users.entity.SnsType;
+import com.addiction.users.entity.enums.Role;
+import com.addiction.users.entity.enums.SettingStatus;
+import com.addiction.users.entity.enums.Sex;
+import com.addiction.users.entity.enums.SnsType;
 import com.addiction.users.entity.User;
 import com.addiction.users.oauth.feign.google.GoogleApiFeignCall;
 import com.addiction.users.oauth.feign.kakao.KakaoApiFeignCall;
@@ -27,6 +29,9 @@ public abstract class IntegrationTestSupport {
 		return User.builder()
 			.email(email)
 			.password(bCryptPasswordEncoder.encode(password))
+			.phoneNumber("010-1234-1234")
+			.sex(Sex.MAIL)
+			.role(Role.USER)
 			.snsType(snsType)
 			.settingStatus(settingStatus)
 			.build();

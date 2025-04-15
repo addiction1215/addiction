@@ -20,8 +20,8 @@ import com.addiction.users.controller.LoginController;
 import com.addiction.users.dto.controller.request.LoginOauthRequest;
 import com.addiction.users.dto.service.request.OAuthLoginServiceRequest;
 import com.addiction.users.dto.service.response.OAuthLoginResponse;
-import com.addiction.users.entity.SettingStatus;
-import com.addiction.users.entity.SnsType;
+import com.addiction.users.entity.enums.SettingStatus;
+import com.addiction.users.entity.enums.SnsType;
 import com.addiction.users.service.LoginService;
 
 import docs.RestDocsSupport;

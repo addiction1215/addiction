@@ -17,9 +17,9 @@ import com.addiction.push.repository.PushRepository;
 import com.addiction.refreshToken.repository.RefreshTokenRepository;
 import com.addiction.users.dto.service.request.OAuthLoginServiceRequest;
 import com.addiction.users.dto.service.response.OAuthLoginResponse;
-import com.addiction.users.entity.SettingStatus;
-import com.addiction.users.entity.SnsType;
 import com.addiction.users.entity.User;
+import com.addiction.users.entity.enums.SettingStatus;
+import com.addiction.users.entity.enums.SnsType;
 import com.addiction.users.oauth.feign.google.response.GoogleUserInfoResponse;
 import com.addiction.users.oauth.feign.kakao.response.KakaoUserInfoResponse;
 import com.addiction.users.repository.UserRepository;
@@ -142,7 +142,7 @@ public class LoginServiceTest extends IntegrationTestSupport {
 	@DisplayName("카카오 로그인을 할 시 저장된 사용자가 없으면 회원가입한다.")
 	@Test
 	@Transactional
-	void  oauthKakaoJoinTest() throws JsonProcessingException {
+	void oauthKakaoJoinTest() throws JsonProcessingException {
 		// given
 		given(kakaoApiFeignCall.getUserInfo(any(String.class)))
 			.willReturn(

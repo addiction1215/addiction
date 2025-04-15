@@ -12,13 +12,13 @@ import com.addiction.global.exception.AddictionException;
 import com.addiction.jwt.JwtTokenGenerator;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
-import com.addiction.users.oauth.client.OAuthApiClient;
 import com.addiction.users.dto.service.request.OAuthLoginServiceRequest;
 import com.addiction.users.dto.service.response.OAuthLoginResponse;
-import com.addiction.users.entity.Role;
-import com.addiction.users.entity.SettingStatus;
-import com.addiction.users.entity.SnsType;
 import com.addiction.users.entity.User;
+import com.addiction.users.entity.enums.Role;
+import com.addiction.users.entity.enums.SettingStatus;
+import com.addiction.users.entity.enums.SnsType;
+import com.addiction.users.oauth.client.OAuthApiClient;
 import com.addiction.users.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -50,15 +50,19 @@ public class LoginService {
 
 		String email = client.getEmail(oAuthLoginServiceRequest.getToken());
 
-		User user = userRepository.findByEmail(email)
-			.orElseGet(() -> userRepository.save(
+		User user;
+		try {
+			user = userRepository.findByEmail(email);
+		} catch (AddictionException e) {
+			user = userRepository.save(
 				User.builder()
 					.email(email)
 					.snsType(snsType)
 					.role(Role.USER)
 					.settingStatus(SettingStatus.INCOMPLETE)
 					.build()
-			));
+			);
+		}
 
 		user.checkSnsType(snsType);              //SNS가입여부확인
 

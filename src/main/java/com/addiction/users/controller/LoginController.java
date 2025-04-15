@@ -21,7 +21,6 @@ public class LoginController {
 
 	private final LoginService loginService;
 
-
 	@PostMapping("/oauth/login")
 	public ApiResponse<OAuthLoginResponse> oauthLogin(@Valid @RequestBody LoginOauthRequest loginOauthRequest) throws JsonProcessingException {
 		return ApiResponse.ok(loginService.oauthLogin(loginOauthRequest.toServiceRequest()));

@@ -1,7 +1,7 @@
 package com.addiction.users.dto.service.response;
 
 import com.addiction.jwt.dto.JwtToken;
-import com.addiction.users.entity.SettingStatus;
+import com.addiction.users.entity.enums.SettingStatus;
 import com.addiction.users.entity.User;
 
 import lombok.Builder;

@@ -3,7 +3,7 @@ package com.addiction.users.oauth.client.google;
 import org.springframework.stereotype.Component;
 
 import com.addiction.users.oauth.client.OAuthApiClient;
-import com.addiction.users.entity.SnsType;
+import com.addiction.users.entity.enums.SnsType;
 import com.addiction.users.oauth.feign.google.GoogleApiFeignCall;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.addiction.users.entity;
+package com.addiction.users.entity.enums;
 
 import java.util.Arrays;
 import java.util.Optional;
