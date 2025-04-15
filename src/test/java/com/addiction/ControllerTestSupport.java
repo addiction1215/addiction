@@ -7,14 +7,17 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.addiction.user.users.controller.LoginController;
+import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.service.LoginService;
+import com.addiction.user.users.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityManager;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = {
-	LoginController.class
+	LoginController.class,
+	UserController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -29,6 +32,9 @@ public abstract class ControllerTestSupport {
 
 	@MockitoBean
 	protected LoginService loginService;
+
+	@MockitoBean
+	protected UserService userService;
 
 }
 

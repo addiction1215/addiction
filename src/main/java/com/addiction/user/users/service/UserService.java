@@ -22,7 +22,6 @@ public class UserService {
 	public UserUpdateResponse update(UserUpdateServiceRequest userUpdateServiceRequest) {
 		User user = userRepository.findById(securityService.getCurrentLoginUserInfo().getUserId());
 		user.update(
-			userUpdateServiceRequest.getPhoneNumber(),
 			userUpdateServiceRequest.getSex(),
 			userUpdateServiceRequest.getBirthDay()
 		);

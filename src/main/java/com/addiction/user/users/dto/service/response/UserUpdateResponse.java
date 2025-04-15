@@ -11,20 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserUpdateResponse {
 
-	private String phoneNumber;
 	private Sex sex;
 	private String birthDay;
 
 	@Builder
-	public UserUpdateResponse(String phoneNumber, Sex sex, String birthDay) {
-		this.phoneNumber = phoneNumber;
+	public UserUpdateResponse(Sex sex, String birthDay) {
 		this.sex = sex;
 		this.birthDay = birthDay;
 	}
 
 	public static UserUpdateResponse createResponse(User user) {
 		return UserUpdateResponse.builder()
-			.phoneNumber(user.getPhoneNumber())
 			.sex(user.getSex())
 			.birthDay(user.getBirthDay())
 			.build();

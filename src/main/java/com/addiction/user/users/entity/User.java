@@ -111,14 +111,9 @@ public class User extends BaseTimeEntity {
 			);
 	}
 
-	public void update(String phoneNumber, Sex sex, String birthDay) {
-		updatePhoneNumber(phoneNumber);
+	public void update(Sex sex, String birthDay) {
 		updateSex(sex);
 		updateBirthDay(birthDay);
-	}
-
-	private void updatePhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 	private void updateSex(Sex sex) {
