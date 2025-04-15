@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.addiction.IntegrationTestSupport;
+import com.addiction.user.users.dto.service.request.UserSaveServiceRequest;
 import com.addiction.user.users.dto.service.request.UserUpdateServiceRequest;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
@@ -18,6 +19,25 @@ public class UserServiceTest extends IntegrationTestSupport {
 
 	@Autowired
 	private UserService userService;
+
+	@DisplayName("유저의 정보를 저장한다.")
+	@Test
+	void 유저의_정보를_저장한다() {
+		//given
+		UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
+			.email("test@test.com")
+			.password("1234")
+			.phoneNumber("01012341234")
+			.build();
+
+		//when
+		userService.save(userSaveServiceRequest);
+
+		//then
+		assertThat(userRepository.findByEmail("test@test.com"))
+			.extracting("email", "phoneNumber")
+			.contains("test@test.com", "01012341234");
+	}
 
 	@DisplayName("유저의 정보를 수정한다.")
 	@Test
@@ -31,7 +51,6 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.willReturn(createLoginUserInfo(savedUser.getId()));
 
 		UserUpdateServiceRequest userUpdateServiceRequest = UserUpdateServiceRequest.builder()
-			.phoneNumber("01011111111")
 			.sex(Sex.MAIL)
 			.birthDay("12341234")
 			.build();
@@ -41,7 +60,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 
 		//then
 		assertThat(userRepository.findById(savedUser.getId()))
-			.extracting("phoneNumber", "sex", "birthDay")
-			.contains("01011111111", Sex.MAIL, "12341234");
+			.extracting("sex", "birthDay")
+			.contains(Sex.MAIL, "12341234");
 	}
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.addiction.IntegrationTestSupport;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.user.users.entity.enums.SettingStatus;
+import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.entity.enums.SnsType;
 
 public class UserTest extends IntegrationTestSupport {
@@ -27,5 +28,16 @@ public class UserTest extends IntegrationTestSupport {
 		assertThatThrownBy(() -> user.checkSnsType(SnsType.KAKAO))
 			.isInstanceOf(AddictionException.class)
 			.hasMessage("NORMAL");
+	}
+
+	@DisplayName("회원 정보를 수정한다.")
+	@Test
+	void 회원_정보를_수정한다() {
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+
+		user.update(Sex.FEMAIL, "12341234");
+
+		assertThat(user).extracting("sex", "birthDay")
+			.contains(Sex.FEMAIL, "12341234");
 	}
 }
