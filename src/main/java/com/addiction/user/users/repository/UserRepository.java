@@ -7,5 +7,7 @@ public interface UserRepository {
 
 	User findByEmail(String email);
 
+	User findById(int id);
+
 	void deleteAllInBatch();
 }

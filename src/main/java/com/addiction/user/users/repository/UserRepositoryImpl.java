@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
+	private static final String UNKNOWN_USER = "해당 회원은 존재하지 않습니다.";
+
 	private final UserJpaRepository userJpaRepository;
 
 	@Override
@@ -21,7 +23,13 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public User findByEmail(String email) {
 		return userJpaRepository.findByEmail(email)
-			.orElseThrow(() -> new AddictionException("해당 회원은 존재하지 않습니다."));
+			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));
+	}
+
+	@Override
+	public User findById(int id) {
+		return userJpaRepository.findById(id)
+			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));
 	}
 
 	@Override

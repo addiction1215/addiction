@@ -45,6 +45,8 @@ public class User extends BaseTimeEntity {
 
 	private String phoneNumber;
 
+	private String birthDay;
+
 	@Enumerated(EnumType.STRING)
 	private SnsType snsType;
 
@@ -64,12 +66,13 @@ public class User extends BaseTimeEntity {
 	private List<Push> pushes = new ArrayList<>();
 
 	@Builder
-	public User(String email, String password, String nickname, String phoneNumber, SnsType snsType, Sex sex, Role role,
+	public User(String email, String password, String nickname, String phoneNumber, String birthDay, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.phoneNumber = phoneNumber;
+		this.birthDay = birthDay;
 		this.snsType = snsType;
 		this.sex = sex;
 		this.role = role;
@@ -106,6 +109,24 @@ public class User extends BaseTimeEntity {
 					push.updateUser(this);
 				}
 			);
+	}
+
+	public void update(String phoneNumber, Sex sex, String birthDay) {
+		updatePhoneNumber(phoneNumber);
+		updateSex(sex);
+		updateBirthDay(birthDay);
+	}
+
+	private void updatePhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	private void updateSex(Sex sex) {
+		this.sex = sex;
+	}
+
+	private void updateBirthDay(String birthDay) {
+		this.birthDay = birthDay;
 	}
 
 }
