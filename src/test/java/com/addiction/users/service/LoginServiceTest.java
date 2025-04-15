@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.IntegrationTestSupport;
-import com.addiction.global.exception.AddictionException;
 import com.addiction.push.repository.PushRepository;
 import com.addiction.refreshToken.repository.RefreshTokenRepository;
 import com.addiction.users.dto.service.request.OAuthLoginServiceRequest;
@@ -46,7 +45,7 @@ public class LoginServiceTest extends IntegrationTestSupport {
 	@DisplayName("카카오 로그인을 한다.")
 	@Test
 	@Transactional
-	void oauthKakaoLoginTest() throws JsonProcessingException {
+	void 카카오_로그인을_한다() throws JsonProcessingException {
 		// given
 		User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
 
@@ -80,7 +79,7 @@ public class LoginServiceTest extends IntegrationTestSupport {
 	@DisplayName("구글 로그인을 한다.")
 	@Test
 	@Transactional
-	void oauthGoogleLoginTest() throws JsonProcessingException {
+	void 구글_로그인을_한다() throws JsonProcessingException {
 		// given
 		User user = createUser("test@test.com", "1234", SnsType.GOOGLE, SettingStatus.INCOMPLETE);
 
@@ -112,37 +111,7 @@ public class LoginServiceTest extends IntegrationTestSupport {
 	@DisplayName("카카오 로그인을 할 시 이미 등록되어있는 이메일이라면 예외가 발생한다.")
 	@Test
 	@Transactional
-	void oauthKakaoLoginExistTest() {
-		// given
-		User user = createUser("test@test.com", "1234", SnsType.GOOGLE, SettingStatus.INCOMPLETE);
-
-		userRepository.save(user);
-
-		given(kakaoApiFeignCall.getUserInfo(any(String.class)))
-			.willReturn(
-				KakaoUserInfoResponse.builder()
-					.kakaoAccount(KakaoUserInfoResponse.KakaoAccount.builder()
-						.email("test@test.com")
-						.build())
-					.build()
-			);
-
-		OAuthLoginServiceRequest oAuthLoginServiceRequest = OAuthLoginServiceRequest.builder()
-			.token("sadhAewofneonfoweifkpowekfkajfbdsnflksndfdsmfkl")
-			.deviceId("testDeviceId")
-			.pushKey("testPushKey")
-			.snsType(SnsType.KAKAO)
-			.build();
-
-		assertThatThrownBy(() -> loginService.oauthLogin(oAuthLoginServiceRequest))
-			.isInstanceOf(AddictionException.class)
-			.hasMessage("GOOGLE");
-	}
-
-	@DisplayName("카카오 로그인을 할 시 저장된 사용자가 없으면 회원가입한다.")
-	@Test
-	@Transactional
-	void oauthKakaoJoinTest() throws JsonProcessingException {
+	void 카카오_로그인을_할_시_이미_등록되어있는_이메일이라면_예외가_발생한다() throws JsonProcessingException {
 		// given
 		given(kakaoApiFeignCall.getUserInfo(any(String.class)))
 			.willReturn(

@@ -16,10 +16,10 @@ import com.addiction.users.entity.enums.SnsType;
 
 public class LoginControllerTest extends ControllerTestSupport {
 
-	@DisplayName("OAuth로그인을 한다.")
+	@DisplayName("OAuth 로그인을 한다.")
 	@Test
 	@WithMockUser(roles = "USER")
-	void OauthLoginTest() throws Exception {
+	void oauth_로그인한다() throws Exception {
 		// given
 		LoginOauthRequest request = LoginOauthRequest.builder()
 			.token("testToken")
@@ -42,11 +42,10 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.message").value("OK"));
 	}
 
-
-	@DisplayName("OAuth로그인을 할 시 snsType값은 필수이다.")
+	@DisplayName("OAuth 로그인을 할 시 snsType값은 필수이다.")
 	@Test
 	@WithMockUser(roles = "USER")
-	void OauthLoginWithoutTokenTest() throws Exception {
+	void oauth_로그인을_할_시_snsType값은_필수이다() throws Exception {
 		// given
 		LoginOauthRequest request = LoginOauthRequest.builder()
 			.token("testToken")
@@ -68,10 +67,10 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.message").value("인증타입은 필수입니다."));
 	}
 
-	@DisplayName("OAuth로그인을 할 시 token값은 필수이다.")
+	@DisplayName("OAuth 로그인을 할 시 token값은 필수이다.")
 	@Test
 	@WithMockUser(roles = "USER")
-	void OauthLoginWithoutSnsTypeTest() throws Exception {
+	void oauth_로그인을_할_시_token값은_필수이다() throws Exception {
 		// given
 		LoginOauthRequest request = LoginOauthRequest.builder()
 			.snsType(SnsType.KAKAO)
@@ -93,10 +92,10 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.message").value("Token은 필수입니다."));
 	}
 
-	@DisplayName("OAuth로그인을 할 시 DeviceId값은 필수이다.")
+	@DisplayName("OAuth 로그인을 할 시 DeviceId값은 필수이다.")
 	@Test
 	@WithMockUser(roles = "USER")
-	void OauthLoginWithoutDeviceIdTest() throws Exception {
+	void oauth_로그인을_할_시_DeviceId값은_필수이다() throws Exception {
 		// given
 		LoginOauthRequest request = LoginOauthRequest.builder()
 			.token("testToken")
