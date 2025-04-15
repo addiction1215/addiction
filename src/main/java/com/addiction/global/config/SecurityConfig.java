@@ -15,7 +15,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import com.addiction.jwt.JwtTokenProvider;
 import com.addiction.jwt.filter.JwtAuthenticationFilter;
 import com.addiction.jwt.filter.JwtExceptionHandlerFilter;
-import com.addiction.users.entity.enums.Role;
+import com.addiction.user.users.entity.enums.Role;
 
 import lombok.RequiredArgsConstructor;
 

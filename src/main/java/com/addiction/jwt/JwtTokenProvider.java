@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.addiction.jwt.dto.LoginUserInfo;
-import com.addiction.users.entity.enums.Role;
+import com.addiction.user.users.entity.enums.Role;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

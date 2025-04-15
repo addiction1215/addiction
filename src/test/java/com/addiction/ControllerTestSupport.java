@@ -6,8 +6,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.addiction.users.controller.LoginController;
-import com.addiction.users.service.LoginService;
+import com.addiction.user.users.controller.LoginController;
+import com.addiction.user.users.service.LoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityManager;

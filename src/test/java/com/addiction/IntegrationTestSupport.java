@@ -6,13 +6,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.addiction.users.entity.enums.Role;
-import com.addiction.users.entity.enums.SettingStatus;
-import com.addiction.users.entity.enums.Sex;
-import com.addiction.users.entity.enums.SnsType;
-import com.addiction.users.entity.User;
-import com.addiction.users.oauth.feign.google.GoogleApiFeignCall;
-import com.addiction.users.oauth.feign.kakao.KakaoApiFeignCall;
+import com.addiction.user.users.entity.enums.Role;
+import com.addiction.user.users.entity.enums.SettingStatus;
+import com.addiction.user.users.entity.enums.Sex;
+import com.addiction.user.users.entity.enums.SnsType;
+import com.addiction.user.users.entity.User;
+import com.addiction.user.users.oauth.feign.google.GoogleApiFeignCall;
+import com.addiction.user.users.oauth.feign.kakao.KakaoApiFeignCall;
 
 @ActiveProfiles("test")
 @SpringBootTest
