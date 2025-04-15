@@ -15,6 +15,7 @@ jobs:
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      AES_KEY: ${{ secrets.AES_KEY }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

@@ -137,7 +137,8 @@ tasks.processResources {
                 DB_ENDPOINT: System.getenv('DB_ENDPOINT'),
                 DB_USERNAME: System.getenv('DB_USERNAME'),
                 DB_PASSWORD: System.getenv('DB_PASSWORD'),
-                JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY')
+                JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
+                AES_KEY: System.getenv('AES_KEY')
         )
     }
 }

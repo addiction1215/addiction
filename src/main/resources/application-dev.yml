@@ -40,3 +40,6 @@ oauth:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
+
+aes:
+  key-value: ${AES_KEY}
