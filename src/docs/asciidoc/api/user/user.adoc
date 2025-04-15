@@ -1,0 +1,25 @@
+[[user-save]]
+=== 일반회원 저장
+
+==== HTTP Request
+
+include::{snippets}/user-save/http-request.adoc[]
+include::{snippets}/user-save/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-save/http-response.adoc[]
+include::{snippets}/user-save/response-fields.adoc[]
+
+[[user-update]]
+=== 회원 초기정보 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
