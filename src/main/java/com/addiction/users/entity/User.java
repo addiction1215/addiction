@@ -7,6 +7,10 @@ import com.addiction.global.BaseTimeEntity;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.push.entity.Push;
 import com.addiction.refreshToken.entity.RefreshToken;
+import com.addiction.users.entity.enums.Role;
+import com.addiction.users.entity.enums.SettingStatus;
+import com.addiction.users.entity.enums.Sex;
+import com.addiction.users.entity.enums.SnsType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -39,8 +43,13 @@ public class User extends BaseTimeEntity {
 
 	private String nickname;
 
+	private String phoneNumber;
+
 	@Enumerated(EnumType.STRING)
 	private SnsType snsType;
+
+	@Enumerated(EnumType.STRING)
+	private Sex sex;
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
@@ -55,12 +64,14 @@ public class User extends BaseTimeEntity {
 	private List<Push> pushes = new ArrayList<>();
 
 	@Builder
-	private User(String email, String password, SnsType snsType, String nickname, Role role,
+	public User(String email, String password, String nickname, String phoneNumber, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
 		this.email = email;
 		this.password = password;
-		this.snsType = snsType;
 		this.nickname = nickname;
+		this.phoneNumber = phoneNumber;
+		this.snsType = snsType;
+		this.sex = sex;
 		this.role = role;
 		this.settingStatus = settingStatus;
 	}
