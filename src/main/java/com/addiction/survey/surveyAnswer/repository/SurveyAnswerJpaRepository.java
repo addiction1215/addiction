@@ -7,5 +7,6 @@ import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 
 public interface SurveyAnswerJpaRepository extends JpaRepository<SurveyAnswer, Integer> {
 
+	int findScoreById(int id);
 
 }
