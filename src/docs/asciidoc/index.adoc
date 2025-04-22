@@ -22,5 +22,5 @@ include::api/user/user.adoc[]
 [[Survey-API]]
 == Survey API
 
-include::api/survey/surveyQuestion-findAll.adoc[]
+include::api/survey/survey.adoc[]
 
