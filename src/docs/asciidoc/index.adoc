@@ -19,3 +19,8 @@ include::api/login/login.adoc[]
 
 include::api/user/user.adoc[]
 
+[[Survey-API]]
+== Survey API
+
+include::api/survey/surveyQuestion-findAll.adoc[]
+
