@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.addiction.global.ApiResponse;
 import com.addiction.user.users.dto.controller.request.UserSaveRequest;
 import com.addiction.user.users.dto.controller.request.UserUpdateRequest;
+import com.addiction.user.users.dto.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.dto.service.response.UserSaveResponse;
 import com.addiction.user.users.dto.service.response.UserUpdateResponse;
+import com.addiction.user.users.dto.service.response.UserUpdateSurveyResponse;
 import com.addiction.user.users.service.UserService;
 
 import jakarta.validation.Valid;
@@ -34,5 +36,10 @@ public class UserController {
 	@PatchMapping
 	public ApiResponse<UserUpdateResponse> update(@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
 		return ApiResponse.ok(userService.update(userUpdateRequest.toServiceRequest()));
+	}
+
+	@PatchMapping("/survey")
+	public ApiResponse<UserUpdateSurveyResponse> updateSurvey(@RequestBody @Valid UserUpdateSurveyRequest userUpdateSurveyRequest) {
+		return ApiResponse.ok(userService.updateSurvey(userUpdateSurveyRequest.toServiceRequest()));
 	}
 }

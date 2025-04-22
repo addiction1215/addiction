@@ -41,11 +41,17 @@ public class User extends BaseTimeEntity {
 
 	private String password;
 
-	private String nickname;
+	private String nickName;
 
 	private String phoneNumber;
 
 	private String birthDay;
+
+	private String purpose;
+
+	private int totalScore;
+
+	private int cigarettePrice;
 
 	@Enumerated(EnumType.STRING)
 	private SnsType snsType;
@@ -66,13 +72,17 @@ public class User extends BaseTimeEntity {
 	private List<Push> pushes = new ArrayList<>();
 
 	@Builder
-	public User(String email, String password, String nickname, String phoneNumber, String birthDay, SnsType snsType, Sex sex, Role role,
+	public User(String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
+		int totalScore, int cigarettePrice, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
 		this.email = email;
 		this.password = password;
-		this.nickname = nickname;
+		this.nickName = nickName;
 		this.phoneNumber = phoneNumber;
 		this.birthDay = birthDay;
+		this.purpose = purpose;
+		this.totalScore = totalScore;
+		this.cigarettePrice = cigarettePrice;
 		this.snsType = snsType;
 		this.sex = sex;
 		this.role = role;
@@ -116,12 +126,35 @@ public class User extends BaseTimeEntity {
 		updateBirthDay(birthDay);
 	}
 
+	public void updateSurvey(String purpose, int totalScore, int cigarettePrice) {
+		updatePurpose(purpose);
+		updateTotalScore(totalScore);
+		updateCigarettePrice(cigarettePrice);
+		completeSetting();
+	}
+
 	private void updateSex(Sex sex) {
 		this.sex = sex;
 	}
 
 	private void updateBirthDay(String birthDay) {
 		this.birthDay = birthDay;
+	}
+
+	private void updatePurpose(String purpose) {
+		this.purpose = purpose;
+	}
+
+	private void updateTotalScore(int totalScore) {
+		this.totalScore = totalScore;
+	}
+
+	private void updateCigarettePrice(int cigarettePrice) {
+		this.cigarettePrice = cigarettePrice;
+	}
+
+	private void completeSetting() {
+		this.settingStatus = SettingStatus.COMPLETE;
 	}
 
 }

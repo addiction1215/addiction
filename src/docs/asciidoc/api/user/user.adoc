@@ -23,3 +23,16 @@ include::{snippets}/user-update/request-fields.adoc[]
 
 include::{snippets}/user-update/http-response.adoc[]
 include::{snippets}/user-update/response-fields.adoc[]
+
+[[user-survey-update]]
+=== 회원 설문조사 결과 저장
+
+==== HTTP Request
+
+include::{snippets}/user-survey-update/http-request.adoc[]
+include::{snippets}/user-survey-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-survey-update/http-response.adoc[]
+include::{snippets}/user-survey-update/response-fields.adoc[]
