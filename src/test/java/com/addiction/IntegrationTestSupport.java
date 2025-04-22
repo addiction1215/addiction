@@ -13,6 +13,11 @@ import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyAnswer.repository.SurveyAnswerRepository;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 import com.addiction.survey.surveyQuestion.repository.SurveyQuestionRepository;
+import com.addiction.survey.surveyResult.entity.SurveyResult;
+import com.addiction.survey.surveyResult.repository.SurveyResultRepository;
+import com.addiction.survey.surveyResult.service.SurveyResultReadService;
+import com.addiction.survey.surveyResultDescription.entity.SurveyResultDescription;
+import com.addiction.survey.surveyResultDescription.repository.SurveyResultDescriptionRepository;
 import com.addiction.user.push.repository.PushRepository;
 import com.addiction.user.refreshToken.repository.RefreshTokenRepository;
 import com.addiction.user.users.entity.User;
@@ -46,9 +51,15 @@ public abstract class IntegrationTestSupport {
 	protected SurveyQuestionRepository surveyQuestionRepository;
 	@Autowired
 	protected SurveyAnswerRepository surveyAnswerRepository;
+	@Autowired
+	protected SurveyResultRepository surveyResultRepository;
+	@Autowired
+	protected SurveyResultDescriptionRepository surveyResultDescriptionRepository;
 
 	@AfterEach
 	public void tearDown() {
+		surveyResultDescriptionRepository.deleteAllInBatch();
+		surveyResultRepository.deleteAllInBatch();
 		surveyAnswerRepository.deleteAllInBatch();
 		surveyQuestionRepository.deleteAllInBatch();
 		refreshTokenRepository.deleteAllInBatch();
@@ -60,6 +71,7 @@ public abstract class IntegrationTestSupport {
 		return User.builder()
 			.email(email)
 			.password(bCryptPasswordEncoder.encode(password))
+			.nickName("테스트 닉네임")
 			.phoneNumber("010-1234-1234")
 			.sex(Sex.MAIL)
 			.role(Role.USER)
@@ -85,6 +97,20 @@ public abstract class IntegrationTestSupport {
 			.surveyQuestion(surveyQuestion)
 			.answer(answer)
 			.score(score)
+			.build();
+	}
+
+	protected SurveyResult createSurveyResult(String title, int score) {
+		return SurveyResult.builder()
+			.title(title)
+			.score(score)
+			.build();
+	}
+
+	protected SurveyResultDescription createSurveyResultDescription(SurveyResult surveyResult, String description) {
+		return SurveyResultDescription.builder()
+			.surveyResult(surveyResult)
+			.description(description)
 			.build();
 	}
 }

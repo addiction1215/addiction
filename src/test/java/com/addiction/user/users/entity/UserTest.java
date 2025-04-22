@@ -40,4 +40,15 @@ public class UserTest extends IntegrationTestSupport {
 		assertThat(user).extracting("sex", "birthDay")
 			.contains(Sex.FEMAIL, "12341234");
 	}
+
+	@DisplayName("회원 설문조사 결과를 수정한다.")
+	@Test
+	void 회원_설문조사_결과를_수정한다() {
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+
+		user.updateSurvey("금연 화이팅", 10, 5000);
+
+		assertThat(user).extracting("purpose", "totalScore", "cigarettePrice", "settingStatus")
+			.contains("금연 화이팅", 10, 5000, SettingStatus.COMPLETE);
+	}
 }
