@@ -3,6 +3,8 @@ plugins {
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
     id "org.asciidoctor.jvm.convert" version '3.3.2'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.23'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.8.0'
 }
 
 dependencyManagement {
@@ -15,7 +17,6 @@ group = 'com.addiction'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
 }
 
 configurations {
@@ -76,6 +77,7 @@ dependencies {
 
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 tasks.named('test') {
@@ -141,4 +143,7 @@ tasks.processResources {
                 AES_KEY: System.getenv('AES_KEY')
         )
     }
+}
+kotlin {
+    jvmToolchain(17)
 }
