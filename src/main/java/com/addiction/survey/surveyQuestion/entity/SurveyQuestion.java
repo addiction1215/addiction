@@ -3,6 +3,7 @@ package com.addiction.survey.surveyQuestion.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.addiction.global.BaseTimeEntity;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.user.refreshToken.entity.RefreshToken;
 
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SurveyQuestion {
+public class SurveyQuestion extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.addiction.survey.surveyAnswer.entity;
 
+import com.addiction.global.BaseTimeEntity;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SurveyAnswer {
+public class SurveyAnswer extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
