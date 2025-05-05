@@ -2,6 +2,8 @@ package com.addiction.user.users.entity;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -46,9 +48,11 @@ public class UserTest extends IntegrationTestSupport {
 	void 회원_설문조사_결과를_수정한다() {
 		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
 
-		user.updateSurvey("금연 화이팅", 10, 5000);
+		LocalDateTime startDate = LocalDateTime.now();
 
-		assertThat(user).extracting("purpose", "totalScore", "cigarettePrice", "settingStatus")
-			.contains("금연 화이팅", 10, 5000, SettingStatus.COMPLETE);
+		user.updateSurvey("금연 화이팅", 10, 5000, startDate);
+
+		assertThat(user).extracting("purpose", "totalScore", "cigarettePrice", "settingStatus", "startDate")
+			.contains("금연 화이팅", 10, 5000, SettingStatus.COMPLETE, startDate);
 	}
 }

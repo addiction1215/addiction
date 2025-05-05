@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.IntegrationTestSupport;
-import com.addiction.user.users.dto.service.request.OAuthLoginServiceRequest;
-import com.addiction.user.users.dto.service.response.OAuthLoginResponse;
+import com.addiction.user.users.service.request.OAuthLoginServiceRequest;
+import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
