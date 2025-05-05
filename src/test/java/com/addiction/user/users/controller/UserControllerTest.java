@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.addiction.ControllerTestSupport;
-import com.addiction.user.users.dto.controller.request.UserSaveRequest;
-import com.addiction.user.users.dto.controller.request.UserUpdateRequest;
-import com.addiction.user.users.dto.controller.request.UserUpdateSurveyRequest;
+import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.controller.request.UserUpdateRequest;
+import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.entity.enums.Sex;
 
 public class UserControllerTest extends ControllerTestSupport {
@@ -282,5 +282,22 @@ public class UserControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.statusCode").value("400"))
 			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
 			.andExpect(jsonPath("$.message").value("담배 가격은 0원 초과이어야 합니다."));
+	}
+
+	@DisplayName("사용자의 금연시작 날짜를 조회한다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자의_금연시작_날짜를_조회한다() throws Exception {
+		// given
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/user/startDate")
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
 	}
 }
