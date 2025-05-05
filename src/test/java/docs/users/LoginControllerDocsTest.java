@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.addiction.user.users.controller.LoginController;
-import com.addiction.user.users.dto.controller.request.LoginOauthRequest;
-import com.addiction.user.users.dto.service.request.OAuthLoginServiceRequest;
-import com.addiction.user.users.dto.service.response.OAuthLoginResponse;
+import com.addiction.user.users.controller.request.LoginOauthRequest;
+import com.addiction.user.users.service.request.OAuthLoginServiceRequest;
+import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.service.LoginService;
