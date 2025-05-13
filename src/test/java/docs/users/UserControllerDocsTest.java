@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,15 +18,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.addiction.user.users.controller.UserController;
-import com.addiction.user.users.dto.controller.request.UserSaveRequest;
-import com.addiction.user.users.dto.controller.request.UserUpdateRequest;
-import com.addiction.user.users.dto.controller.request.UserUpdateSurveyRequest;
-import com.addiction.user.users.dto.service.request.UserSaveServiceRequest;
-import com.addiction.user.users.dto.service.request.UserUpdateServiceRequest;
-import com.addiction.user.users.dto.service.request.UserUpdateSurveyServiceRequest;
-import com.addiction.user.users.dto.service.response.UserSaveResponse;
-import com.addiction.user.users.dto.service.response.UserUpdateResponse;
-import com.addiction.user.users.dto.service.response.UserUpdateSurveyResponse;
+import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.controller.request.UserUpdateRequest;
+import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
+import com.addiction.user.users.service.UserReadService;
+import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdateServiceRequest;
+import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
+import com.addiction.user.users.service.response.UserSaveResponse;
+import com.addiction.user.users.service.response.UserStartDateResponse;
+import com.addiction.user.users.service.response.UserUpdateResponse;
+import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.service.UserService;
 
@@ -34,10 +37,11 @@ import docs.RestDocsSupport;
 public class UserControllerDocsTest extends RestDocsSupport {
 
 	private final UserService userService = mock(UserService.class);
+	private final UserReadService userReadService = mock(UserReadService.class);
 
 	@Override
 	protected Object initController() {
-		return new UserController(userService);
+		return new UserController(userService, userReadService);
 	}
 
 	@DisplayName("사용자 저장 API")
@@ -198,6 +202,40 @@ public class UserControllerDocsTest extends RestDocsSupport {
 						.description("설문조사 결과 타이틀"),
 					fieldWithPath("data.result[]").type(JsonFieldType.ARRAY)
 						.description("설문조사 결과 설명")
+				)
+			));
+	}
+
+	@DisplayName("사용자 금연시작 날짜 API")
+	@Test
+	void 사용자_금연시작_날짜_API() throws Exception {
+		// given
+		given(userReadService.findStartDate())
+			.willReturn(UserStartDateResponse.builder()
+				.startDate(LocalDateTime.of(2025,5,5,0,0,0))
+				.build()
+			);
+
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/user/startDate")
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andDo(document("user-find-startDate",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+						.description("코드"),
+					fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+						.description("상태"),
+					fieldWithPath("message").type(JsonFieldType.STRING)
+						.description("메세지"),
+					fieldWithPath("data").type(JsonFieldType.OBJECT)
+						.description("응답 데이터"),
+					fieldWithPath("data.startDate").type(JsonFieldType.STRING)
+						.description("사용자 금연 시작날짜")
 				)
 			));
 	}

@@ -14,10 +14,10 @@ import com.addiction.IntegrationTestSupport;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 import com.addiction.survey.surveyResult.entity.SurveyResult;
-import com.addiction.user.users.dto.service.request.UserSaveServiceRequest;
-import com.addiction.user.users.dto.service.request.UserUpdateServiceRequest;
-import com.addiction.user.users.dto.service.request.UserUpdateSurveyServiceRequest;
-import com.addiction.user.users.dto.service.response.UserUpdateSurveyResponse;
+import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdateServiceRequest;
+import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
+import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.Sex;
@@ -42,7 +42,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		userService.save(userSaveServiceRequest);
 
 		//then
-		assertThat(userRepository.findByEmail("test@test.com"))
+		assertThat(userRepository.findByEmail("test@test.com").get())
 			.extracting("email", "phoneNumber")
 			.contains("test@test.com", "01012341234");
 	}
@@ -67,7 +67,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		userService.update(userUpdateServiceRequest);
 
 		//then
-		assertThat(userRepository.findById(savedUser.getId()))
+		assertThat(userRepository.findById(savedUser.getId()).get())
 			.extracting("sex", "birthDay")
 			.contains(Sex.MAIL, "12341234");
 	}

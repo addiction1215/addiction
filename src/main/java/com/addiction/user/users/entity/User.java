@@ -1,5 +1,6 @@
 package com.addiction.user.users.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,8 @@ public class User extends BaseTimeEntity {
 	private int totalScore;
 
 	private int cigarettePrice;
+
+	private LocalDateTime startDate;
 
 	@Enumerated(EnumType.STRING)
 	private SnsType snsType;
@@ -126,11 +129,12 @@ public class User extends BaseTimeEntity {
 		updateBirthDay(birthDay);
 	}
 
-	public void updateSurvey(String purpose, int totalScore, int cigarettePrice) {
+	public void updateSurvey(String purpose, int totalScore, int cigarettePrice, LocalDateTime startDate) {
 		updatePurpose(purpose);
 		updateTotalScore(totalScore);
 		updateCigarettePrice(cigarettePrice);
 		completeSetting();
+		updateStartDate(startDate);
 	}
 
 	private void updateSex(Sex sex) {
@@ -155,6 +159,10 @@ public class User extends BaseTimeEntity {
 
 	private void completeSetting() {
 		this.settingStatus = SettingStatus.COMPLETE;
+	}
+
+	private void updateStartDate(LocalDateTime startDate) {
+		this.startDate = startDate;
 	}
 
 }

@@ -36,3 +36,15 @@ include::{snippets}/user-survey-update/request-fields.adoc[]
 
 include::{snippets}/user-survey-update/http-response.adoc[]
 include::{snippets}/user-survey-update/response-fields.adoc[]
+
+[[user-find-startDate]]
+=== 회원 금연 시작 날짜 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-startDate/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-startDate/http-response.adoc[]
+include::{snippets}/user-find-startDate/response-fields.adoc[]

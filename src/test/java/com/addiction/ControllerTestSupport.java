@@ -11,6 +11,7 @@ import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.users.controller.LoginController;
 import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.service.LoginService;
+import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,6 +42,9 @@ public abstract class ControllerTestSupport {
 
 	@MockitoBean
 	protected SurveyQuestionReadService surveyQuestionReadService;
+
+	@MockitoBean
+	protected UserReadService userReadService;
 
 }
 

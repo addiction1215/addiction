@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
-import com.addiction.user.users.dto.controller.request.LoginOauthRequest;
-import com.addiction.user.users.dto.service.response.OAuthLoginResponse;
+import com.addiction.user.users.controller.request.LoginOauthRequest;
+import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.LoginService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 

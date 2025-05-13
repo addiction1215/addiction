@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.addiction.ControllerTestSupport;
-import com.addiction.user.users.dto.controller.request.LoginOauthRequest;
+import com.addiction.user.users.controller.request.LoginOauthRequest;
 import com.addiction.user.users.entity.enums.SnsType;
 
 public class LoginControllerTest extends ControllerTestSupport {
