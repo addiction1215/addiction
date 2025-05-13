@@ -57,6 +57,7 @@ public class SecurityConfig {
 		return new RequestMatcher[] {
 			new AntPathRequestMatcher("/api/v1/jwt/**"),
 			new AntPathRequestMatcher("/api/v1/auth/**"),
+			new AntPathRequestMatcher("/api/v1/user/**"),
 			new AntPathRequestMatcher("/docs/**"),
 			new AntPathRequestMatcher("/health-check"),
 			new AntPathRequestMatcher("/favicon.ico"),
