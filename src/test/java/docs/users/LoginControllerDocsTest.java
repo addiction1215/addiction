@@ -18,21 +18,26 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.addiction.user.users.controller.LoginController;
 import com.addiction.user.users.controller.request.LoginOauthRequest;
+import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.service.UserService;
 import com.addiction.user.users.service.request.OAuthLoginServiceRequest;
+import com.addiction.user.users.service.request.UserSaveServiceRequest;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.service.LoginService;
+import com.addiction.user.users.service.response.UserSaveResponse;
 
 import docs.RestDocsSupport;
 
 public class LoginControllerDocsTest extends RestDocsSupport {
 
 	private final LoginService loginService = mock(LoginService.class);
+	private final UserService userService = mock(UserService.class);
 
 	@Override
 	protected Object initController() {
-		return new LoginController(loginService);
+		return new LoginController(loginService, userService);
 	}
 
 	@DisplayName("OAuth 로그인 API")
@@ -95,6 +100,59 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 						.description("Refresh-Token"),
 					fieldWithPath("data.settingStatus").type(JsonFieldType.STRING)
 						.description("설문지 세팅 여부. 가능한 값: " + Arrays.toString(SettingStatus.values()))
+				)
+			));
+	}
+
+	@DisplayName("사용자 저장 API")
+	@Test
+	void 사용자_저장_API() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+			.email("test@test.com")
+			.password("1234")
+			.phoneNumber("01012341234")
+			.build();
+
+		given(userService.save(any(UserSaveServiceRequest.class)))
+			.willReturn(UserSaveResponse.builder()
+				.email("test@test.com")
+				.phoneNumber("01012341234")
+				.build()
+			);
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isCreated())
+			.andDo(document("user-save",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestFields(
+					fieldWithPath("email").type(JsonFieldType.STRING)
+						.description("이메일"),
+					fieldWithPath("password").type(JsonFieldType.STRING)
+						.description("비밀번호"),
+					fieldWithPath("phoneNumber").type(JsonFieldType.STRING)
+						.description("핸드폰번호")
+				),
+				responseFields(
+					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+						.description("코드"),
+					fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+						.description("상태"),
+					fieldWithPath("message").type(JsonFieldType.STRING)
+						.description("메세지"),
+					fieldWithPath("data").type(JsonFieldType.OBJECT)
+						.description("응답 데이터"),
+					fieldWithPath("data.email").type(JsonFieldType.STRING)
+						.description("이메일"),
+					fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING)
+						.description("핸드폰번호")
 				)
 			));
 	}

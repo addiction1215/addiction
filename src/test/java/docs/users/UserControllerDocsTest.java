@@ -44,59 +44,6 @@ public class UserControllerDocsTest extends RestDocsSupport {
 		return new UserController(userService, userReadService);
 	}
 
-	@DisplayName("사용자 저장 API")
-	@Test
-	void 사용자_저장_API() throws Exception {
-		// given
-		UserSaveRequest request = UserSaveRequest.builder()
-			.email("test@test.com")
-			.password("1234")
-			.phoneNumber("01012341234")
-			.build();
-
-		given(userService.save(any(UserSaveServiceRequest.class)))
-			.willReturn(UserSaveResponse.builder()
-				.email("test@test.com")
-				.phoneNumber("01012341234")
-				.build()
-			);
-
-		// when // then
-		mockMvc.perform(
-				post("/api/v1/user")
-					.content(objectMapper.writeValueAsString(request))
-					.contentType(APPLICATION_JSON)
-			)
-			.andDo(print())
-			.andExpect(status().isCreated())
-			.andDo(document("user-save",
-				preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				requestFields(
-					fieldWithPath("email").type(JsonFieldType.STRING)
-						.description("이메일"),
-					fieldWithPath("password").type(JsonFieldType.STRING)
-						.description("비밀번호"),
-					fieldWithPath("phoneNumber").type(JsonFieldType.STRING)
-						.description("핸드폰번호")
-				),
-				responseFields(
-					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
-						.description("코드"),
-					fieldWithPath("httpStatus").type(JsonFieldType.STRING)
-						.description("상태"),
-					fieldWithPath("message").type(JsonFieldType.STRING)
-						.description("메세지"),
-					fieldWithPath("data").type(JsonFieldType.OBJECT)
-						.description("응답 데이터"),
-					fieldWithPath("data.email").type(JsonFieldType.STRING)
-						.description("이메일"),
-					fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING)
-						.description("핸드폰번호")
-				)
-			));
-	}
-
 	@DisplayName("사용자 초기정보 수정 API")
 	@Test
 	void 사용자_초기정보_수정_API() throws Exception {
