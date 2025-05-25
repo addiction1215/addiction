@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
 import com.addiction.user.users.controller.request.LoginOauthRequest;
+import com.addiction.user.users.controller.request.LoginRequest;
 import com.addiction.user.users.controller.request.UserSaveRequest;
 import com.addiction.user.users.service.UserService;
+import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.response.UserSaveResponse;
@@ -26,6 +28,11 @@ public class LoginController {
 
 	private final LoginService loginService;
 	private final UserService userService;
+
+	@PostMapping("/login")
+	public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) throws JsonProcessingException {
+		return ApiResponse.ok(loginService.normalLogin(loginRequest.toServiceRequest()));
+	}
 
 	@PostMapping("/oauth/login")
 	public ApiResponse<OAuthLoginResponse> oauthLogin(@Valid @RequestBody LoginOauthRequest loginOauthRequest) throws JsonProcessingException {
