@@ -9,13 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class OAuthLoginResponse {
 
-	private String email;
-	private String accessToken;
-	private String refreshToken;
-	private SettingStatus settingStatus;
+	private final String email;
+	private final String accessToken;
+	private final String refreshToken;
+	private final SettingStatus settingStatus;
 
 	@Builder
 	private OAuthLoginResponse(String email, String accessToken, String refreshToken, SettingStatus settingStatus) {
