@@ -7,12 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class OAuthLoginServiceRequest {
-	private String token;
-	private SnsType snsType;
-	private String deviceId;
-	private String pushKey;
+	private final String token;
+	private final SnsType snsType;
+	private final String deviceId;
+	private final String pushKey;
 
 	@Builder
 	private OAuthLoginServiceRequest(String token, SnsType snsType, String deviceId, String pushKey) {

@@ -7,12 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class UserUpdateServiceRequest {
 
-	private String phoneNumber;
-	private Sex sex;
-	private String birthDay;
+	private final String phoneNumber;
+	private final Sex sex;
+	private final String birthDay;
 
 	@Builder
 	public UserUpdateServiceRequest(String phoneNumber, Sex sex, String birthDay) {
