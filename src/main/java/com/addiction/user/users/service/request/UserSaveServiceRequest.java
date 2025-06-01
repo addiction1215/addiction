@@ -10,12 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class UserSaveServiceRequest {
 
-	private String email;
-	private String phoneNumber;
-	private String password;
+	private final String email;
+	private final String phoneNumber;
+	private final String password;
 
 	@Builder
 	public UserSaveServiceRequest(String email, String phoneNumber, String password) {

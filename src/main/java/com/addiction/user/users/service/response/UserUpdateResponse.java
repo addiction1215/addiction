@@ -8,11 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class UserUpdateResponse {
 
-	private Sex sex;
-	private String birthDay;
+	private final Sex sex;
+	private final String birthDay;
 
 	@Builder
 	public UserUpdateResponse(Sex sex, String birthDay) {

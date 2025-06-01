@@ -7,11 +7,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class UserSaveResponse {
 
-	private String email;
-	private String phoneNumber;
+	private final String email;
+	private final String phoneNumber;
 
 	@Builder
 	public UserSaveResponse(String email, String phoneNumber) {
