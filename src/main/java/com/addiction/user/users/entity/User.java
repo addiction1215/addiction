@@ -137,16 +137,16 @@ public class User extends BaseTimeEntity {
 		updateStartDate(startDate);
 	}
 
+	public void updatePurpose(String purpose) {
+		this.purpose = purpose;
+	}
+
 	private void updateSex(Sex sex) {
 		this.sex = sex;
 	}
 
 	private void updateBirthDay(String birthDay) {
 		this.birthDay = birthDay;
-	}
-
-	private void updatePurpose(String purpose) {
-		this.purpose = purpose;
 	}
 
 	private void updateTotalScore(int totalScore) {
