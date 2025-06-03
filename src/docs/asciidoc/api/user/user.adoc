@@ -41,22 +41,22 @@ include::{snippets}/user-find-startDate/response-fields.adoc[]
 
 ==== HTTP Request
 
-include::{snippets}/user-find-startDate/http-request.adoc[]
+include::{snippets}/user-find-purpose/http-request.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/user-find-startDate/http-response.adoc[]
-include::{snippets}/user-find-startDate/response-fields.adoc[]
+include::{snippets}/user-find-purpose/http-response.adoc[]
+include::{snippets}/user-find-purpose/response-fields.adoc[]
 
 [[user-update-purpose]]
 === 회원 금연 목표 수정
 
 ==== HTTP Request
 
-include::{snippets}/user-find-startDate/http-request.adoc[]
-include::{snippets}/user-survey-update/request-fields.adoc[]
+include::{snippets}/user-update-purpose/http-request.adoc[]
+include::{snippets}/user-update-purpose/request-fields.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/user-find-startDate/http-response.adoc[]
-include::{snippets}/user-find-startDate/response-fields.adoc[]
+include::{snippets}/user-update-purpose/http-response.adoc[]
+include::{snippets}/user-update-purpose/response-fields.adoc[]
