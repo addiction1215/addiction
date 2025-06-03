@@ -77,6 +77,7 @@ public abstract class IntegrationTestSupport {
 			.role(Role.USER)
 			.snsType(snsType)
 			.settingStatus(settingStatus)
+			.purpose("테스트 목표")
 			.build();
 	}
 
