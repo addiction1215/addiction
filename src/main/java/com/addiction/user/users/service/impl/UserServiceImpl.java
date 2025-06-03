@@ -13,10 +13,12 @@ import com.addiction.user.users.repository.UserRepository;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
 import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
 import com.addiction.user.users.service.response.UserSaveResponse;
 import com.addiction.user.users.service.response.UserStartDateResponse;
+import com.addiction.user.users.service.response.UserUpdatePurposeResponse;
 import com.addiction.user.users.service.response.UserUpdateResponse;
 import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 
@@ -62,6 +64,13 @@ public class UserServiceImpl implements UserService {
 		);
 
 		return UserUpdateSurveyResponse.of(user, surveyResultReadService.findClosestScore(totalScore));
+	}
+
+	@Override
+	public UserUpdatePurposeResponse updatePurpose(UserUpdatePurposeServiceRequest userUpdatePurposeServiceRequest) {
+		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+		user.updatePurpose(userUpdatePurposeServiceRequest.getPurpose());
+		return UserUpdatePurposeResponse.createResponse(user);
 	}
 
 }
