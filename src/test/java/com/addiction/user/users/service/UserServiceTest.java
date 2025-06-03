@@ -15,6 +15,7 @@ import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 import com.addiction.survey.surveyResult.entity.SurveyResult;
 import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
 import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
@@ -117,4 +118,24 @@ public class UserServiceTest extends IntegrationTestSupport {
 				List.of("지금이 가장 좋은 기회입니다.", "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."))
 		);
 	}
+
+	@DisplayName("유저의 목표를 수정한다")
+	@Test
+	void 유저의_목표를_수정한다() {
+		//given
+		User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+
+		User savedUser = userRepository.save(user);
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(savedUser.getId()));
+
+		userService.updatePurpose(UserUpdatePurposeServiceRequest.builder()
+			.purpose("금연 화이팅")
+			.build());
+
+		//then
+		assertThat(userRepository.findById(savedUser.getId()).get().getPurpose()).isEqualTo("금연 화이팅");
+	}
+
 }

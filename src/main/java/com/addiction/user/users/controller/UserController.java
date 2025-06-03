@@ -7,11 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
+import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
 import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
+import com.addiction.user.users.service.response.UserPurposeResponse;
 import com.addiction.user.users.service.response.UserStartDateResponse;
+import com.addiction.user.users.service.response.UserUpdatePurposeResponse;
 import com.addiction.user.users.service.response.UserUpdateResponse;
 import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 
@@ -41,4 +44,15 @@ public class UserController {
 	public ApiResponse<UserStartDateResponse> findStartDate() {
 		return ApiResponse.ok(userReadService.findStartDate());
 	}
+
+	@GetMapping("/purpose")
+	public ApiResponse<UserPurposeResponse> findPurpose() {
+		return ApiResponse.ok(userReadService.findPurpose());
+	}
+
+	@PatchMapping("/purpose")
+	public ApiResponse<UserUpdatePurposeResponse> updatePurpose(@RequestBody @Valid UserUpdatePurposeRequest userUpdatePurposeRequest) {
+		return ApiResponse.ok(userService.updatePurpose(userUpdatePurposeRequest.toServiceRequest()));
+	}
+
 }

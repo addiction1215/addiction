@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import com.addiction.ControllerTestSupport;
 import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
 import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.entity.enums.Sex;
@@ -203,5 +204,66 @@ public class UserControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.statusCode").value("200"))
 			.andExpect(jsonPath("$.httpStatus").value("OK"))
 			.andExpect(jsonPath("$.message").value("OK"));
+	}
+
+	@DisplayName("사용자의 목표를 조회한다")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자의_목표를_조회한다() throws Exception {
+		// given
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/user/purpose")
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
+	}
+
+	@DisplayName("사용자의 목표를 수정한다")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자의_목표를_수정한다() throws Exception {
+		// given
+		UserUpdatePurposeRequest userUpdatePurposeRequest = UserUpdatePurposeRequest.builder()
+			.purpose("금연 화이팅")
+			.build();
+		// when // then
+		mockMvc.perform(
+				patch("/api/v1/user/purpose")
+					.content(objectMapper.writeValueAsString(userUpdatePurposeRequest))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
+	}
+
+	@DisplayName("사용자의 목표를 수정시 목표는 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자의_목표를_수정시_목표는_필수이다() throws Exception {
+		// given
+		UserUpdatePurposeRequest userUpdatePurposeRequest = UserUpdatePurposeRequest.builder()
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				patch("/api/v1/user/purpose")
+					.content(objectMapper.writeValueAsString(userUpdatePurposeRequest))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("금연 목표는 필수입니다."));
 	}
 }

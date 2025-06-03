@@ -19,14 +19,18 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
 import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
+import com.addiction.user.users.service.response.UserPurposeResponse;
 import com.addiction.user.users.service.response.UserSaveResponse;
 import com.addiction.user.users.service.response.UserStartDateResponse;
+import com.addiction.user.users.service.response.UserUpdatePurposeResponse;
 import com.addiction.user.users.service.response.UserUpdateResponse;
 import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 import com.addiction.user.users.entity.enums.Sex;
@@ -183,6 +187,80 @@ public class UserControllerDocsTest extends RestDocsSupport {
 						.description("응답 데이터"),
 					fieldWithPath("data.startDate").type(JsonFieldType.STRING)
 						.description("사용자 금연 시작날짜")
+				)
+			));
+	}
+
+	@DisplayName("사용자 목표 조회 API")
+	@Test
+	void 사용자_목표_조회_API() throws Exception {
+		// given
+		given(userReadService.findPurpose())
+			.willReturn(UserPurposeResponse.builder()
+				.purpose("금연 화이팅")
+				.build()
+			);
+
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/user/purpose")
+					.contentType(APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andDo(document("user-find-purpose",
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+						.description("코드"),
+					fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+						.description("상태"),
+					fieldWithPath("message").type(JsonFieldType.STRING)
+						.description("메세지"),
+					fieldWithPath("data").type(JsonFieldType.OBJECT)
+						.description("응답 데이터"),
+					fieldWithPath("data.purpose").type(JsonFieldType.STRING)
+						.description("사용자 금연 목표")
+				)
+			));
+	}
+
+	@DisplayName("사용자 목표 수정 API")
+	@Test
+	void 사용자_목표_수정_API() throws Exception {
+		// given
+		UserUpdatePurposeRequest request = UserUpdatePurposeRequest.builder()
+			.purpose("금연 화이팅")
+			.build();
+
+		given(userService.updatePurpose(any(UserUpdatePurposeServiceRequest.class)))
+			.willReturn(UserUpdatePurposeResponse.builder()
+				.purpose("금연 화이팅")
+				.build()
+			);
+
+		// when // then
+		mockMvc.perform(
+				patch("/api/v1/user/purpose")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.contentType(APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andDo(document("user-update-purpose",
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+						.description("코드"),
+					fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+						.description("상태"),
+					fieldWithPath("message").type(JsonFieldType.STRING)
+						.description("메세지"),
+					fieldWithPath("data").type(JsonFieldType.OBJECT)
+						.description("응답 데이터"),
+					fieldWithPath("data.purpose").type(JsonFieldType.STRING)
+						.description("사용자 금연 목표")
 				)
 			));
 	}
