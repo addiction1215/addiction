@@ -8,6 +8,7 @@ import com.addiction.global.security.SecurityService;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.repository.UserRepository;
 import com.addiction.user.users.service.UserReadService;
+import com.addiction.user.users.service.response.UserPurposeResponse;
 import com.addiction.user.users.service.response.UserStartDateResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -41,13 +42,15 @@ public class UserReadServiceImpl implements UserReadService {
 	}
 
 	@Override
-	public void deleteAllInBatch() {
-		userRepository.deleteAllInBatch();
+	public UserStartDateResponse findStartDate() {
+		return UserStartDateResponse.createResponse(
+			findById(securityService.getCurrentLoginUserInfo().getUserId())
+		);
 	}
 
 	@Override
-	public UserStartDateResponse findStartDate() {
-		return UserStartDateResponse.createResponse(
+	public UserPurposeResponse findPurpose() {
+		return UserPurposeResponse.createResponse(
 			findById(securityService.getCurrentLoginUserInfo().getUserId())
 		);
 	}
