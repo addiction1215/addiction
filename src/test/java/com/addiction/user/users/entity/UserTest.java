@@ -55,4 +55,13 @@ public class UserTest extends IntegrationTestSupport {
 		assertThat(user).extracting("purpose", "totalScore", "cigarettePrice", "settingStatus", "startDate")
 			.contains("금연 화이팅", 10, 5000, SettingStatus.COMPLETE, startDate);
 	}
+
+	@DisplayName("회원 목표 수정한다.")
+	@Test
+	void 회원_목표를_수정한다() {
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		user.updatePurpose("금연 화이팅");
+
+		assertThat(user.getPurpose()).isEqualTo("금연 화이팅");
+	}
 }
