@@ -249,7 +249,12 @@ public class UserControllerDocsTest extends RestDocsSupport {
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andDo(document("user-update-purpose",
+				preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
+				requestFields(
+					fieldWithPath("purpose").type(JsonFieldType.STRING)
+						.description("사용자 금연 목표")
+				),
 				responseFields(
 					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
 						.description("코드"),
