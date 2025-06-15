@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
 		int totalScore = surveyAnswerReadService.calculateTotalScore(userUpdateSurveyServiceRequest.getAnswerId());
 
 		user.updateSurvey(
+			userUpdateSurveyServiceRequest.getNickName(),
 			userUpdateSurveyServiceRequest.getPurpose(),
 			totalScore,
 			userUpdateSurveyServiceRequest.getCigarettePrice(),
