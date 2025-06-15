@@ -8,6 +8,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
+import com.addiction.user.userCigarette.controller.UserCigaretteController;
+import com.addiction.user.userCigarette.service.UserCigaretteReadService;
+import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.users.controller.LoginController;
 import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.service.LoginService;
@@ -22,6 +25,7 @@ import jakarta.persistence.EntityManager;
 	LoginController.class,
 	UserController.class,
 	SurveyQuestionController.class,
+	UserCigaretteController.class,
 })
 public abstract class ControllerTestSupport {
 
@@ -45,6 +49,12 @@ public abstract class ControllerTestSupport {
 
 	@MockitoBean
 	protected UserReadService userReadService;
+
+	@MockitoBean
+	protected UserCigaretteService userCigaretteService;
+
+	@MockitoBean
+	protected UserCigaretteReadService userCigaretteReadService;
 
 }
 
