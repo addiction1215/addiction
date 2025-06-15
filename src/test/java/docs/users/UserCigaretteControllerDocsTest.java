@@ -93,7 +93,7 @@ public class UserCigaretteControllerDocsTest extends RestDocsSupport {
 				preprocessResponse(prettyPrint()),
 				pathParameters(
 					parameterWithName("changeType")
-						.description("증가 (ADD), 감소(MINUS)" + Arrays.toString(SettingStatus.values()))
+						.description("증가 (ADD), 감소(MINUS)" + Arrays.toString(ChangeType.values()))
 				),
 				responseFields(
 					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
