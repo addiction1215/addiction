@@ -98,6 +98,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장한다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
+			.nickName("닉네임")
 			.answerId(List.of(1,2))
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
@@ -123,6 +124,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_답변ID는_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
+			.nickName("닉네임")
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
 			.build();
@@ -147,6 +149,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_금연목표는_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
+			.nickName("닉네임")
 			.answerId(List.of(1,2))
 			.cigarettePrice(5000)
 			.build();
@@ -171,6 +174,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_담배가격은_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
+			.nickName("닉네임")
 			.answerId(List.of(1,2))
 			.purpose("금연 화이팅")
 			.build();

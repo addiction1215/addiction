@@ -102,6 +102,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 			createSurveyResultDescription(surveyResult, "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."));
 
 		UserUpdateSurveyServiceRequest userUpdateSurveyServiceRequest = UserUpdateSurveyServiceRequest.builder()
+			.nickName("테스트 닉네임")
 			.answerId(List.of(surveyAnswer1.getId()))
 			.cigarettePrice(5000)
 			.purpose("금연 화이팅")

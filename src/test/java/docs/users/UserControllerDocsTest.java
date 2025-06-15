@@ -103,6 +103,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
 	void 사용자_설문결과_저장_API() throws Exception {
 		// given
 		UserUpdateSurveyRequest request = UserUpdateSurveyRequest.builder()
+			.nickName("닉네임")
 			.answerId(List.of(1, 2))
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
@@ -131,6 +132,8 @@ public class UserControllerDocsTest extends RestDocsSupport {
 				preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
 				requestFields(
+					fieldWithPath("nickName").type(JsonFieldType.STRING)
+						.description("닉네임"),
 					fieldWithPath("answerId").type(JsonFieldType.ARRAY)
 						.description("답변 ID 리스트"),
 					fieldWithPath("purpose").type(JsonFieldType.STRING)

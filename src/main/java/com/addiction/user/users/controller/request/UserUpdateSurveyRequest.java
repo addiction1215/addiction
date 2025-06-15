@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserUpdateSurveyRequest {
+	@NotNull(message = "닉네임은 필수입니다.")
+	private String nickName;
 	@NotNull(message = "답변 ID 목록은 필수입니다.")
 	@Size(min = 1, message = "답변 ID 목록은 최소 1개 이상이어야 합니다.")
 	private List<Integer> answerId;
@@ -23,7 +25,8 @@ public class UserUpdateSurveyRequest {
 	private int cigarettePrice;
 
 	@Builder
-	public UserUpdateSurveyRequest(List<Integer> answerId, String purpose, int cigarettePrice) {
+	public UserUpdateSurveyRequest(String nickName, List<Integer> answerId, String purpose, int cigarettePrice) {
+		this.nickName = nickName;
 		this.answerId = answerId;
 		this.purpose = purpose;
 		this.cigarettePrice = cigarettePrice;
@@ -31,6 +34,7 @@ public class UserUpdateSurveyRequest {
 
 	public UserUpdateSurveyServiceRequest toServiceRequest() {
 		return UserUpdateSurveyServiceRequest.builder()
+			.nickName(nickName)
 			.answerId(answerId)
 			.purpose(purpose)
 			.cigarettePrice(cigarettePrice)
