@@ -3,7 +3,7 @@
 
 ==== HTTP Request
 
-include::{snippets}/user-update-purpose/http-request.adoc[]
+include::{snippets}/surveyQuestion-findAll/http-request.adoc[]
 
 ==== HTTP Response
 
