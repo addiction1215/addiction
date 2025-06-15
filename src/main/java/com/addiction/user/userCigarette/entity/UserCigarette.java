@@ -44,6 +44,10 @@ public class UserCigarette extends BaseTimeEntity {
 		}
 	}
 
+	public void clearCount() {
+		this.count = 0;
+	}
+
 	public static UserCigarette createEntity(User user) {
 		return UserCigarette.builder()
 				.user(user)
