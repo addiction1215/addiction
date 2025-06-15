@@ -1,5 +1,7 @@
 package com.addiction.user.userCigarette.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,5 +35,10 @@ public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
 		UserCigarette userCigarette = findByUserId(user.getId());
 		return UserCigaretteFindResponse.createResponse(userCigarette.getCount());
+	}
+
+	@Override
+	public List<UserCigarette> findAll() {
+		return List.of();
 	}
 }

@@ -1,5 +1,6 @@
 package com.addiction.user.userCigarette.repository.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -34,5 +35,10 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	@Override
 	public void deleteAllInBatch() {
 		userCigaretteJpaRepository.deleteAllInBatch();
+	}
+
+	@Override
+	public List<UserCigarette> findAll() {
+		return userCigaretteJpaRepository.findAll();
 	}
 }
