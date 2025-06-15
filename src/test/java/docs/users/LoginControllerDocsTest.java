@@ -42,7 +42,6 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 	protected Object initController() {
 		return new LoginController(loginService, userService);
 	}
-
 	@DisplayName("일반 로그인 API")
 	@Test
 	void normalLogin() throws Exception {
@@ -106,6 +105,7 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 				)
 			));
 	}
+
 
 	@DisplayName("OAuth 로그인 API")
 	@Test

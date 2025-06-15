@@ -15,4 +15,6 @@ public interface UserReadService {
 	UserStartDateResponse findStartDate();
 
 	UserPurposeResponse findPurpose();
+
+
 }

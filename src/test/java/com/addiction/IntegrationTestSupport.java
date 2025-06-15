@@ -20,6 +20,9 @@ import com.addiction.survey.surveyResultDescription.entity.SurveyResultDescripti
 import com.addiction.survey.surveyResultDescription.repository.SurveyResultDescriptionRepository;
 import com.addiction.user.push.repository.PushRepository;
 import com.addiction.user.refreshToken.repository.RefreshTokenRepository;
+import com.addiction.user.userCigarette.entity.UserCigarette;
+import com.addiction.user.userCigarette.repository.UserCigaretteRepository;
+import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
 import com.addiction.user.users.entity.enums.SettingStatus;
@@ -55,6 +58,10 @@ public abstract class IntegrationTestSupport {
 	protected SurveyResultRepository surveyResultRepository;
 	@Autowired
 	protected SurveyResultDescriptionRepository surveyResultDescriptionRepository;
+	@Autowired
+	protected UserCigaretteHistoryRepository userCigaretteHistoryRepository;
+	@Autowired
+	protected UserCigaretteRepository userCigaretteRepository;
 
 	@AfterEach
 	public void tearDown() {
@@ -64,6 +71,8 @@ public abstract class IntegrationTestSupport {
 		surveyQuestionRepository.deleteAllInBatch();
 		refreshTokenRepository.deleteAllInBatch();
 		pushRepository.deleteAllInBatch();
+		userCigaretteHistoryRepository.deleteAllInBatch();
+		userCigaretteRepository.deleteAllInBatch();
 		userRepository.deleteAllInBatch();
 	}
 
@@ -113,5 +122,9 @@ public abstract class IntegrationTestSupport {
 			.surveyResult(surveyResult)
 			.description(description)
 			.build();
+	}
+
+	protected UserCigarette createUserCigarette(User user) {
+		return UserCigarette.createEntity(user);
 	}
 }
