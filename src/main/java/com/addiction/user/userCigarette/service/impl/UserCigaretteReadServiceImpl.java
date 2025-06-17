@@ -39,6 +39,6 @@ public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 
 	@Override
 	public List<UserCigarette> findAll() {
-		return List.of();
+		return userCigaretteRepository.findAll();
 	}
 }
