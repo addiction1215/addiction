@@ -2,6 +2,7 @@ package com.addiction.user.users.service.impl;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	private final SecurityService securityService;
 	private final SurveyAnswerReadService surveyAnswerReadService;
 	private final SurveyResultReadService surveyResultReadService;
@@ -38,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserSaveResponse save(UserSaveServiceRequest userSaveServiceRequest) {
-		return UserSaveResponse.createResponse(userRepository.save(userSaveServiceRequest.toEntity()));
+		return UserSaveResponse.createResponse(userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder)));
 	}
 
 	@Override

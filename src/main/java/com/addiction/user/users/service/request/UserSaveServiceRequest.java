@@ -1,5 +1,7 @@
 package com.addiction.user.users.service.request;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
 import com.addiction.user.users.entity.enums.SettingStatus;
@@ -23,10 +25,10 @@ public class UserSaveServiceRequest {
 		this.password = password;
 	}
 
-	public User toEntity() {
+	public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder) {
 		return User.builder()
 			.email(email)
-			.password(password)
+			.password(bCryptPasswordEncoder.encode(password))
 			.phoneNumber(phoneNumber)
 			.snsType(SnsType.NORMAL)
 			.role(Role.USER)
