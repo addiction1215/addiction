@@ -17,4 +17,8 @@ public interface UserCigaretteRepository {
 
 	List<UserCigarette> findAll();
 
+	void deleteLastest(int userId);
+
+	int cigaretteCountByUserId(int userId);
+
 }

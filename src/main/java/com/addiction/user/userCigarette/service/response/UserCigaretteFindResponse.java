@@ -15,7 +15,7 @@ public class UserCigaretteFindResponse {
 
 	public static UserCigaretteFindResponse createResponse(int count) {
 		return UserCigaretteFindResponse.builder()
-				.count(count)
-				.build();
+			.count(count)
+			.build();
 	}
 }

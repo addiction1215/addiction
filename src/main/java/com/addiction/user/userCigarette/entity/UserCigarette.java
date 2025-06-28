@@ -1,5 +1,7 @@
 package com.addiction.user.userCigarette.entity;
 
+import java.time.LocalDateTime;
+
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.user.users.entity.User;
 
@@ -26,32 +28,23 @@ public class UserCigarette extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
-	private int count;
+	private LocalDateTime smokeTime;
+
+	private String address;
 
 	@Builder
-	public UserCigarette(User user, int count) {
+	public UserCigarette(int id, User user, LocalDateTime smokeTime, String address) {
+		this.id = id;
 		this.user = user;
-		this.count = count;
+		this.smokeTime = smokeTime;
+		this.address = address;
 	}
 
-	public void addCount() {
-		this.count++;
-	}
-
-	public void minusCount() {
-		if (this.count > 0) {
-			this.count--;
-		}
-	}
-
-	public void clearCount() {
-		this.count = 0;
-	}
-
-	public static UserCigarette createEntity(User user) {
+	public static UserCigarette createEntity(User user, String address) {
 		return UserCigarette.builder()
 				.user(user)
-				.count(0)
+				.smokeTime(LocalDateTime.now())
+				.address(address)
 				.build();
 	}
 	

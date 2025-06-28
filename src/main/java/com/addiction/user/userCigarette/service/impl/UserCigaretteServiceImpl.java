@@ -5,9 +5,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.global.security.SecurityService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
+import com.addiction.user.userCigarette.repository.UserCigaretteRepository;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigarette.service.request.ChangeType;
+import com.addiction.user.userCigarette.service.request.UserCigaretteChangeServiceRequest;
 import com.addiction.user.userCigarette.service.response.UserCigaretteFindResponse;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.UserReadService;
@@ -23,12 +25,17 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
 	private final SecurityService securityService;
 	private final UserReadService userReadService;
 
-	@Override
-	public UserCigaretteFindResponse changeCigaretteCount(ChangeType changeType) {
-		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
-		UserCigarette userCigarette = userCigaretteReadService.findByUserId(user.getId());
-		changeType.changeCount(userCigarette);
+	private final UserCigaretteRepository userCigaretteRepository;
 
-		return UserCigaretteFindResponse.createResponse(userCigarette.getCount());
+	@Override
+	public int changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest) {
+		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+		if(userCigaretteChangeServiceRequest.getChangeType().equals(ChangeType.ADD)) {
+			UserCigarette userCigarette = UserCigarette.createEntity(user, userCigaretteChangeServiceRequest.getAddress());
+			userCigaretteRepository.save(userCigarette);
+			return user.getId();
+		}
+		userCigaretteRepository.deleteLastest(user.getId());
+		return user.getId();
 	}
 }

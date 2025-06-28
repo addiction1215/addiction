@@ -41,4 +41,14 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	public List<UserCigarette> findAll() {
 		return userCigaretteJpaRepository.findAll();
 	}
+
+	@Override
+	public void deleteLastest(int userId) {
+		userCigaretteJpaRepository.deleteLatestByUserId(userId);
+	}
+
+	@Override
+	public int cigaretteCountByUserId(int userId) {
+		return userCigaretteJpaRepository.countByUserId(userId);
+	}
 }

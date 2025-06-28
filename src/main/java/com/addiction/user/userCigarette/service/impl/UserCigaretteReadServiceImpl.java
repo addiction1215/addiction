@@ -21,20 +21,13 @@ import lombok.RequiredArgsConstructor;
 public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 
 	private final UserCigaretteRepository userCigaretteRepository;
-	private final UserReadService userReadService;
 	private final SecurityService securityService;
 
 	@Override
-	public UserCigarette findByUserId(int userId) {
-		return userCigaretteRepository.findByUserId(userId)
-			.orElse(userCigaretteRepository.save(UserCigarette.createEntity(userReadService.findById(userId))));
-	}
-
-	@Override
 	public UserCigaretteFindResponse findUserCigaretteCount() {
-		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
-		UserCigarette userCigarette = findByUserId(user.getId());
-		return UserCigaretteFindResponse.createResponse(userCigarette.getCount());
+		return UserCigaretteFindResponse.createResponse(
+			userCigaretteRepository.cigaretteCountByUserId(securityService.getCurrentLoginUserInfo().getUserId())
+		);
 	}
 
 	@Override
