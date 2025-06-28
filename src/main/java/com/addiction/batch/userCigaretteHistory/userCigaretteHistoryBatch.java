@@ -19,13 +19,7 @@ public class userCigaretteHistoryBatch {
 	@Scheduled(cron = "0 0 0 * * *")
 	public void userCigaretteHistory() {
 		userCigaretteReadService.findAll().forEach(userCigarette -> {
-			userCigaretteHistoryService.save(
-				UserCigaretteHistoryServiceRequest.createRequest(
-					userCigarette.getUser(),
-					userCigarette.getCount()
-				)
-			);
-			userCigarette.clearCount();
+
 		});
 	}
 }
