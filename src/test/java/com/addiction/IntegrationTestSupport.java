@@ -125,6 +125,6 @@ public abstract class IntegrationTestSupport {
 	}
 
 	protected UserCigarette createUserCigarette(User user) {
-		return UserCigarette.createEntity(user);
+		return UserCigarette.createEntity(user, "테스트 주소");
 	}
 }
