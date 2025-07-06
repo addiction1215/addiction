@@ -17,12 +17,14 @@ public class UserSaveServiceRequest {
 	private final String email;
 	private final String phoneNumber;
 	private final String password;
+	private final String nickName;
 
 	@Builder
-	public UserSaveServiceRequest(String email, String phoneNumber, String password) {
+	public UserSaveServiceRequest(String email, String phoneNumber, String password, String nickName) {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.password = password;
+		this.nickName = nickName;
 	}
 
 	public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder) {
@@ -33,6 +35,7 @@ public class UserSaveServiceRequest {
 			.snsType(SnsType.NORMAL)
 			.role(Role.USER)
 			.settingStatus(SettingStatus.INCOMPLETE)
+			.nickName(nickName)
 			.build();
 	}
 }
