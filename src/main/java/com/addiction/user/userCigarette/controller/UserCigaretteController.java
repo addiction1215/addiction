@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user/cigarette")
+@RequestMapping("/api/v1/cigarette")
 public class UserCigaretteController {
 
 	private final UserCigaretteService userCigaretteService;

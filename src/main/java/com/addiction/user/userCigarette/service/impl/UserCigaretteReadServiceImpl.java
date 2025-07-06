@@ -1,5 +1,6 @@
 package com.addiction.user.userCigarette.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -33,5 +34,16 @@ public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 	@Override
 	public List<UserCigarette> findAll() {
 		return userCigaretteRepository.findAll();
+	}
+
+	@Override
+	public List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end) {
+		return userCigaretteRepository.findAllByCreatedDateBetween(start, end);
+	}
+
+	@Override
+	public UserCigarette findLatestByUserId(int userId) {
+		return userCigaretteRepository.findTopByUserIdOrderByCreatedDateDesc(userId)
+			.orElse(null);
 	}
 }

@@ -1,5 +1,6 @@
 package com.addiction.user.userCigarette.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,7 @@ public interface UserCigaretteRepository {
 
 	int cigaretteCountByUserId(int userId);
 
+	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
+
+	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(int userId);
 }

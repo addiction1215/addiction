@@ -1,5 +1,6 @@
 package com.addiction.user.userCigarette.repository.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +51,15 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	@Override
 	public int cigaretteCountByUserId(int userId) {
 		return userCigaretteJpaRepository.countByUserId(userId);
+	}
+
+	@Override
+	public List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end) {
+		return userCigaretteJpaRepository.findAllByCreatedDateBetween(start, end);
+	}
+
+	@Override
+	public Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(int userId) {
+		return userCigaretteJpaRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
 	}
 }

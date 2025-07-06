@@ -1,5 +1,6 @@
 package com.addiction.user.userCigarette.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.addiction.user.userCigarette.entity.UserCigarette;
@@ -8,4 +9,6 @@ import com.addiction.user.userCigarette.service.response.UserCigaretteFindRespon
 public interface UserCigaretteReadService {
 	UserCigaretteFindResponse findUserCigaretteCount();
 	List<UserCigarette> findAll();
+	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
+	UserCigarette findLatestByUserId(int userId);
 }

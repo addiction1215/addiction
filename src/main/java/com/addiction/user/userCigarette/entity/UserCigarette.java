@@ -30,21 +30,25 @@ public class UserCigarette extends BaseTimeEntity {
 
 	private LocalDateTime smokeTime;
 
+	private long smokePatienceTime;
+
 	private String address;
 
 	@Builder
-	public UserCigarette(int id, User user, LocalDateTime smokeTime, String address) {
+	public UserCigarette(int id, User user, LocalDateTime smokeTime, String address, long smokePatienceTime) {
 		this.id = id;
 		this.user = user;
 		this.smokeTime = smokeTime;
 		this.address = address;
+		this.smokePatienceTime = smokePatienceTime;
 	}
 
-	public static UserCigarette createEntity(User user, String address) {
+	public static UserCigarette createEntity(User user, String address, long smokePatienceTime) {
 		return UserCigarette.builder()
 				.user(user)
 				.smokeTime(LocalDateTime.now())
 				.address(address)
+				.smokePatienceTime(smokePatienceTime)
 				.build();
 	}
 	

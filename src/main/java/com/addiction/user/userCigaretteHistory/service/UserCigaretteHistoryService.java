@@ -1,9 +1,11 @@
 package com.addiction.user.userCigaretteHistory.service;
 
-import com.addiction.user.userCigaretteHistory.service.request.UserCigaretteHistoryServiceRequest;
+import java.util.List;
+
+import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 
 public interface UserCigaretteHistoryService {
 
-	Long save(UserCigaretteHistoryServiceRequest userCigaretteHistoryServiceRequest);
+	void save(String dateStr, int userId, List<CigaretteHistoryDocument.History> historyList);
 
 }
