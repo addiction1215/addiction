@@ -179,12 +179,14 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 			.email("test@test.com")
 			.password("1234")
 			.phoneNumber("01012341234")
+			.nickName("테스트닉네임")
 			.build();
 
 		given(userService.save(any(UserSaveServiceRequest.class)))
 			.willReturn(UserSaveResponse.builder()
 				.email("test@test.com")
 				.phoneNumber("01012341234")
+				.nickName("테스트닉네임")
 				.build()
 			);
 
@@ -205,7 +207,9 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 					fieldWithPath("password").type(JsonFieldType.STRING)
 						.description("비밀번호"),
 					fieldWithPath("phoneNumber").type(JsonFieldType.STRING)
-						.description("핸드폰번호")
+						.description("핸드폰번호"),
+					fieldWithPath("nickName").type(JsonFieldType.STRING)
+						.description("닉네임")
 				),
 				responseFields(
 					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
@@ -219,7 +223,9 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 					fieldWithPath("data.email").type(JsonFieldType.STRING)
 						.description("이메일"),
 					fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING)
-						.description("핸드폰번호")
+						.description("핸드폰번호"),
+					fieldWithPath("data.nickName").type(JsonFieldType.STRING)
+						.description("닉네임")
 				)
 			));
 	}
