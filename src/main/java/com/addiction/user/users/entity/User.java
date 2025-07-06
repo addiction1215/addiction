@@ -129,13 +129,14 @@ public class User extends BaseTimeEntity {
 		updateBirthDay(birthDay);
 	}
 
-	public void updateSurvey(String nickName, String purpose, int totalScore, int cigarettePrice, LocalDateTime startDate) {
-		updateNickName(nickName);
+	public void updateSurvey(String purpose, int totalScore, int cigarettePrice, LocalDateTime startDate, Sex sex, String birthDay) {
 		updatePurpose(purpose);
 		updateTotalScore(totalScore);
 		updateCigarettePrice(cigarettePrice);
 		completeSetting();
 		updateStartDate(startDate);
+		updateSex(sex);
+		updateBirthDay(birthDay);
 	}
 
 	public void updateNickName(String nickName) {

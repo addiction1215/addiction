@@ -60,11 +60,12 @@ public class UserServiceImpl implements UserService {
 		int totalScore = surveyAnswerReadService.calculateTotalScore(userUpdateSurveyServiceRequest.getAnswerId());
 
 		user.updateSurvey(
-			userUpdateSurveyServiceRequest.getNickName(),
 			userUpdateSurveyServiceRequest.getPurpose(),
 			totalScore,
 			userUpdateSurveyServiceRequest.getCigarettePrice(),
-			LocalDateTime.now()
+			LocalDateTime.now(),
+			userUpdateSurveyServiceRequest.getSex(),
+			userUpdateSurveyServiceRequest.getBirthDay()
 		);
 
 		return UserUpdateSurveyResponse.of(user, surveyResultReadService.findClosestScore(totalScore));
