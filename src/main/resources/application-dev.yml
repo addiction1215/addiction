@@ -16,7 +16,7 @@ spring:
           exception-handling: ignore
   data:
     mongodb:
-      uri: ${MONGO_DB_URI}
+      uri: ${MONGO_DB_URL}
       database: addiction
 #spring:
 #  datasource:
