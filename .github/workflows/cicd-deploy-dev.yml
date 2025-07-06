@@ -16,6 +16,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       AES_KEY: ${{ secrets.AES_KEY }}
+      MONGO_DB_URI: ${{ secrets.MONGO_DB_URI }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
