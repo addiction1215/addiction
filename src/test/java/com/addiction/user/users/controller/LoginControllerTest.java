@@ -229,6 +229,7 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.email("test@test.com")
 			.password("1234")
 			.phoneNumber("01012341234")
+			.nickName("testUser")
 			.build();
 
 		// when // then
@@ -253,6 +254,7 @@ public class LoginControllerTest extends ControllerTestSupport {
 		UserSaveRequest request = UserSaveRequest.builder()
 			.password("1234")
 			.phoneNumber("01012341234")
+			.nickName("testUser")
 			.build();
 
 		// when // then
@@ -277,6 +279,7 @@ public class LoginControllerTest extends ControllerTestSupport {
 		UserSaveRequest request = UserSaveRequest.builder()
 			.email("test@test.com")
 			.phoneNumber("01012341234")
+			.nickName("testUser")
 			.build();
 
 		// when // then
@@ -301,6 +304,7 @@ public class LoginControllerTest extends ControllerTestSupport {
 		UserSaveRequest request = UserSaveRequest.builder()
 			.email("test@test.com")
 			.password("1234")
+			.nickName("testUser")
 			.build();
 
 		// when // then
@@ -315,5 +319,30 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.statusCode").value("400"))
 			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
 			.andExpect(jsonPath("$.message").value("핸드폰번호는 필수입니다."));
+	}
+
+	@DisplayName("사용자 정보를 저장시 닉네임은 필수입니다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자_정보를_저장시_닉네임은_필수이다() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+			.email("test@test.com")
+			.password("1234")
+			.phoneNumber("01012341234")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("닉네임은 필수입니다."));
 	}
 }

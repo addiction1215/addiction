@@ -102,10 +102,11 @@ public class UserServiceTest extends IntegrationTestSupport {
 			createSurveyResultDescription(surveyResult, "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."));
 
 		UserUpdateSurveyServiceRequest userUpdateSurveyServiceRequest = UserUpdateSurveyServiceRequest.builder()
-			.nickName("테스트 닉네임")
 			.answerId(List.of(surveyAnswer1.getId()))
 			.cigarettePrice(5000)
 			.purpose("금연 화이팅")
+			.sex(Sex.FEMAIL)
+			.birthDay("12341234")
 			.build();
 
 		//when
@@ -113,8 +114,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 
 		//then
 		assertAll(
-			() -> assertThat(userUpdateSurveyResponse).extracting("nickName", "resultTitle")
-				.contains("테스트 닉네임", "라이트 스모커"),
+			() -> assertThat(userUpdateSurveyResponse).extracting("resultTitle").isEqualTo("라이트 스모커"),
 			() -> assertThat(userUpdateSurveyResponse.getResult()).isEqualTo(
 				List.of("지금이 가장 좋은 기회입니다.", "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."))
 		);

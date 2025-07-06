@@ -11,17 +11,20 @@ public class UserSaveResponse {
 
 	private final String email;
 	private final String phoneNumber;
+	private final String nickName;
 
 	@Builder
-	public UserSaveResponse(String email, String phoneNumber) {
+	public UserSaveResponse(String email, String phoneNumber, String nickName) {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
+		this.nickName = nickName;
 	}
 
 	public static UserSaveResponse createResponse(User user) {
 		return UserSaveResponse.builder()
 			.email(user.getEmail())
 			.phoneNumber(user.getPhoneNumber())
+			.nickName(user.getNickName())
 			.build();
 	}
 }

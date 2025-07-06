@@ -17,12 +17,15 @@ public class UserSaveRequest {
 	private String phoneNumber;
 	@NotNull(message = "비밀번호는 필수입니다.")
 	private String password;
+	@NotNull(message = "닉네임은 필수입니다.")
+	private String nickName;
 
 	@Builder
-	public UserSaveRequest(String email, String phoneNumber, String password) {
+	public UserSaveRequest(String email, String phoneNumber, String password, String nickName) {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.password = password;
+		this.nickName = nickName;
 	}
 
 	public UserSaveServiceRequest toServiceRequest() {
@@ -30,6 +33,7 @@ public class UserSaveRequest {
 			.email(email)
 			.password(password)
 			.phoneNumber(phoneNumber)
+			.nickName(nickName)
 			.build();
 	}
 }
