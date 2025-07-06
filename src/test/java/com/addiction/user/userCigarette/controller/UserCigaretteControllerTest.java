@@ -23,7 +23,7 @@ public class UserCigaretteControllerTest extends ControllerTestSupport {
 		// given
 		// when // then
 		mockMvc.perform(
-				get("/api/v1/user/cigarette")
+				get("/api/v1/cigarette")
 					.with(csrf())
 			)
 			.andDo(print())
@@ -44,7 +44,7 @@ public class UserCigaretteControllerTest extends ControllerTestSupport {
 			.build();
 		// when // then
 		mockMvc.perform(
-				patch("/api/v1/user/cigarette/change")
+				patch("/api/v1/cigarette/change")
 					.content(objectMapper.writeValueAsString(request))
 					.contentType(APPLICATION_JSON)
 					.with(csrf())
