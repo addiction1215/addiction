@@ -30,8 +30,20 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
 	@Override
 	public int changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest) {
 		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
-		if(userCigaretteChangeServiceRequest.getChangeType().equals(ChangeType.ADD)) {
-			UserCigarette userCigarette = UserCigarette.createEntity(user, userCigaretteChangeServiceRequest.getAddress());
+		if (userCigaretteChangeServiceRequest.getChangeType().equals(ChangeType.ADD)) {
+			// 바로 전 흡연 기록 조회 (최신 1건)
+			UserCigarette lastCigarette = userCigaretteReadService.findLatestByUserId(user.getId());
+
+			long intervalMinutes = 0;
+
+			if (lastCigarette != null) {
+				intervalMinutes = java.time.Duration.between(
+					lastCigarette.getCreatedDate(), java.time.LocalDateTime.now()
+				).toMinutes();
+			}
+			UserCigarette userCigarette = UserCigarette.createEntity(
+				user, userCigaretteChangeServiceRequest.getAddress(), intervalMinutes
+			);
 			userCigaretteRepository.save(userCigarette);
 			return user.getId();
 		}
