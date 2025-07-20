@@ -24,6 +24,11 @@ include::api/user/user.adoc[]
 
 include::api/userCigarette/userCigarette.adoc[]
 
+[[User-Cigarette-History-API]]
+== User-Cigarette-History API
+
+include::api/userCigaretteHistory/userCigaretteHistory.adoc[]
+
 [[Survey-API]]
 == Survey API
 
