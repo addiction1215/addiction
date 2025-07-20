@@ -21,6 +21,7 @@ import lombok.Setter;
 public class CigaretteHistoryDocument {
 	@Id
 	private String id;
+	private String month;
 	private String date;
 	private int userId;
 	private int smokeCount;
