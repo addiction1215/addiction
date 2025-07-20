@@ -27,6 +27,7 @@ public class userCigaretteHistoryBatch {
 	public void userCigaretteHistory() {
 		LocalDate yesterday = LocalDate.now().minusDays(1);
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
+		String monthStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMM")); // yyyyMM
 
 		Map<Integer, List<UserCigarette>> grouped = userCigaretteReadService.findAllByCreatedDateBetween(
 				yesterday.atStartOfDay(), yesterday.plusDays(1).atStartOfDay()).stream()
@@ -51,7 +52,7 @@ public class userCigaretteHistoryBatch {
 					.build())
 				.collect(Collectors.toList());
 
-			userCigaretteHistoryService.save(dateStr, userId, smokeCount, avgPatienceTime, historyList);
+			userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
 		}
 	}
 }
