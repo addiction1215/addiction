@@ -34,7 +34,16 @@ public class userCigaretteHistoryBatch {
 
 		for (Map.Entry<Integer, List<UserCigarette>> entry : grouped.entrySet()) {
 			int userId = entry.getKey();
-			List<CigaretteHistoryDocument.History> historyList = entry.getValue().stream()
+
+			List<UserCigarette> cigarettes = entry.getValue();
+
+			int smokeCount = cigarettes.size();
+			long avgPatienceTime = (long) cigarettes.stream()
+				.mapToLong(UserCigarette::getSmokePatienceTime)
+				.average()
+				.orElse(0);
+
+			List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
 				.map(c -> CigaretteHistoryDocument.History.builder()
 					.address(c.getAddress())
 					.smokeTime(c.getCreatedDate())
@@ -42,7 +51,7 @@ public class userCigaretteHistoryBatch {
 					.build())
 				.collect(Collectors.toList());
 
-			userCigaretteHistoryService.save(dateStr, userId, historyList);
+			userCigaretteHistoryService.save(dateStr, userId, smokeCount, avgPatienceTime, historyList);
 		}
 	}
 }

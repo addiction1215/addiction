@@ -19,10 +19,13 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 	private final MongoTemplate mongoTemplate;
 
 	@Override
-	public void save(String dateStr, int userId, List<CigaretteHistoryDocument.History> historyList) {
+	public void save(String dateStr, int userId, int smokeCount, long avgPatienceTime,
+		List<CigaretteHistoryDocument.History> historyList) {
 		CigaretteHistoryDocument doc = CigaretteHistoryDocument.builder()
 			.date(dateStr)
 			.userId(userId)
+			.smokeCount(smokeCount)
+			.avgPatienceTime(avgPatienceTime)
 			.history(historyList)
 			.build();
 

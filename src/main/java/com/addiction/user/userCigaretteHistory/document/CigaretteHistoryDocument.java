@@ -23,6 +23,8 @@ public class CigaretteHistoryDocument {
 	private String id;
 	private String date;
 	private int userId;
+	private int smokeCount;
+	private long avgPatienceTime;
 	private List<History> history;
 
 	@Getter
