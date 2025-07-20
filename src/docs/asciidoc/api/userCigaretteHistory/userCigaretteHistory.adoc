@@ -1,0 +1,38 @@
+[[user-cigarette-history-calendar]]
+=== 회원 캘린더 기록 조회 API
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-calendar/http-request.adoc[]
+include::{snippets}/user-cigarette-history-calendar/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-calendar/http-response.adoc[]
+include::{snippets}/user-cigarette-history-calendar/response-fields.adoc[]
+
+[[user-cigarette-history-history]]
+=== 회원 날짜 흡엽 기록 조회 API
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-history/http-request.adoc[]
+include::{snippets}/user-cigarette-history-history/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-history/http-response.adoc[]
+include::{snippets}/user-cigarette-history-history/response-fields.adoc[]
+
+[[user-cigarette-history-graph]]
+=== 회원 흡연 그래프 조회 API
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-graph/http-request.adoc[]
+include::{snippets}/user-cigarette-history-graph/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-graph/http-response.adoc[]
+include::{snippets}/user-cigarette-history-graph/response-fields.adoc[]
