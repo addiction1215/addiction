@@ -1,0 +1,25 @@
+[[inquiry-question-save]]
+=== 문의 등록
+
+==== HTTP Request
+
+include::{snippets}/inquiry-question-save/http-request.adoc[]
+include::{snippets}/inquiry-question-save/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/inquiry-question-save/http-response.adoc[]
+include::{snippets}/inquiry-question-save/response-fields.adoc[]
+
+[[inquiry-question-find]]
+=== 문의 조회
+
+==== HTTP Request
+
+include::{snippets}/inquiry-question-find/http-request.adoc[]
+include::{snippets}/inquiry-question-find/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/inquiry-question-find/http-response.adoc[]
+include::{snippets}/inquiry-question-find/response-fields.adoc[]

@@ -1,5 +1,7 @@
 package com.addiction.user.users.controller;
 
+import com.addiction.user.users.controller.request.*;
+import com.addiction.user.users.service.response.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,16 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
-import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
-import com.addiction.user.users.controller.request.UserUpdateRequest;
-import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
-import com.addiction.user.users.service.response.UserPurposeResponse;
-import com.addiction.user.users.service.response.UserStartDateResponse;
-import com.addiction.user.users.service.response.UserUpdatePurposeResponse;
-import com.addiction.user.users.service.response.UserUpdateResponse;
-import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +48,26 @@ public class UserController {
 	public ApiResponse<UserUpdatePurposeResponse> updatePurpose(@RequestBody @Valid UserUpdatePurposeRequest userUpdatePurposeRequest) {
 		return ApiResponse.ok(userService.updatePurpose(userUpdatePurposeRequest.toServiceRequest()));
 	}
+
+	@PatchMapping("/profile")
+	public ApiResponse<UserUpdateProfileResponse> updateProfile(@RequestBody @Valid UserUpdateProfileRequest userUpdateProfileRequest) {
+		return ApiResponse.ok(userService.updateProfile(userUpdateProfileRequest.toServiceRequest()));
+	}
+
+	@PatchMapping("/info")
+	public ApiResponse<UserUpdateInfoResponse> updateInfo(@RequestBody @Valid UserUpdateInfoRequest userUpdateInfoRequest) {
+		return ApiResponse.ok(userService.updateInfo(userUpdateInfoRequest.toServiceRequest()));
+	}
+
+	@GetMapping("/profile")
+	public ApiResponse<UserProfileResponse> findProfile() {
+		return ApiResponse.ok(userReadService.findProfile());
+	}
+	
+	@GetMapping("/info")
+	public ApiResponse<UserInfoResponse> findUserInfo() {
+		return ApiResponse.ok(userReadService.findUserInfo());
+	}
+
 
 }

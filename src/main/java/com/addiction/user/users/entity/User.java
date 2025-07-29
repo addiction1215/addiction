@@ -27,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Getter
@@ -52,6 +53,8 @@ public class User extends BaseTimeEntity {
 
 	private int totalScore;
 
+	private String introduction;
+
 	private int cigarettePrice;
 
 	private LocalDateTime startDate;
@@ -76,7 +79,7 @@ public class User extends BaseTimeEntity {
 
 	@Builder
 	public User(String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
-		int totalScore, int cigarettePrice, SnsType snsType, Sex sex, Role role,
+		int totalScore, String introduction, int cigarettePrice, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
 		this.email = email;
 		this.password = password;
@@ -85,6 +88,7 @@ public class User extends BaseTimeEntity {
 		this.birthDay = birthDay;
 		this.purpose = purpose;
 		this.totalScore = totalScore;
+		this.introduction = introduction;
 		this.cigarettePrice = cigarettePrice;
 		this.snsType = snsType;
 		this.sex = sex;
@@ -147,6 +151,33 @@ public class User extends BaseTimeEntity {
 		this.purpose = purpose;
 	}
 
+	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay){
+		updateNickName(nickName);
+		updateIntroduction(introduction);
+		updateSex(sex);
+		updateBirthDay(birthDay);
+	}
+
+	public void updateInfo(BCryptPasswordEncoder bCryptPasswordEncoder, String password, String phoneNumber, String email) {
+		if(password != null && !password.isEmpty()) {
+			updatePassword(bCryptPasswordEncoder.encode(password));
+		}
+		updatePhoneNumber(phoneNumber);
+		updateEmail(email);
+	}
+
+	private void updateEmail(String email) {
+		this.email = email;
+	}
+
+	private void updatePhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	private void updatePassword(String password) {
+		this.password = password;
+	}
+
 	private void updateSex(Sex sex) {
 		this.sex = sex;
 	}
@@ -169,6 +200,10 @@ public class User extends BaseTimeEntity {
 
 	private void updateStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
+	}
+
+	private void updateIntroduction(String introduction) {
+		this.introduction = introduction;
 	}
 
 }
