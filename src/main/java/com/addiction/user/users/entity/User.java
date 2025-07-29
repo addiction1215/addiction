@@ -52,6 +52,8 @@ public class User extends BaseTimeEntity {
 
 	private int totalScore;
 
+	private String introduction;
+
 	private int cigarettePrice;
 
 	private LocalDateTime startDate;
@@ -76,7 +78,7 @@ public class User extends BaseTimeEntity {
 
 	@Builder
 	public User(String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
-		int totalScore, int cigarettePrice, SnsType snsType, Sex sex, Role role,
+		int totalScore, String introduction, int cigarettePrice, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
 		this.email = email;
 		this.password = password;
@@ -85,6 +87,7 @@ public class User extends BaseTimeEntity {
 		this.birthDay = birthDay;
 		this.purpose = purpose;
 		this.totalScore = totalScore;
+		this.introduction = introduction;
 		this.cigarettePrice = cigarettePrice;
 		this.snsType = snsType;
 		this.sex = sex;
@@ -169,6 +172,17 @@ public class User extends BaseTimeEntity {
 
 	private void updateStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
+	}
+
+	private void updateIntroduction(String introduction) {
+		this.introduction = introduction;
+	}
+
+	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay){
+		updateNickName(nickName);
+		updateIntroduction(introduction);
+		updateSex(sex);
+		updateBirthDay(birthDay);
 	}
 
 }

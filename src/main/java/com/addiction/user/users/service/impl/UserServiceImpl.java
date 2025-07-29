@@ -2,6 +2,8 @@ package com.addiction.user.users.service.impl;
 
 import java.time.LocalDateTime;
 
+import com.addiction.user.users.service.request.*;
+import com.addiction.user.users.service.response.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,15 +15,6 @@ import com.addiction.user.users.entity.User;
 import com.addiction.user.users.repository.UserRepository;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
-import com.addiction.user.users.service.request.UserSaveServiceRequest;
-import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
-import com.addiction.user.users.service.request.UserUpdateServiceRequest;
-import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
-import com.addiction.user.users.service.response.UserSaveResponse;
-import com.addiction.user.users.service.response.UserStartDateResponse;
-import com.addiction.user.users.service.response.UserUpdatePurposeResponse;
-import com.addiction.user.users.service.response.UserUpdateResponse;
-import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -76,6 +69,18 @@ public class UserServiceImpl implements UserService {
 		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
 		user.updatePurpose(userUpdatePurposeServiceRequest.getPurpose());
 		return UserUpdatePurposeResponse.createResponse(user);
+	}
+
+	@Override
+	public UserUpdateProfileResponse updateProfile(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest) {
+		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+		user.updateProfile(
+				userUpdateProfileServiceRequest.getNickName(),
+				userUpdateProfileServiceRequest.getIntroduction(),
+				userUpdateProfileServiceRequest.getSex(),
+				userUpdateProfileServiceRequest.getBirthDay()
+		);
+		return UserUpdateProfileResponse.createResponse(user);
 	}
 
 }
