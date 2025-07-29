@@ -27,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Getter
@@ -157,8 +158,10 @@ public class User extends BaseTimeEntity {
 		updateBirthDay(birthDay);
 	}
 
-	public void updateInfo(String password, String phoneNumber, String email) {
-		updatePassword(password);
+	public void updateInfo(BCryptPasswordEncoder bCryptPasswordEncoder, String password, String phoneNumber, String email) {
+		if(password != null && !password.isEmpty()) {
+			updatePassword(bCryptPasswordEncoder.encode(password));
+		}
 		updatePhoneNumber(phoneNumber);
 		updateEmail(email);
 	}
