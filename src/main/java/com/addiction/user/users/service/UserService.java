@@ -13,7 +13,7 @@ public interface UserService {
 
 	UserUpdatePurposeResponse updatePurpose(UserUpdatePurposeServiceRequest userUpdatePurposeServiceRequest);
 
-	UserUpdateProfileResponse updateProfile(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest);
+	UserUpdateProfileResponse updateProfile(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest); // 테스트코드X
 
-	UserUpdateInfoResponse updateInfo(UserUpdateInfoServiceRequest userUpdateInfoServiceRequest);
+	UserUpdateInfoResponse updateInfo(UserUpdateInfoServiceRequest userUpdateInfoServiceRequest); // 테스트코드X
 }
