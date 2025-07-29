@@ -1,5 +1,7 @@
 package com.addiction.user.users.service.impl;
 
+import com.addiction.user.users.service.response.UserInfoResponse;
+import com.addiction.user.users.service.response.UserProfileResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +27,6 @@ public class UserReadServiceImpl implements UserReadService {
 	private final UserRepository userRepository;
 
 	@Override
-	public User save(User user) {
-		return userRepository.save(user);
-	}
-
-	@Override
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));
@@ -52,6 +49,20 @@ public class UserReadServiceImpl implements UserReadService {
 	public UserPurposeResponse findPurpose() {
 		return UserPurposeResponse.createResponse(
 			findById(securityService.getCurrentLoginUserInfo().getUserId())
+		);
+	}
+
+	@Override
+	public UserProfileResponse findProfile() {
+		return UserProfileResponse.createResponse(
+				findById(securityService.getCurrentLoginUserInfo().getUserId())
+		);
+	}
+
+	@Override
+	public UserInfoResponse findUserInfo() {
+		return UserInfoResponse.createResponse(
+				findById(securityService.getCurrentLoginUserInfo().getUserId())
 		);
 	}
 }

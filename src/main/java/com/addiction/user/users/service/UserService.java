@@ -1,9 +1,12 @@
 package com.addiction.user.users.service;
 
+import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.request.*;
 import com.addiction.user.users.service.response.*;
 
 public interface UserService {
+
+	User save(User user);
 
 	UserSaveResponse save(UserSaveServiceRequest userSaveServiceRequest);
 

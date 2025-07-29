@@ -59,4 +59,15 @@ public class UserController {
 		return ApiResponse.ok(userService.updateInfo(userUpdateInfoRequest.toServiceRequest()));
 	}
 
+	@GetMapping("/profile")
+	public ApiResponse<UserProfileResponse> findProfile() {
+		return ApiResponse.ok(userReadService.findProfile());
+	}
+	
+	@GetMapping("/info")
+	public ApiResponse<UserInfoResponse> findUserInfo() {
+		return ApiResponse.ok(userReadService.findUserInfo());
+	}
+
+
 }
