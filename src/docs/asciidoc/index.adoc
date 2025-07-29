@@ -34,3 +34,13 @@ include::api/userCigaretteHistory/userCigaretteHistory.adoc[]
 
 include::api/survey/survey.adoc[]
 
+[[Friend-API]]
+== Friend API
+
+include::api/friend/friend.adoc[]
+
+[[Inquiry-API]]
+== Inquiry API
+
+include::api/inquiry/inquiry.adoc[]
+

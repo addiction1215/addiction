@@ -18,7 +18,7 @@ public class FriendController {
 
     private final FriendReadService friendReadService;
 
-    @GetMapping("/api/v1/garden/list")
+    @GetMapping
     public ApiResponse<PageCustom<FriendProfileDto>> getFriendList(@ModelAttribute PageInfoRequest request) {
         return ApiResponse.ok(friendReadService.getFriendList(request.toServiceRequest()));
     }

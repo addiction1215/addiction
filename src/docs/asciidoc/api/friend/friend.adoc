@@ -1,0 +1,12 @@
+[[friend-list]]
+=== 친구 조회
+
+==== HTTP Request
+
+include::{snippets}/friend-list/http-request.adoc[]
+include::{snippets}/friend-list/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-list/http-response.adoc[]
+include::{snippets}/friend-list/response-fields.adoc[]
