@@ -1,6 +1,7 @@
 package com.addiction.inquiry.inquryQuestion.entity;
 
 import com.addiction.global.BaseTimeEntity;
+import com.addiction.inquiry.inquryQuestion.enums.InquiryStatus;
 import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,11 +25,16 @@ public class InquiryQuestion extends BaseTimeEntity {
 
     private String question;
 
+    @Enumerated(EnumType.STRING)
+    private InquiryStatus inquiryStatus;
+
     @Builder
-    public InquiryQuestion(int id, String question, String title, User user) {
+    public InquiryQuestion(int id, String question, String title, User user, InquiryStatus inquiryStatus) {
         this.id = id;
         this.question = question;
         this.title = title;
         this.user = user;
+        this.inquiryStatus = inquiryStatus;
     }
+
 }
