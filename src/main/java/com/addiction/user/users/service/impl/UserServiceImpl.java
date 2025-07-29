@@ -83,4 +83,15 @@ public class UserServiceImpl implements UserService {
 		return UserUpdateProfileResponse.createResponse(user);
 	}
 
+	@Override
+	public UserUpdateInfoResponse updateInfo(UserUpdateInfoServiceRequest userUpdateInfoServiceRequest) {
+		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+		user.updateInfo(
+				bCryptPasswordEncoder.encode(userUpdateInfoServiceRequest.getPassword()),
+				userUpdateInfoServiceRequest.getPhoneNumber(),
+				userUpdateInfoServiceRequest.getEmail()
+		);
+		return UserUpdateInfoResponse.createResponse(user);
+	}
+
 }

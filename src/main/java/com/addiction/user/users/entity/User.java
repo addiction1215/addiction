@@ -150,6 +150,31 @@ public class User extends BaseTimeEntity {
 		this.purpose = purpose;
 	}
 
+	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay){
+		updateNickName(nickName);
+		updateIntroduction(introduction);
+		updateSex(sex);
+		updateBirthDay(birthDay);
+	}
+
+	public void updateInfo(String password, String phoneNumber, String email) {
+		updatePassword(password);
+		updatePhoneNumber(phoneNumber);
+		updateEmail(email);
+	}
+
+	private void updateEmail(String email) {
+		this.email = email;
+	}
+
+	private void updatePhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	private void updatePassword(String password) {
+		this.password = password;
+	}
+
 	private void updateSex(Sex sex) {
 		this.sex = sex;
 	}
@@ -176,13 +201,6 @@ public class User extends BaseTimeEntity {
 
 	private void updateIntroduction(String introduction) {
 		this.introduction = introduction;
-	}
-
-	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay){
-		updateNickName(nickName);
-		updateIntroduction(introduction);
-		updateSex(sex);
-		updateBirthDay(birthDay);
 	}
 
 }

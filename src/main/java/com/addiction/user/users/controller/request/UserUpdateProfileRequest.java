@@ -5,8 +5,10 @@ import com.addiction.user.users.service.request.UserUpdateProfileServiceRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class UserUpdateProfileRequest {
 
     @NotNull(message = "닉네임은 필수입니다.")
