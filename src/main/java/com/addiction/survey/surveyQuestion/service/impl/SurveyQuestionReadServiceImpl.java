@@ -20,7 +20,7 @@ public class SurveyQuestionReadServiceImpl implements SurveyQuestionReadService 
 	@Override
 	public SurveyQuestionFindListServiceResponse findAll() {
 		return SurveyQuestionFindListServiceResponse.of(
-			surveyQuestionRepository.findAll().stream().map(SurveyQuestionFindServiceResponse::of).toList()
+			surveyQuestionRepository.findAll().stream().map(SurveyQuestionFindServiceResponse::createResponse).toList()
 		);
 	}
 
