@@ -19,6 +19,7 @@ import com.addiction.survey.surveyAnswer.dto.service.response.SurveyAnswerFindSe
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindListServiceResponse;
 import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindServiceResponse;
+import com.addiction.survey.surveyQuestion.enums.SurveyType;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 
 import docs.RestDocsSupport;
@@ -43,6 +44,7 @@ public class SurveyControllerDocsTest extends RestDocsSupport {
 						SurveyQuestionFindServiceResponse.builder()
 							.id(1)
 							.question("현재 흡연 여부를 선택해주세요")
+							.surveyType(SurveyType.CHECKBOX)
 							.surveyAnswer(
 								List.of(
 									SurveyAnswerFindServiceResponse.builder()
