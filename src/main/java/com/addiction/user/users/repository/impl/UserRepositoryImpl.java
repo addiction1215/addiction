@@ -1,5 +1,6 @@
 package com.addiction.user.users.repository.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -34,5 +35,10 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public void deleteAllInBatch() {
 		userJpaRepository.deleteAllInBatch();
+	}
+
+	@Override
+	public void saveAll(List<User> users) {
+		userJpaRepository.saveAll(users);
 	}
 }

@@ -1,5 +1,7 @@
 package com.addiction.user.push.repository.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.addiction.global.exception.AddictionException;
@@ -29,5 +31,15 @@ public class PushRepositoryImpl implements PushRepository {
 	@Override
 	public void deleteAllInBatch() {
 		pushJpaRepository.deleteAllInBatch();
+	}
+
+	@Override
+	public Push save(Push push) {
+		return pushJpaRepository.save(push);
+	}
+
+	@Override
+	public void saveAll(List<Push> pushes) {
+		pushJpaRepository.saveAll(pushes);
 	}
 }

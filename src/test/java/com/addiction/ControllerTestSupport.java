@@ -6,6 +6,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.addiction.alertHistory.controller.alertHistory.AlertHistoryController;
+import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
+import com.addiction.alertHistory.service.alertHistory.AlertHistoryService;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.userCigarette.controller.UserCigaretteController;
@@ -28,7 +31,8 @@ import jakarta.persistence.EntityManager;
 	UserController.class,
 	SurveyQuestionController.class,
 	UserCigaretteController.class,
-	UserCigaretteHistoryController.class
+	UserCigaretteHistoryController.class,
+	AlertHistoryController.class,
 })
 public abstract class ControllerTestSupport {
 
@@ -61,6 +65,12 @@ public abstract class ControllerTestSupport {
 
 	@MockitoBean
 	protected UserCigaretteHistoryService userCigaretteHistoryService;
+
+	@MockitoBean
+	protected AlertHistoryReadService alertHistoryReadService;
+
+	@MockitoBean
+	protected AlertHistoryService alertHistoryService;
 
 }
 

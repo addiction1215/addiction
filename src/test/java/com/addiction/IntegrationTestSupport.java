@@ -7,6 +7,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.addiction.alertHistory.entity.AlertDestinationType;
+import com.addiction.alertHistory.entity.AlertHistory;
+import com.addiction.alertHistory.entity.AlertHistoryStatus;
+import com.addiction.alertHistory.repository.AlertHistoryRepository;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
@@ -17,6 +21,7 @@ import com.addiction.survey.surveyResult.entity.SurveyResult;
 import com.addiction.survey.surveyResult.repository.SurveyResultRepository;
 import com.addiction.survey.surveyResultDescription.entity.SurveyResultDescription;
 import com.addiction.survey.surveyResultDescription.repository.SurveyResultDescriptionRepository;
+import com.addiction.user.push.entity.Push;
 import com.addiction.user.push.repository.PushRepository;
 import com.addiction.user.refreshToken.repository.RefreshTokenRepository;
 import com.addiction.user.userCigarette.entity.UserCigarette;
@@ -58,9 +63,12 @@ public abstract class IntegrationTestSupport {
 	protected SurveyResultDescriptionRepository surveyResultDescriptionRepository;
 	@Autowired
 	protected UserCigaretteRepository userCigaretteRepository;
+	@Autowired
+	protected AlertHistoryRepository alertHistoryRepository;
 
 	@AfterEach
 	public void tearDown() {
+		alertHistoryRepository.deleteAllInBatch();
 		surveyResultDescriptionRepository.deleteAllInBatch();
 		surveyResultRepository.deleteAllInBatch();
 		surveyAnswerRepository.deleteAllInBatch();
@@ -121,5 +129,32 @@ public abstract class IntegrationTestSupport {
 
 	protected UserCigarette createUserCigarette(User user) {
 		return UserCigarette.createEntity(user, "테스트 주소", 1000L);
+	}
+
+
+
+	protected AlertHistory createAlertHistory(User user, String alertDescription, AlertHistoryStatus alertHistoryStatus) {
+		return AlertHistory.builder()
+			.user(user)
+			.alertDescription(alertDescription)
+			.alertHistoryStatus(alertHistoryStatus)
+			.build();
+	}
+
+	protected AlertHistory createFriendCodeAlertHistory(User user, String alertDescriptionInfo,AlertHistoryStatus alertHistoryStatus) {
+		return AlertHistory.builder()
+			.user(user)
+			.alertDestinationType(AlertDestinationType.FRIEND_CODE)
+			.alertDestinationInfo(alertDescriptionInfo)
+			.alertHistoryStatus(alertHistoryStatus)
+			.build();
+	}
+
+	protected Push createPush(User user) {
+		return Push.builder()
+			.user(user)
+			.deviceId("testdeviceId")
+			.pushToken("testPushToken")
+			.build();
 	}
 }
