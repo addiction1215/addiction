@@ -44,3 +44,7 @@ include::api/friend/friend.adoc[]
 
 include::api/inquiry/inquiry.adoc[]
 
+[[alertHistory-API]]
+== alertHistory API
+
+include::api/alertHistory/alertHistory.adoc[]
