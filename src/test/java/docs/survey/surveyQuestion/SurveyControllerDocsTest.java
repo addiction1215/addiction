@@ -86,6 +86,8 @@ public class SurveyControllerDocsTest extends RestDocsSupport {
 						.description("설문조사 문항 ID"),
 					fieldWithPath("data.response[].question").type(JsonFieldType.STRING)
 						.description("설문조사 문항 질문"),
+					fieldWithPath("data.response[].surveyType").type(JsonFieldType.STRING)
+						.description("설문조사 문항 타입"),
 					fieldWithPath("data.response[].surveyAnswer[]").type(JsonFieldType.ARRAY)
 						.description("설문조사 문항 답변 리스트"),
 					fieldWithPath("data.response[].surveyAnswer[].id").type(JsonFieldType.NUMBER)
