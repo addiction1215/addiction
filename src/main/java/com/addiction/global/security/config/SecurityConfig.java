@@ -1,5 +1,8 @@
 package com.addiction.global.security.config;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.addiction.jwt.JwtTokenProvider;
 import com.addiction.jwt.filter.JwtAuthenticationFilter;
@@ -31,10 +36,22 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+	CorsConfigurationSource corsConfigurationSource() {
+		return request -> {
+			CorsConfiguration config = new CorsConfiguration();
+			config.setAllowedHeaders(Collections.singletonList("*"));
+			config.setAllowedMethods(Collections.singletonList("*"));
+			config.setAllowedOriginPatterns(Arrays.asList("http://localhost:8081"));
+			config.setAllowCredentials(true);
+			return config;
+		};
+	}
+
 	@Bean
 	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(AbstractHttpConfigurer::disable)
+			.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
 
 			.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
