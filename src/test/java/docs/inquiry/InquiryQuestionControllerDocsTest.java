@@ -50,7 +50,7 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
 
         given(inquiryQuestionService.save(any()))
                 .willReturn(InquiryQuestionSaveResponse.builder()
-                        .userId(1)
+                        .userId(1L)
                         .title("문의 제목입니다")
                         .question("문의 내용입니다")
                         .build()
@@ -98,12 +98,12 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
         given(inquiryQuestionReadService.findAllByUserIdAndInquiryStatus(any()))
                 .willReturn(List.of(
                         InquiryQuestionFindResponse.builder()
-                                .inquiryQuestionId(1)
+                                .inquiryQuestionId(1L)
                                 .title("첫 번째 문의")
                                 .inquiryStatus(InquiryStatus.WAITING)
                                 .build(),
                         InquiryQuestionFindResponse.builder()
-                                .inquiryQuestionId(2)
+                                .inquiryQuestionId(2L)
                                 .title("두 번째 문의")
                                 .inquiryStatus(InquiryStatus.WAITING)
                                 .build()

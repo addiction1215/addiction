@@ -42,17 +42,17 @@ public class SurveyControllerDocsTest extends RestDocsSupport {
 				.response(
 					List.of(
 						SurveyQuestionFindServiceResponse.builder()
-							.id(1)
+							.id(1L)
 							.question("현재 흡연 여부를 선택해주세요")
 							.surveyType(SurveyType.CHECKBOX)
 							.surveyAnswer(
 								List.of(
 									SurveyAnswerFindServiceResponse.builder()
-										.id(1)
+										.id(1L)
 										.answer("현재 흡연 중이며, 이제 금연하고 싶어요.")
 										.build(),
 									SurveyAnswerFindServiceResponse.builder()
-										.id(1)
+										.id(1L)
 										.answer("현재 금연 중이며, 계속 유지하고 싶어요.")
 										.build()
 								)
