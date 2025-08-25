@@ -28,7 +28,7 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
 	private final UserCigaretteRepository userCigaretteRepository;
 
 	@Override
-	public int changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest) {
+	public Long changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest) {
 		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
 		if (userCigaretteChangeServiceRequest.getChangeType().equals(ChangeType.ADD)) {
 			// 바로 전 흡연 기록 조회 (최신 1건)

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class UserUpdateSurveyRequest {
 	@NotNull(message = "답변 ID 목록은 필수입니다.")
 	@Size(min = 1, message = "답변 ID 목록은 최소 1개 이상이어야 합니다.")
-	private List<Integer> answerId;
+	private List<Long> answerId;
 	@NotNull(message = "금연 목표는 필수입니다.")
 	private String purpose;
 	@Min(value = 1, message = "담배 가격은 0원 초과이어야 합니다.")
@@ -28,7 +28,7 @@ public class UserUpdateSurveyRequest {
 	private String birthDay;
 
 	@Builder
-	public UserUpdateSurveyRequest(List<Integer> answerId, String purpose, int cigarettePrice, Sex sex, String birthDay) {
+	public UserUpdateSurveyRequest(List<Long> answerId, String purpose, int cigarettePrice, Sex sex, String birthDay) {
 		this.answerId = answerId;
 		this.purpose = purpose;
 		this.cigarettePrice = cigarettePrice;

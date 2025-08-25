@@ -21,17 +21,17 @@ public class SurveyAnswer extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private SurveyQuestion surveyQuestion;
 
 	private String answer;
 
-	private int score;
+	private Integer score;
 
 	@Builder
-	public SurveyAnswer(SurveyQuestion surveyQuestion, String answer, int score) {
+	public SurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score) {
 		this.surveyQuestion = surveyQuestion;
 		this.answer = answer;
 		this.score = score;

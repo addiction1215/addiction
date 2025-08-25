@@ -9,6 +9,6 @@ public interface InquiryQuestionRepository {
 
     InquiryQuestion save(InquiryQuestion inquiryQuestion);
 
-    List<InquiryQuestion> findAllByUserIdAndInquiryStatus(int userId, InquiryStatus inquiryStatus);
+    List<InquiryQuestion> findAllByUserIdAndInquiryStatus(Long userId, InquiryStatus inquiryStatus);
 
 }

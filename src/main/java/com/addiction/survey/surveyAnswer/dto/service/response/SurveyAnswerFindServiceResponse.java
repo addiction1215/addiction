@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @Getter
 public class SurveyAnswerFindServiceResponse {
-	private final int id;
+	private final Long id;
 	private final String answer;
 
 	@Builder
-	public SurveyAnswerFindServiceResponse(int id, String answer) {
+	public SurveyAnswerFindServiceResponse(Long id, String answer) {
 		this.id = id;
 		this.answer = answer;
 	}

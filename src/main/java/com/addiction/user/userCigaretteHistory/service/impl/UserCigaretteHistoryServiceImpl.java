@@ -32,7 +32,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 	private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
 
 	@Override
-	public void save(String monthStr, String dateStr, int userId, int smokeCount, long avgPatienceTime,
+	public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
 		List<CigaretteHistoryDocument.History> historyList) {
 		CigaretteHistoryDocument doc = CigaretteHistoryDocument.builder()
 			.month(monthStr)
@@ -48,7 +48,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
 	@Override
 	public List<UserCigaretteHistoryCalenderResponse> findCalendarByDate(String month) {
-		int userId = securityService.getCurrentLoginUserInfo().getUserId();
+		long userId = securityService.getCurrentLoginUserInfo().getUserId();
 		return userCigaretteHistoryRepository.findByMonthAndUserId(month, userId).stream()
 			.map(doc -> UserCigaretteHistoryCalenderResponse.createResponse(doc.getDate(), doc.getSmokeCount()))
 			.collect(Collectors.toList());
@@ -56,14 +56,14 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
 	@Override
 	public List<UserCigaretteHistoryResponse> findHistoryByDate(String date) {
-		int userId = securityService.getCurrentLoginUserInfo().getUserId();
+		long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
 		return userCigaretteHistoryRepository.findByDateAndUserId(date, userId).getHistory()
 			.stream().map(UserCigaretteHistoryResponse::createResponse).toList();
 	}
 
 	public UserCigaretteHistoryGraphResponse findGraphByPeriod(PeriodType periodType) {
-		int userId = securityService.getCurrentLoginUserInfo().getUserId();
+		long userId = securityService.getCurrentLoginUserInfo().getUserId();
 		LocalDate endDate = LocalDate.now();
 		LocalDate startDate = periodType.calculateStartDate(endDate);
 

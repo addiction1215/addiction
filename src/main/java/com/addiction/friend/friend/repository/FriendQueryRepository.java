@@ -23,7 +23,7 @@ public class FriendQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Page<FriendProfileDto> getFriendList(int userId, Pageable pageable) {
+    public Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
                         friend.receiver.id,
@@ -44,7 +44,7 @@ public class FriendQueryRepository {
         return new PageImpl<>(content, pageable, total);
     }
 
-    private long getTotalFriendsCount(int userId) {
+    private long getTotalFriendsCount(Long userId) {
         return ofNullable(
                 queryFactory
                         .select(friend.count())
@@ -56,7 +56,7 @@ public class FriendQueryRepository {
         ).orElse(0L);
     }
 
-    private BooleanExpression isRequesterIdEqualTo(int userId) {
+    private BooleanExpression isRequesterIdEqualTo(Long userId) {
         return friend.requester.id.eq(userId);
     }
 }

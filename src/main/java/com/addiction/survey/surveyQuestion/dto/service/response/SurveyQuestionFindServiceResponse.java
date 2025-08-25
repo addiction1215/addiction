@@ -12,13 +12,13 @@ import lombok.Getter;
 @Getter
 public class SurveyQuestionFindServiceResponse {
 
-	private final int id;
+	private final Long id;
 	private final String question;
 	private final SurveyType surveyType;
 	private final List<SurveyAnswerFindServiceResponse> surveyAnswer;
 
 	@Builder
-	public SurveyQuestionFindServiceResponse(int id, String question, SurveyType surveyType,
+	public SurveyQuestionFindServiceResponse(Long id, String question, SurveyType surveyType,
 		List<SurveyAnswerFindServiceResponse> surveyAnswer) {
 		this.id = id;
 		this.question = question;

@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 public class InquiryQuestionFindResponse {
 
-    private final int inquiryQuestionId;
+    private final Long inquiryQuestionId;
     private final String title;
     private final InquiryStatus inquiryStatus;
 
     @Builder
-    public InquiryQuestionFindResponse(int inquiryQuestionId, String title, InquiryStatus inquiryStatus) {
+    public InquiryQuestionFindResponse(Long inquiryQuestionId, String title, InquiryStatus inquiryStatus) {
         this.inquiryQuestionId = inquiryQuestionId;
         this.title = title;
         this.inquiryStatus = inquiryStatus;

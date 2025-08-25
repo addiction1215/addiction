@@ -26,7 +26,7 @@ public class UserCigaretteController {
 	private final UserCigaretteReadService userCigaretteReadService;
 
 	@PatchMapping("/change")
-	public ApiResponse<Integer> changeCigarette(@RequestBody @Valid UserCigaretteChangeRequest userCigaretteChangeRequest) {
+	public ApiResponse<Long> changeCigarette(@RequestBody @Valid UserCigaretteChangeRequest userCigaretteChangeRequest) {
 		return ApiResponse.ok(userCigaretteService.changeCigarette(userCigaretteChangeRequest.toServiceRequest()));
 	}
 

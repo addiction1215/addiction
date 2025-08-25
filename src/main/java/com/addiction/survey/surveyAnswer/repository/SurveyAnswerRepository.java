@@ -7,7 +7,7 @@ import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 public interface SurveyAnswerRepository {
 	SurveyAnswer save(SurveyAnswer surveyAnswer);
 
-	Optional<SurveyAnswer> findById(int id);
+	Optional<SurveyAnswer> findById(Long id);
 
 	void deleteAllInBatch();
 }

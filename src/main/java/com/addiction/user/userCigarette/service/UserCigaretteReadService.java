@@ -10,5 +10,5 @@ public interface UserCigaretteReadService {
 	UserCigaretteFindResponse findUserCigaretteCount();
 	List<UserCigarette> findAll();
 	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
-	UserCigarette findLatestByUserId(int userId);
+	UserCigarette findLatestByUserId(Long userId);
 }

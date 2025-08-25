@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class LoginUserInfo {
-    private int userId;
+    private Long userId;
 
     @Builder
-    private LoginUserInfo(int userId) {
+    private LoginUserInfo(Long userId) {
         this.userId = userId;
     }
 
-    public static LoginUserInfo of(int userId) {
+    public static LoginUserInfo of(Long userId) {
         return LoginUserInfo.builder()
             .userId(userId)
             .build();

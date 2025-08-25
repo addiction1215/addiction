@@ -23,7 +23,7 @@ public class SurveyAnswerRepositoryImpl implements SurveyAnswerRepository {
 	}
 
 	@Override
-	public Optional<SurveyAnswer> findById(int id) {
+	public Optional<SurveyAnswer> findById(Long id) {
 		return surveyAnswerJpaRepository.findById(id);
 	}
 

@@ -37,7 +37,7 @@ public class User extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	private String email;
 
@@ -51,11 +51,11 @@ public class User extends BaseTimeEntity {
 
 	private String purpose;
 
-	private int totalScore;
+	private Integer totalScore;
 
 	private String introduction;
 
-	private int cigarettePrice;
+	private Integer cigarettePrice;
 
 	private LocalDateTime startDate;
 
@@ -79,7 +79,7 @@ public class User extends BaseTimeEntity {
 
 	@Builder
 	public User(String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
-		int totalScore, String introduction, int cigarettePrice, SnsType snsType, Sex sex, Role role,
+		Integer totalScore, String introduction, Integer cigarettePrice, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
 		this.email = email;
 		this.password = password;
@@ -133,7 +133,7 @@ public class User extends BaseTimeEntity {
 		updateBirthDay(birthDay);
 	}
 
-	public void updateSurvey(String purpose, int totalScore, int cigarettePrice, LocalDateTime startDate, Sex sex, String birthDay) {
+	public void updateSurvey(String purpose, Integer totalScore, Integer cigarettePrice, LocalDateTime startDate, Sex sex, String birthDay) {
 		updatePurpose(purpose);
 		updateTotalScore(totalScore);
 		updateCigarettePrice(cigarettePrice);
@@ -186,11 +186,11 @@ public class User extends BaseTimeEntity {
 		this.birthDay = birthDay;
 	}
 
-	private void updateTotalScore(int totalScore) {
+	private void updateTotalScore(Integer totalScore) {
 		this.totalScore = totalScore;
 	}
 
-	private void updateCigarettePrice(int cigarettePrice) {
+	private void updateCigarettePrice(Integer cigarettePrice) {
 		this.cigarettePrice = cigarettePrice;
 	}
 
