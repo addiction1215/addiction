@@ -24,7 +24,7 @@ public class AlertHistoryQueryRepository {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	public Page<AlertHistory> findByUserId(int userId, Pageable pageable) {
+	public Page<AlertHistory> findByUserId(Long userId, Pageable pageable) {
 		List<AlertHistory> content = jpaQueryFactory
 			.select(alertHistory)
 			.from(alertHistory)
@@ -41,7 +41,7 @@ public class AlertHistoryQueryRepository {
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	public boolean hasUncheckedAlerts(int userId) {
+	public boolean hasUncheckedAlerts(Long userId) {
 		long count = ofNullable(
 			jpaQueryFactory
 				.select(alertHistory.count())
@@ -55,7 +55,7 @@ public class AlertHistoryQueryRepository {
 		return count > 0;
 	}
 
-	private long getTotalAlertHistoriesCount(int userId) {
+	private long getTotalAlertHistoriesCount(Long userId) {
 		return ofNullable(
 			jpaQueryFactory
 				.select(alertHistory.count())
@@ -67,7 +67,7 @@ public class AlertHistoryQueryRepository {
 		).orElse(0L);
 	}
 
-	public boolean hasFriendCode(int userId, String friendCode) {
+	public boolean hasFriendCode(Long userId, String friendCode) {
 		long count = ofNullable(
 				jpaQueryFactory
 						.select(alertHistory.count())
@@ -82,7 +82,7 @@ public class AlertHistoryQueryRepository {
 		return count > 0;
 	}
 
-	private BooleanExpression isUserIdEqualsTo(int userId) {
+	private BooleanExpression isUserIdEqualsTo(Long userId) {
 		return alertHistory.user.id.eq(userId);
 	}
 

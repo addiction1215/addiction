@@ -11,17 +11,17 @@ import org.springframework.data.repository.query.Param;
 
 import com.addiction.user.userCigarette.entity.UserCigarette;
 
-public interface UserCigaretteJpaRepository extends JpaRepository<UserCigarette, Integer> {
+public interface UserCigaretteJpaRepository extends JpaRepository<UserCigarette, Long> {
 
-	Optional<UserCigarette> findByUserId(int userId);
+	Optional<UserCigarette> findByUserId(Long userId);
 
 	@Modifying
 	@Query(value = "DELETE FROM user_cigarette WHERE id = (SELECT id FROM user_cigarette WHERE user_id = :userId ORDER BY id DESC LIMIT 1)", nativeQuery = true)
-	void deleteLatestByUserId(@Param("userId") int userId);
+	void deleteLatestByUserId(@Param("userId") Long userId);
 
-	int countByUserId(int userId);
+	int countByUserId(Long userId);
 
 	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
 
-	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(int userId);
+	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId);
 }

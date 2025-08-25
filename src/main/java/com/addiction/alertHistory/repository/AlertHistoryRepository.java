@@ -11,17 +11,17 @@ import com.addiction.alertHistory.entity.AlertHistory;
 
 public interface AlertHistoryRepository {
 
-	void deleteByUserId(int userId);
+	void deleteByUserId(Long userId);
 
-	List<AlertHistory> findByUserId(int userId);
+	List<AlertHistory> findByUserId(Long userId);
 
-	Page<AlertHistory> findByUserId(int userId, Pageable pageable);
+	Page<AlertHistory> findByUserId(Long userId, Pageable pageable);
 
 	Optional<AlertHistory> findById(Long id);
 
-	boolean hasUncheckedAlerts(int userId);
+	boolean hasUncheckedAlerts(Long userId);
 
-	boolean hasFriendCode(int userId, String friendCode);
+	boolean hasFriendCode(Long userId, String friendCode);
 
 	AlertHistory save(AlertHistory alertHistory);
 

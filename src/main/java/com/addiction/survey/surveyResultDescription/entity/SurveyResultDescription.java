@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class SurveyResultDescription extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private SurveyResult surveyResult;
@@ -28,7 +28,7 @@ public class SurveyResultDescription extends BaseTimeEntity {
 	private String description;
 
 	@Builder
-	public SurveyResultDescription(int id, SurveyResult surveyResult, String description) {
+	public SurveyResultDescription(Long id, SurveyResult surveyResult, String description) {
 		this.id = id;
 		this.surveyResult = surveyResult;
 		this.description = description;

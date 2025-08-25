@@ -5,9 +5,9 @@ import java.util.List;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 
 public interface SurveyAnswerReadService {
-	SurveyAnswer findById(int answerId);
+	SurveyAnswer findById(Long answerId);
 
-	int findScoreById(int answerId);
+	int findScoreById(Long answerId);
 
-	int calculateTotalScore(List<Integer> answerId);
+	int calculateTotalScore(List<Long> answerId);
 }

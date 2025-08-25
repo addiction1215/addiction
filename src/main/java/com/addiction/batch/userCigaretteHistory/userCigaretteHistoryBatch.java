@@ -29,12 +29,12 @@ public class userCigaretteHistoryBatch {
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
 		String monthStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMM")); // yyyyMM
 
-		Map<Integer, List<UserCigarette>> grouped = userCigaretteReadService.findAllByCreatedDateBetween(
+		Map<Long, List<UserCigarette>> grouped = userCigaretteReadService.findAllByCreatedDateBetween(
 				yesterday.atStartOfDay(), yesterday.plusDays(1).atStartOfDay()).stream()
 			.collect(Collectors.groupingBy(c -> c.getUser().getId()));
 
-		for (Map.Entry<Integer, List<UserCigarette>> entry : grouped.entrySet()) {
-			int userId = entry.getKey();
+		for (Map.Entry<Long, List<UserCigarette>> entry : grouped.entrySet()) {
+			long userId = entry.getKey();
 
 			List<UserCigarette> cigarettes = entry.getValue();
 

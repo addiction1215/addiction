@@ -21,7 +21,7 @@ public class InquiryQuestionRepositoryImpl implements InquiryQuestionRepository 
     }
 
     @Override
-    public List<InquiryQuestion> findAllByUserIdAndInquiryStatus(int userId, InquiryStatus inquiryStatus) {
+    public List<InquiryQuestion> findAllByUserIdAndInquiryStatus(Long userId, InquiryStatus inquiryStatus) {
         return inquiryQuestionJpaRepository.findAllByUserIdAndInquiryStatus(userId, inquiryStatus);
     }
 }

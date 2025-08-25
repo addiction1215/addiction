@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface InquiryQuestionJpaRepository extends JpaRepository<InquiryQuestion, Integer> {
+public interface InquiryQuestionJpaRepository extends JpaRepository<InquiryQuestion, Long> {
 
-    List<InquiryQuestion> findAllByUserIdAndInquiryStatus(int userId, InquiryStatus inquiryStatus);
+    List<InquiryQuestion> findAllByUserIdAndInquiryStatus(Long userId, InquiryStatus inquiryStatus);
 
     int user(User user);
 }

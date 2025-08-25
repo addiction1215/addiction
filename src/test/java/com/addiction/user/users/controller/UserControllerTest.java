@@ -98,7 +98,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장한다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1,2))
+			.answerId(List.of(1L,2L))
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
 			.sex(Sex.FEMAIL)
@@ -151,7 +151,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_금연목표는_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1,2))
+			.answerId(List.of(1L,2L))
 			.cigarettePrice(5000)
 			.sex(Sex.FEMAIL)
 			.birthDay("12341234")
@@ -177,7 +177,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_담배가격은_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1,2))
+			.answerId(List.of(1L,2L))
 			.purpose("금연 화이팅")
 			.sex(Sex.FEMAIL)
 			.birthDay("12341234")
@@ -203,7 +203,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_성별은_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1,2))
+			.answerId(List.of(1L,2L))
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
 			.birthDay("12341234")
@@ -229,7 +229,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_설문결과를_저장시_생년월일은_필수이다() throws Exception {
 		// given
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1,2))
+			.answerId(List.of(1L,2L))
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
 			.sex(Sex.FEMAIL)

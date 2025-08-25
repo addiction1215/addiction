@@ -10,7 +10,7 @@ public interface UserRepository {
 
 	Optional<User> findByEmail(String email);
 
-	Optional<User> findById(int id);
+	Optional<User> findById(Long id);
 
 	void deleteAllInBatch();
 

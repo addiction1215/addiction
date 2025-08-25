@@ -24,12 +24,12 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	}
 
 	@Override
-	public Optional<UserCigarette> findById(int id) {
+	public Optional<UserCigarette> findById(Long id) {
 		return userCigaretteJpaRepository.findById(id);
 	}
 
 	@Override
-	public Optional<UserCigarette> findByUserId(int userId) {
+	public Optional<UserCigarette> findByUserId(Long userId) {
 		return userCigaretteJpaRepository.findByUserId(userId);
 	}
 
@@ -44,12 +44,12 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	}
 
 	@Override
-	public void deleteLastest(int userId) {
+	public void deleteLastest(Long userId) {
 		userCigaretteJpaRepository.deleteLatestByUserId(userId);
 	}
 
 	@Override
-	public int cigaretteCountByUserId(int userId) {
+	public int cigaretteCountByUserId(Long userId) {
 		return userCigaretteJpaRepository.countByUserId(userId);
 	}
 
@@ -59,7 +59,7 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	}
 
 	@Override
-	public Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(int userId) {
+	public Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId) {
 		return userCigaretteJpaRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
 	}
 }

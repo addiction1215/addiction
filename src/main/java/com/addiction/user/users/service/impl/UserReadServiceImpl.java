@@ -33,7 +33,7 @@ public class UserReadServiceImpl implements UserReadService {
 	}
 
 	@Override
-	public User findById(int id) {
+	public User findById(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));
 	}

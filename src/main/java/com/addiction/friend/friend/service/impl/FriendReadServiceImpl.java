@@ -22,7 +22,7 @@ public class FriendReadServiceImpl implements FriendReadService {
 
     @Override
     public PageCustom<FriendProfileDto> getFriendList(PageInfoServiceRequest pageRequest) {
-        int userId = securityService.getCurrentLoginUserInfo().getUserId();
+        long userId = securityService.getCurrentLoginUserInfo().getUserId();
         Pageable pageable = pageRequest.toPageable();
 
         return PageCustom.of(friendRepository.getFriendList(userId, pageable));

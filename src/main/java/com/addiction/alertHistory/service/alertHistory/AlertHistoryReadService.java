@@ -30,7 +30,7 @@ public class AlertHistoryReadService {
 	}
 
 	public PageCustom<AlertHistoryResponse> getAlertHistory(PageInfoServiceRequest request) {
-		int userId = securityService.getCurrentLoginUserInfo().getUserId();
+		long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
 		Page<AlertHistory> alertHistoryPage = alertHistoryRepository.findByUserId(
 			userId,
@@ -48,11 +48,11 @@ public class AlertHistoryReadService {
 	}
 
 	public boolean hasUncheckedAlerts() {
-		int userId = securityService.getCurrentLoginUserInfo().getUserId();
+		long userId = securityService.getCurrentLoginUserInfo().getUserId();
 		return alertHistoryRepository.hasUncheckedAlerts(userId);
 	}
 
-	public boolean hasFriendCode(int userId, String friendCode) {
+	public boolean hasFriendCode(Long userId, String friendCode) {
 		return alertHistoryRepository.hasFriendCode(userId, friendCode);
 	}
 

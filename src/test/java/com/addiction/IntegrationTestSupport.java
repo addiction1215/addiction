@@ -93,7 +93,7 @@ public abstract class IntegrationTestSupport {
 			.build();
 	}
 
-	protected LoginUserInfo createLoginUserInfo(int userId) {
+	protected LoginUserInfo createLoginUserInfo(Long userId) {
 		return LoginUserInfo.builder()
 			.userId(userId)
 			.build();
@@ -105,7 +105,7 @@ public abstract class IntegrationTestSupport {
 			.build();
 	}
 
-	protected SurveyAnswer createSurveyAnswer(SurveyQuestion surveyQuestion, String answer, int score) {
+	protected SurveyAnswer createSurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score) {
 		return SurveyAnswer.builder()
 			.surveyQuestion(surveyQuestion)
 			.answer(answer)
@@ -113,7 +113,7 @@ public abstract class IntegrationTestSupport {
 			.build();
 	}
 
-	protected SurveyResult createSurveyResult(String title, int score) {
+	protected SurveyResult createSurveyResult(String title, Integer score) {
 		return SurveyResult.builder()
 			.title(title)
 			.score(score)

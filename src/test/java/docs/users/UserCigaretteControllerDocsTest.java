@@ -78,7 +78,7 @@ public class UserCigaretteControllerDocsTest extends RestDocsSupport {
 			.build();
 
 		given(userCigaretteService.changeCigarette(any(UserCigaretteChangeServiceRequest.class)))
-			.willReturn(1);
+			.willReturn(1L);
 
 		// when // then
 		mockMvc.perform(

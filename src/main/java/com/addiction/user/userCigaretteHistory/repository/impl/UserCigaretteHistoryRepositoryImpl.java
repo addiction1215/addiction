@@ -25,7 +25,7 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 	}
 
 	@Override
-	public List<CigaretteHistoryDocument> findByMonthAndUserId(String month, int userId) {
+	public List<CigaretteHistoryDocument> findByMonthAndUserId(String month, Long userId) {
 		return mongoTemplate.find(
 			query(
 				where("month").is(month)
@@ -36,7 +36,7 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 	}
 
 	@Override
-	public CigaretteHistoryDocument findByDateAndUserId(String date, int userId) {
+	public CigaretteHistoryDocument findByDateAndUserId(String date, Long userId) {
 		return mongoTemplate.findOne(
 			query(
 				where("date").is(date)
@@ -47,7 +47,7 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 	}
 
 	@Override
-	public List<CigaretteHistoryDocument> findByUserIdAndDateBetween(int userId, String startDate, String endDate) {
+	public List<CigaretteHistoryDocument> findByUserIdAndDateBetween(Long userId, String startDate, String endDate) {
 		return mongoTemplate.find(
 			query(
 				where("userId").is(userId)

@@ -23,19 +23,19 @@ public class UserCigarette extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
 	private LocalDateTime smokeTime;
 
-	private long smokePatienceTime;
+	private Long smokePatienceTime;
 
 	private String address;
 
 	@Builder
-	public UserCigarette(int id, User user, LocalDateTime smokeTime, String address, long smokePatienceTime) {
+	public UserCigarette(Long id, User user, LocalDateTime smokeTime, String address, Long smokePatienceTime) {
 		this.id = id;
 		this.user = user;
 		this.smokeTime = smokeTime;
@@ -43,7 +43,7 @@ public class UserCigarette extends BaseTimeEntity {
 		this.smokePatienceTime = smokePatienceTime;
 	}
 
-	public static UserCigarette createEntity(User user, String address, long smokePatienceTime) {
+	public static UserCigarette createEntity(User user, String address, Long smokePatienceTime) {
 		return UserCigarette.builder()
 				.user(user)
 				.smokeTime(LocalDateTime.now())

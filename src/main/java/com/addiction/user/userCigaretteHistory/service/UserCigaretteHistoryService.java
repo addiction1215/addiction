@@ -10,7 +10,7 @@ import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHis
 
 public interface UserCigaretteHistoryService {
 
-	void save(String monthStr, String dateStr, int userId, int smokeCount, long avgPatienceTime,
+	void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
 		List<CigaretteHistoryDocument.History> historyList);
 
 	List<UserCigaretteHistoryCalenderResponse> findCalendarByDate(String date);

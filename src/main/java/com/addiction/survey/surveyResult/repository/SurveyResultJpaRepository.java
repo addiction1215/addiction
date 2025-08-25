@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.addiction.survey.surveyResult.entity.SurveyResult;
 
-public interface SurveyResultJpaRepository extends JpaRepository<SurveyResult, Integer> {
+public interface SurveyResultJpaRepository extends JpaRepository<SurveyResult, Long> {
 	@Query("SELECT sr FROM SurveyResult sr WHERE sr.score <= :score ORDER BY sr.score DESC LIMIT 1")
-	Optional<SurveyResult> findClosestScore(@Param("score") int score);
+	Optional<SurveyResult> findClosestScore(@Param("score") Integer score);
 }
