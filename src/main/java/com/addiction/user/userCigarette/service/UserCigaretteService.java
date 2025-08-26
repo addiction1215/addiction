@@ -5,6 +5,6 @@ import com.addiction.user.userCigarette.service.response.UserCigaretteFindRespon
 
 public interface UserCigaretteService {
 
-	int changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest);
+	Long changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest);
 
 }

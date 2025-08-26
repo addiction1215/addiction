@@ -23,9 +23,9 @@ public class CigaretteHistoryDocument {
 	private String id;
 	private String month;
 	private String date;
-	private int userId;
-	private int smokeCount;
-	private long avgPatienceTime;
+	private Long userId;
+	private Integer smokeCount;
+	private Long avgPatienceTime;
 	private List<History> history;
 
 	@Getter
@@ -36,6 +36,6 @@ public class CigaretteHistoryDocument {
 	public static class History {
 		private String address;
 		private LocalDateTime smokeTime;
-		private long smokePatienceTime;
+		private Long smokePatienceTime;
 	}
 }

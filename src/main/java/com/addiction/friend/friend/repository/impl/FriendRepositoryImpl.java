@@ -15,7 +15,7 @@ public class FriendRepositoryImpl implements FriendRepository {
     private final FriendQueryRepository friendQueryRepository;
 
     @Override
-    public Page<FriendProfileDto> getFriendList(int userId, Pageable pageable) {
+    public Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable) {
         return friendQueryRepository.getFriendList(userId, pageable);
     }
 }

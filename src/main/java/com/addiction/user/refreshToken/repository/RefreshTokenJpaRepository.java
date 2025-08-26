@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.addiction.user.refreshToken.entity.RefreshToken;
 
-public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Integer> {
-	void deleteAllByUserId(int userId);
+public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Long> {
+	void deleteAllByUserId(Long userId);
 
-	Optional<RefreshToken> findByUserIdAndDeviceIdAndRefreshToken(int userId, String deviceId, String refreshToken);
+	Optional<RefreshToken> findByUserIdAndDeviceIdAndRefreshToken(Long userId, String deviceId, String refreshToken);
 }

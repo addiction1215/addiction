@@ -10,19 +10,19 @@ public interface UserCigaretteRepository {
 
 	UserCigarette save(UserCigarette userCigarette);
 
-	Optional<UserCigarette> findById(int id);
+	Optional<UserCigarette> findById(Long id);
 
-	Optional<UserCigarette> findByUserId(int userId);
+	Optional<UserCigarette> findByUserId(Long userId);
 
 	void deleteAllInBatch();
 
 	List<UserCigarette> findAll();
 
-	void deleteLastest(int userId);
+	void deleteLastest(Long userId);
 
-	int cigaretteCountByUserId(int userId);
+	int cigaretteCountByUserId(Long userId);
 
 	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
 
-	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(int userId);
+	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId);
 }

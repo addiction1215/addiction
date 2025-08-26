@@ -93,7 +93,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
     void 사용자_설문결과_저장_API() throws Exception {
         // given
         UserUpdateSurveyRequest request = UserUpdateSurveyRequest.builder()
-                .answerId(List.of(1, 2))
+                .answerId(List.of(1L, 2L))
                 .purpose("금연 화이팅")
                 .cigarettePrice(5000)
                 .sex(Sex.FEMAIL)

@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 public class InquiryQuestionSaveResponse {
 
-    private final int userId;
+    private final Long userId;
     private final String title;
     private final String question;
 
     @Builder
-    public InquiryQuestionSaveResponse(String question, int userId, String title) {
+    public InquiryQuestionSaveResponse(String question, Long userId, String title) {
         this.question = question;
         this.userId = userId;
         this.title = title;

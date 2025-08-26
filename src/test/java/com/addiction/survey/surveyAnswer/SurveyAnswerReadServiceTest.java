@@ -40,7 +40,7 @@ public class SurveyAnswerReadServiceTest extends IntegrationTestSupport {
 	void 설문조사_답변의_점수를_조회시_존재하지_않으면_예외가_발생한다() {
 		//given
 		//when, then
-		assertThatThrownBy(() -> surveyAnswerReadService.findScoreById(1))
+		assertThatThrownBy(() -> surveyAnswerReadService.findScoreById(1L))
 			.isInstanceOf(AddictionException.class)
 			.hasMessage("존재하지 않는 설문조사 답변입니다.");
 	}

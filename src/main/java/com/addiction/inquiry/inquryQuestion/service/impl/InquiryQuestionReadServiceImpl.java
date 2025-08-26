@@ -22,7 +22,7 @@ public class InquiryQuestionReadServiceImpl implements InquiryQuestionReadServic
 
     @Override
     public List<InquiryQuestionFindResponse> findAllByUserIdAndInquiryStatus(InquiryStatus inquiryStatus) {
-        int userId = securityService.getCurrentLoginUserInfo().getUserId();
+        long userId = securityService.getCurrentLoginUserInfo().getUserId();
         return inquiryQuestionRepository.findAllByUserIdAndInquiryStatus(userId, inquiryStatus)
                 .stream()
                 .map(InquiryQuestionFindResponse::createResponse)

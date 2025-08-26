@@ -22,17 +22,17 @@ public class AlertHistoryRepositoryImpl implements AlertHistoryRepository {
 	private final AlertHistoryJpaRepository alertHistoryJpaRepository;
 
 	@Override
-	public void deleteByUserId(int userId) {
+	public void deleteByUserId(Long userId) {
 		alertHistoryJpaRepository.deleteByUserId(userId);
 	}
 
 	@Override
-	public List<AlertHistory> findByUserId(int userId) {
+	public List<AlertHistory> findByUserId(Long userId) {
 		return alertHistoryJpaRepository.findByUserId(userId);
 	}
 
 	@Override
-	public Page<AlertHistory> findByUserId(int userId, Pageable pageable) {
+	public Page<AlertHistory> findByUserId(Long userId, Pageable pageable) {
 		return alertHistoryQueryRepository.findByUserId(userId, pageable);
 	}
 
@@ -42,12 +42,12 @@ public class AlertHistoryRepositoryImpl implements AlertHistoryRepository {
 	}
 
 	@Override
-	public boolean hasUncheckedAlerts(int userId) {
+	public boolean hasUncheckedAlerts(Long userId) {
 		return alertHistoryQueryRepository.hasUncheckedAlerts(userId);
 	}
 
 	@Override
-	public boolean hasFriendCode(int userId, String friendCode) {
+	public boolean hasFriendCode(Long userId, String friendCode) {
 		return alertHistoryQueryRepository.hasFriendCode(userId, friendCode);
 	}
 

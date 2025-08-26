@@ -22,18 +22,18 @@ public class SurveyAnswerReadServiceImpl implements SurveyAnswerReadService {
 	private final SurveyAnswerRepository surveyAnswerRepository;
 
 	@Override
-	public SurveyAnswer findById(int answerId) {
+	public SurveyAnswer findById(Long answerId) {
 		return surveyAnswerRepository.findById(answerId)
 			.orElseThrow(() -> new AddictionException(UNKNOWN_SURVEY_ANSWER));
 	}
 
 	@Override
-	public int findScoreById(int answerId) {
+	public int findScoreById(Long answerId) {
 		return findById(answerId).getScore();
 	}
 
 	@Override
-	public int calculateTotalScore(List<Integer> answerId) {
+	public int calculateTotalScore(List<Long> answerId) {
 		return answerId.stream()
 			.mapToInt(this::findScoreById)
 			.sum();

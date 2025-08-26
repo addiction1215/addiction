@@ -8,7 +8,7 @@ import com.addiction.alertHistory.entity.AlertHistory;
 
 public interface AlertHistoryJpaRepository extends JpaRepository<AlertHistory, Long> {
 
-	void deleteByUserId(int userId);
+	void deleteByUserId(Long userId);
 
-	List<AlertHistory> findByUserId(int userId);
+	List<AlertHistory> findByUserId(Long userId);
 }

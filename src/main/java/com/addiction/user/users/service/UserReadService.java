@@ -10,7 +10,7 @@ public interface UserReadService {
 
 	User findByEmail(String email);
 
-	User findById(int id);
+	User findById(Long id);
 
 	UserStartDateResponse findStartDate();
 

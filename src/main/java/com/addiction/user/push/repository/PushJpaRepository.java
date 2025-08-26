@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.addiction.user.push.entity.Push;
 
-public interface PushJpaRepository extends JpaRepository<Push, Integer> {
-    void deleteAllByUserId(int userId);
-    Optional<Push> findByDeviceIdAndUserId(String deviceId, int userId);
+public interface PushJpaRepository extends JpaRepository<Push, Long> {
+    void deleteAllByUserId(Long userId);
+    Optional<Push> findByDeviceIdAndUserId(String deviceId, Long userId);
 }

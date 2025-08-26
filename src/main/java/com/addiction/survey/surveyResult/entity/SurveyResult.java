@@ -24,17 +24,17 @@ import lombok.NoArgsConstructor;
 public class SurveyResult extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	private String title;
 
-	private int score;
+	private Integer score;
 
 	@OneToMany(mappedBy = "surveyResult", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<SurveyResultDescription> descriptions = new ArrayList<>();
 
 	@Builder
-	public SurveyResult(int id, String title, int score, List<SurveyResultDescription> descriptions) {
+	public SurveyResult(Long id, String title, Integer score, List<SurveyResultDescription> descriptions) {
 		this.id = id;
 		this.title = title;
 		this.score = score;
