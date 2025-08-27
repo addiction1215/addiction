@@ -107,8 +107,6 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.answerId(List.of(surveyAnswer1.getId()))
 			.cigarettePrice(5000)
 			.purpose("금연 화이팅")
-			.sex(Sex.FEMAIL)
-			.birthDay("12341234")
 			.build();
 
 		//when
