@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 
+import com.addiction.user.users.entity.enums.Sex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -176,17 +177,19 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 	void 사용자_저장_API() throws Exception {
 		// given
 		UserSaveRequest request = UserSaveRequest.builder()
-			.email("test@test.com")
-			.password("1234")
-			.phoneNumber("01012341234")
-			.nickName("테스트닉네임")
-			.build();
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName("testUser")
+                .sex(Sex.FEMAIL)
+                .build();
 
 		given(userService.save(any(UserSaveServiceRequest.class)))
 			.willReturn(UserSaveResponse.builder()
-				.email("test@test.com")
-				.phoneNumber("01012341234")
-				.nickName("테스트닉네임")
+                .email("test@test.com")
+                .birthDay("123411111")
+                .nickName("testUser")
+                .sex(Sex.FEMAIL)
 				.build()
 			);
 
@@ -206,10 +209,12 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 						.description("이메일"),
 					fieldWithPath("password").type(JsonFieldType.STRING)
 						.description("비밀번호"),
-					fieldWithPath("phoneNumber").type(JsonFieldType.STRING)
-						.description("핸드폰번호"),
+					fieldWithPath("birthDay").type(JsonFieldType.STRING)
+						.description("생년월일 (YYYYMMDD)"),
 					fieldWithPath("nickName").type(JsonFieldType.STRING)
-						.description("닉네임")
+						.description("닉네임"),
+                    fieldWithPath("sex").type(JsonFieldType.STRING)
+                            .description("성별 가능한값: " + Arrays.toString(Sex.values()))
 				),
 				responseFields(
 					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
@@ -222,10 +227,12 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 						.description("응답 데이터"),
 					fieldWithPath("data.email").type(JsonFieldType.STRING)
 						.description("이메일"),
-					fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING)
-						.description("핸드폰번호"),
+					fieldWithPath("data.birthDay").type(JsonFieldType.STRING)
+						.description("생년월일"),
 					fieldWithPath("data.nickName").type(JsonFieldType.STRING)
-						.description("닉네임")
+						.description("닉네임"),
+                    fieldWithPath("data.sex").type(JsonFieldType.STRING)
+                            .description("성별")
 				)
 			));
 	}
