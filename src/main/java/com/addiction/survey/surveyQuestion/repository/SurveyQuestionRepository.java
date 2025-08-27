@@ -9,7 +9,7 @@ public interface SurveyQuestionRepository {
 
 	SurveyQuestion save(SurveyQuestion surveyQuestion);
 
-	List<SurveyQuestion> findAll();
+	List<SurveyQuestion> findAllByOrderBySortAsc();
 
 	void deleteAllInBatch();
 

@@ -30,10 +30,13 @@ public class SurveyAnswer extends BaseTimeEntity {
 
 	private Integer score;
 
+    private Integer sort;
+
 	@Builder
-	public SurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score) {
+	public SurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score, Integer sort) {
 		this.surveyQuestion = surveyQuestion;
 		this.answer = answer;
 		this.score = score;
-	}
+        this.sort = sort;
+    }
 }
