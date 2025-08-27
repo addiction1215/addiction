@@ -101,8 +101,6 @@ public class UserControllerTest extends ControllerTestSupport {
 			.answerId(List.of(1L,2L))
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
-			.sex(Sex.FEMAIL)
-			.birthDay("12341234")
 			.build();
 
 		// when // then
@@ -127,8 +125,6 @@ public class UserControllerTest extends ControllerTestSupport {
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
 			.purpose("금연 화이팅")
 			.cigarettePrice(5000)
-			.sex(Sex.FEMAIL)
-			.birthDay("12341234")
 			.build();
 
 		// when // then
@@ -153,8 +149,6 @@ public class UserControllerTest extends ControllerTestSupport {
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
 			.answerId(List.of(1L,2L))
 			.cigarettePrice(5000)
-			.sex(Sex.FEMAIL)
-			.birthDay("12341234")
 			.build();
 
 		// when // then
@@ -179,8 +173,6 @@ public class UserControllerTest extends ControllerTestSupport {
 		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
 			.answerId(List.of(1L,2L))
 			.purpose("금연 화이팅")
-			.sex(Sex.FEMAIL)
-			.birthDay("12341234")
 			.build();
 
 		// when // then
@@ -197,57 +189,6 @@ public class UserControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.message").value("담배 가격은 0원 초과이어야 합니다."));
 	}
 
-	@DisplayName("사용자의 설문결과를 저장할 시 성별은 필수입니다.")
-	@Test
-	@WithMockUser(roles = "USER")
-	void 사용자_설문결과를_저장시_성별은_필수이다() throws Exception {
-		// given
-		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1L,2L))
-			.purpose("금연 화이팅")
-			.cigarettePrice(5000)
-			.birthDay("12341234")
-			.build();
-
-		// when // then
-		mockMvc.perform(
-				patch("/api/v1/user/survey")
-					.content(objectMapper.writeValueAsString(userUpdateSurveyRequest))
-					.contentType(APPLICATION_JSON)
-					.with(csrf())
-			)
-			.andDo(print())
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.statusCode").value("400"))
-			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
-			.andExpect(jsonPath("$.message").value("성별은 필수입니다."));
-	}
-
-	@DisplayName("사용자의 설문결과를 저장할 시 생년월일은 필수입니다.")
-	@Test
-	@WithMockUser(roles = "USER")
-	void 사용자_설문결과를_저장시_생년월일은_필수이다() throws Exception {
-		// given
-		UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
-			.answerId(List.of(1L,2L))
-			.purpose("금연 화이팅")
-			.cigarettePrice(5000)
-			.sex(Sex.FEMAIL)
-			.build();
-
-		// when // then
-		mockMvc.perform(
-				patch("/api/v1/user/survey")
-					.content(objectMapper.writeValueAsString(userUpdateSurveyRequest))
-					.contentType(APPLICATION_JSON)
-					.with(csrf())
-			)
-			.andDo(print())
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.statusCode").value("400"))
-			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
-			.andExpect(jsonPath("$.message").value("생년월일은 필수입니다."));
-	}
 
 	@DisplayName("사용자의 금연시작 날짜를 조회한다.")
 	@Test

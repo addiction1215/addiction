@@ -1,5 +1,6 @@
 package com.addiction.user.users.controller.request;
 
+import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.service.request.UserSaveServiceRequest;
 
 import jakarta.validation.constraints.NotNull;
@@ -13,27 +14,31 @@ public class UserSaveRequest {
 
 	@NotNull(message = "이메일은 필수입니다.")
 	private String email;
-	@NotNull(message = "핸드폰번호는 필수입니다.")
-	private String phoneNumber;
 	@NotNull(message = "비밀번호는 필수입니다.")
 	private String password;
 	@NotNull(message = "닉네임은 필수입니다.")
 	private String nickName;
+    @NotNull(message = "성별은 필수입니다.")
+    private Sex sex;
+    @NotNull(message = "생년월일은 필수입니다.")
+    private String birthDay;
 
-	@Builder
-	public UserSaveRequest(String email, String phoneNumber, String password, String nickName) {
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.password = password;
-		this.nickName = nickName;
-	}
+    @Builder
+    public UserSaveRequest(String birthDay, String email, String nickName, String password, Sex sex) {
+        this.birthDay = birthDay;
+        this.email = email;
+        this.nickName = nickName;
+        this.password = password;
+        this.sex = sex;
+    }
 
-	public UserSaveServiceRequest toServiceRequest() {
-		return UserSaveServiceRequest.builder()
-			.email(email)
-			.password(password)
-			.phoneNumber(phoneNumber)
-			.nickName(nickName)
-			.build();
+    public UserSaveServiceRequest toServiceRequest() {
+        return UserSaveServiceRequest.builder()
+                .birthDay(birthDay)
+                .email(email)
+                .nickName(nickName)
+                .password(password)
+                .sex(sex)
+                .build();
 	}
 }

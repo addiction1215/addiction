@@ -22,18 +22,12 @@ public class UserUpdateSurveyRequest {
 	private String purpose;
 	@Min(value = 1, message = "담배 가격은 0원 초과이어야 합니다.")
 	private int cigarettePrice;
-	@NotNull(message = "성별은 필수입니다.")
-	private Sex sex;
-	@NotNull(message = "생년월일은 필수입니다.")
-	private String birthDay;
 
 	@Builder
-	public UserUpdateSurveyRequest(List<Long> answerId, String purpose, int cigarettePrice, Sex sex, String birthDay) {
+	public UserUpdateSurveyRequest(List<Long> answerId, String purpose, int cigarettePrice) {
 		this.answerId = answerId;
 		this.purpose = purpose;
 		this.cigarettePrice = cigarettePrice;
-		this.sex = sex;
-		this.birthDay = birthDay;
 	}
 
 	public UserUpdateSurveyServiceRequest toServiceRequest() {
@@ -41,8 +35,6 @@ public class UserUpdateSurveyRequest {
 			.answerId(answerId)
 			.purpose(purpose)
 			.cigarettePrice(cigarettePrice)
-			.sex(sex)
-			.birthDay(birthDay)
 			.build();
 	}
 }

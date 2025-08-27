@@ -50,10 +50,10 @@ public class UserTest extends IntegrationTestSupport {
 
 		LocalDateTime startDate = LocalDateTime.now();
 
-		user.updateSurvey("금연 화이팅", 10, 5000, startDate, Sex.FEMAIL, "12341234");
+		user.updateSurvey("금연 화이팅", 10, 5000, startDate);
 
-		assertThat(user).extracting( "purpose", "totalScore", "cigarettePrice", "settingStatus", "startDate", "sex", "birthDay")
-			.contains("금연 화이팅", 10, 5000, SettingStatus.COMPLETE, startDate, Sex.FEMAIL, "12341234");
+		assertThat(user).extracting( "purpose", "totalScore", "cigarettePrice", "settingStatus", "startDate")
+			.contains("금연 화이팅", 10, 5000, SettingStatus.COMPLETE, startDate);
 	}
 
 	@DisplayName("회원 목표 수정한다.")
