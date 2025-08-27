@@ -61,12 +61,10 @@ public class UserServiceImpl implements UserService {
 			userUpdateSurveyServiceRequest.getPurpose(),
 			totalScore,
 			userUpdateSurveyServiceRequest.getCigarettePrice(),
-			LocalDateTime.now(),
-			userUpdateSurveyServiceRequest.getSex(),
-			userUpdateSurveyServiceRequest.getBirthDay()
+			LocalDateTime.now()
 		);
 
-		return UserUpdateSurveyResponse.of(user, surveyResultReadService.findClosestScore(totalScore));
+		return UserUpdateSurveyResponse.of(surveyResultReadService.findClosestScore(totalScore));
 	}
 
 	@Override

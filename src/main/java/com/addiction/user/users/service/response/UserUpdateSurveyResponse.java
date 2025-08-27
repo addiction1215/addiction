@@ -14,25 +14,19 @@ import lombok.Getter;
 public class UserUpdateSurveyResponse {
 	private final String resultTitle;
 	private final List<String> result;
-	private final Sex sex;
-	private final String birthDay;
 
 	@Builder
-	public UserUpdateSurveyResponse(String resultTitle, List<String> result, Sex sex, String birthDay) {
+	public UserUpdateSurveyResponse(String resultTitle, List<String> result) {
 		this.resultTitle = resultTitle;
 		this.result = result;
-		this.sex = sex;
-		this.birthDay = birthDay;
 	}
 
-	public static UserUpdateSurveyResponse of(User user, SurveyResult surveyResult) {
+	public static UserUpdateSurveyResponse of(SurveyResult surveyResult) {
 		return UserUpdateSurveyResponse.builder()
 			.resultTitle(surveyResult.getTitle())
 			.result(
 				surveyResult.getDescriptions().stream().map(SurveyResultDescription::getDescription).toList()
 			)
-			.sex(user.getSex())
-			.birthDay(user.getBirthDay())
 			.build();
 	}
 }
