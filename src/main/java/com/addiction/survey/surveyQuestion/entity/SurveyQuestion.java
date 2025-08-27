@@ -39,9 +39,12 @@ public class SurveyQuestion extends BaseTimeEntity {
 	@OneToMany(mappedBy = "surveyQuestion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<SurveyAnswer> surveyAnswers = new ArrayList<>();
 
+    private Integer sort;
+
 	@Builder
-	public SurveyQuestion(String question, SurveyType surveyType) {
+	public SurveyQuestion(String question, SurveyType surveyType, Integer sort) {
 		this.question = question;
 		this.surveyType = surveyType;
-	}
+        this.sort = sort;
+    }
 }

@@ -18,9 +18,9 @@ public class SurveyQuestionReadServiceImpl implements SurveyQuestionReadService 
 	private final SurveyQuestionRepository surveyQuestionRepository;
 
 	@Override
-	public SurveyQuestionFindListServiceResponse findAll() {
+	public SurveyQuestionFindListServiceResponse findAllByOrderBySortAsc() {
 		return SurveyQuestionFindListServiceResponse.of(
-			surveyQuestionRepository.findAll().stream().map(SurveyQuestionFindServiceResponse::createResponse).toList()
+			surveyQuestionRepository.findAllByOrderBySortAsc().stream().map(SurveyQuestionFindServiceResponse::createResponse).toList()
 		);
 	}
 

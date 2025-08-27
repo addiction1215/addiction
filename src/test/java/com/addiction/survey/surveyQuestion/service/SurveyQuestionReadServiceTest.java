@@ -31,7 +31,7 @@ public class SurveyQuestionReadServiceTest extends IntegrationTestSupport {
 		surveyAnswerRepository.save(surveyAnswer1);
 		surveyAnswerRepository.save(surveyAnswer2);
 
-		SurveyQuestionFindListServiceResponse response = surveyQuestionReadService.findAll();
+		SurveyQuestionFindListServiceResponse response = surveyQuestionReadService.findAllByOrderBySortAsc();
 
 		assertAll(
 			() -> assertThat(response.getResponse()).extracting("id", "question")

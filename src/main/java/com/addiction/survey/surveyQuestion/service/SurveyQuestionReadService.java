@@ -4,6 +4,6 @@ import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFi
 
 public interface SurveyQuestionReadService {
 
-	SurveyQuestionFindListServiceResponse findAll();
+	SurveyQuestionFindListServiceResponse findAllByOrderBySortAsc();
 
 }
