@@ -1,14 +1,14 @@
-package com.addiction.friend.friend.service.impl;
+package com.addiction.friend.service.impl;
 
 import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.firebase.FirebaseService;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
-import com.addiction.friend.friend.service.request.FriendProposalRequest;
-import com.addiction.friend.friend.entity.Friend;
-import com.addiction.friend.friend.entity.FriendStatus;
-import com.addiction.friend.friend.repository.FriendJpaRepository;
-import com.addiction.friend.friend.service.FriendService;
+import com.addiction.friend.service.request.FriendProposalRequest;
+import com.addiction.friend.entity.Friend;
+import com.addiction.friend.entity.FriendStatus;
+import com.addiction.friend.repository.FriendJpaRepository;
+import com.addiction.friend.service.FriendService;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.global.security.SecurityService;
 import com.addiction.user.push.entity.Push;

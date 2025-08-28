@@ -1,9 +1,9 @@
-package com.addiction.friend.friend.controller;
+package com.addiction.friend.controller;
 
-import com.addiction.friend.friend.service.request.FriendProposalRequest;
-import com.addiction.friend.friend.repository.response.FriendProfileDto;
-import com.addiction.friend.friend.service.FriendReadService;
-import com.addiction.friend.friend.service.FriendService;
+import com.addiction.friend.service.request.FriendProposalRequest;
+import com.addiction.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.service.FriendReadService;
+import com.addiction.friend.service.FriendService;
 import com.addiction.global.ApiResponse;
 import com.addiction.global.page.request.PageInfoRequest;
 import com.addiction.global.page.response.PageCustom;

@@ -1,4 +1,4 @@
-package com.addiction.friend.friend.service.request;
+package com.addiction.friend.service.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

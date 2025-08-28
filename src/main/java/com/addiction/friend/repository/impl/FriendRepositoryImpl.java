@@ -1,8 +1,8 @@
-package com.addiction.friend.friend.repository.impl;
+package com.addiction.friend.repository.impl;
 
-import com.addiction.friend.friend.repository.FriendQueryRepository;
-import com.addiction.friend.friend.repository.FriendRepository;
-import com.addiction.friend.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.repository.FriendQueryRepository;
+import com.addiction.friend.repository.FriendRepository;
+import com.addiction.friend.repository.response.FriendProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.addiction.friend.friend.entity;
+package com.addiction.friend.entity;
 
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.user.users.entity.User;

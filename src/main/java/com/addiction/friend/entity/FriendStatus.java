@@ -1,4 +1,4 @@
-package com.addiction.friend.friend.entity;
+package com.addiction.friend.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

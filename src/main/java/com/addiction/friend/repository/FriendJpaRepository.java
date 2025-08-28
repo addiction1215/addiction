@@ -1,7 +1,7 @@
-package com.addiction.friend.friend.repository;
+package com.addiction.friend.repository;
 
-import com.addiction.friend.friend.entity.Friend;
-import com.addiction.friend.friend.entity.FriendStatus;
+import com.addiction.friend.entity.Friend;
+import com.addiction.friend.entity.FriendStatus;
 import com.addiction.user.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
