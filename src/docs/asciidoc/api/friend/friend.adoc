@@ -10,3 +10,16 @@ include::{snippets}/friend-list/request-fields.adoc[]
 
 include::{snippets}/friend-list/http-response.adoc[]
 include::{snippets}/friend-list/response-fields.adoc[]
+
+[[friend-request]]
+=== 친구 요청
+
+==== HTTP Request
+
+include::{snippets}/friend-request/http-request.adoc[]
+include::{snippets}/friend-request/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-request/http-response.adoc[]
+include::{snippets}/friend-request/response-fields.adoc[]
