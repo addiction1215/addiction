@@ -1,7 +1,6 @@
-package com.addiction.friend.friend.repository;
+package com.addiction.friend.repository;
 
-import com.addiction.friend.friend.entity.QFriend;
-import com.addiction.friend.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.repository.response.FriendProfileDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.addiction.friend.friend.entity.QFriend.friend;
+import static com.addiction.friend.entity.QFriend.friend;
 import static com.addiction.user.users.entity.QUser.user;
 import static java.util.Optional.ofNullable;
 

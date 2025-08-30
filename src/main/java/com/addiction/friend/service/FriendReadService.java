@@ -1,6 +1,6 @@
-package com.addiction.friend.friend.service;
+package com.addiction.friend.service;
 
-import com.addiction.friend.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.repository.response.FriendProfileDto;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 

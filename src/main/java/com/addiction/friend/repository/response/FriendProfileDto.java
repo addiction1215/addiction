@@ -1,4 +1,4 @@
-package com.addiction.friend.friend.repository.response;
+package com.addiction.friend.repository.response;
 
 import lombok.Getter;
 

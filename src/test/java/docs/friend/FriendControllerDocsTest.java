@@ -1,8 +1,9 @@
 package docs.friend;
 
-import com.addiction.friend.friend.controller.FriendController;
-import com.addiction.friend.friend.repository.response.FriendProfileDto;
-import com.addiction.friend.friend.service.FriendReadService;
+import com.addiction.friend.controller.FriendController;
+import com.addiction.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.service.FriendReadService;
+import com.addiction.friend.service.FriendService;
 import com.addiction.global.page.request.PageInfoRequest;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
@@ -10,6 +11,7 @@ import com.addiction.global.page.response.PageableCustom;
 import docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
@@ -20,9 +22,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,10 +33,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FriendControllerDocsTest extends RestDocsSupport {
 
     private final FriendReadService friendReadService = mock(FriendReadService.class);
+    private final FriendService friendService = mock(FriendService.class);
 
     @Override
     protected Object initController() {
-        return new FriendController(friendReadService);
+        return new FriendController(friendReadService, friendService);
     }
 
     @DisplayName("친구 목록 조회 API")
@@ -110,6 +113,40 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("총 페이지 수"),
                                 fieldWithPath("data.pageInfo.totalElement").type(JsonFieldType.NUMBER)
                                         .description("총 요소 개수")
+                        )));
+    }
+
+    @DisplayName("친구 요청 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void friendRequest() throws Exception {
+        // given
+        Long receiverId = 2L;
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/friend/request")
+                                .content("{\"receiverId\": " + receiverId + "}")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("friend-request",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("receiverId").type(JsonFieldType.NUMBER)
+                                        .description("친구 요청을 받을 사용자 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.STRING)
+                                        .description("응답 데이터")
                         )));
     }
 }
