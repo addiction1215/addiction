@@ -1,8 +1,8 @@
-package com.addiction.friend.friend.service.impl;
+package com.addiction.friend.service.impl;
 
-import com.addiction.friend.friend.repository.FriendRepository;
-import com.addiction.friend.friend.repository.response.FriendProfileDto;
-import com.addiction.friend.friend.service.FriendReadService;
+import com.addiction.friend.repository.FriendRepository;
+import com.addiction.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.service.FriendReadService;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.security.SecurityService;
