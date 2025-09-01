@@ -54,8 +54,11 @@ public class FriendServiceImpl implements FriendService {
         }
 
         boolean alreadyFriends = friendJpaRepository.existsByRequesterAndReceiver(requester, receiver) ||
+
                 friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
-        
+
+                                friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
+
         if (alreadyFriends) {
             throw new AddictionException("이미 친구인 사용자입니다.");
         }
@@ -84,7 +87,6 @@ public class FriendServiceImpl implements FriendService {
         friendRequest.accept();
         sendFriendAcceptNotification(friendRequest.getRequester(), friendRequest.getReceiver());
     }
-
     private void sendFriendRequestNotification(User receiver, User requester) {
         try {
             Optional<Push> pushOptional = receiver.getPushes().stream()

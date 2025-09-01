@@ -22,7 +22,6 @@ include::{snippets}/friend-request/request-fields.adoc[]
 ==== HTTP Response
 
 include::{snippets}/friend-request/http-response.adoc[]
-include::{snippets}/friend-request/response-fields.adoc[]
 
 === 친구 요청 승인
 
@@ -35,3 +34,4 @@ include::{snippets}/friend-accept/request-fields.adoc[]
 
 include::{snippets}/friend-accept/http-response.adoc[]
 include::{snippets}/friend-accept/response-fields.adoc[]
+=======
