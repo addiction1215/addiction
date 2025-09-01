@@ -35,3 +35,15 @@ include::{snippets}/friend-accept/request-fields.adoc[]
 
 include::{snippets}/friend-accept/http-response.adoc[]
 include::{snippets}/friend-accept/response-fields.adoc[]
+
+=== 친구 삭제
+
+==== HTTP Request
+
+include::{snippets}/friend-delete/http-request.adoc[]
+include::{snippets}/friend-delete/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-delete/http-response.adoc[]
+include::{snippets}/friend-delete/response-fields.adoc[]
