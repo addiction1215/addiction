@@ -28,4 +28,10 @@ public class FriendController {
         friendService.sendFriendRequest(request);
         return ApiResponse.ok("친구 요청이 전송되었습니다.");
     }
+
+    @PostMapping("/accept/{friendId}")
+    public ApiResponse<String> acceptFriendRequest(@PathVariable Long friendId) {
+        friendService.acceptFriendRequest(friendId);
+        return ApiResponse.ok("친구 요청을 수락했습니다.");
+    }
 }

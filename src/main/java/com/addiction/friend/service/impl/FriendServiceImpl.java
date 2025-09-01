@@ -66,6 +66,25 @@ public class FriendServiceImpl implements FriendService {
         sendFriendRequestNotification(receiver, requester);
     }
 
+    @Override
+    public void acceptFriendRequest(Long friendId) {
+        Long currentUserId = securityService.getCurrentLoginUserInfo().getUserId();
+        
+        Friend friendRequest = friendJpaRepository.findById(friendId)
+                .orElseThrow(() -> new AddictionException("친구 요청을 찾을 수 없습니다."));
+
+        if (!friendRequest.getReceiver().getId().equals(currentUserId)) {
+            throw new AddictionException("친구 요청을 수락할 권한이 없습니다.");
+        }
+
+        if (!friendRequest.isPending()) {
+            throw new AddictionException("이미 처리된 친구 요청입니다.");
+        }
+
+        friendRequest.accept();
+        sendFriendAcceptNotification(friendRequest.getRequester(), friendRequest.getReceiver());
+    }
+
     private void sendFriendRequestNotification(User receiver, User requester) {
         try {
             Optional<Push> pushOptional = receiver.getPushes().stream()
@@ -90,6 +109,33 @@ public class FriendServiceImpl implements FriendService {
             }
         } catch (Exception e) {
             log.error("친구 요청 알림 전송 실패: {}", e.getMessage());
+        }
+    }
+
+    private void sendFriendAcceptNotification(User requester, User accepter) {
+        try {
+            Optional<Push> pushOptional = requester.getPushes().stream()
+                    .findFirst();
+            
+            if (pushOptional.isPresent()) {
+                Push push = pushOptional.get();
+                
+                SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
+                        .alert_destination_type(AlertDestinationType.FRIEND_CODE)
+                        .alert_destination_info(String.valueOf(accepter.getId()))
+                        .build();
+
+                SendFirebaseServiceRequest firebaseRequest = SendFirebaseServiceRequest.builder()
+                        .push(push)
+                        .sound("default")
+                        .body(accepter.getNickName() + "님이 친구 요청을 수락했습니다.")
+                        .sendFirebaseDataDto(dataDto)
+                        .build();
+
+                firebaseService.sendPushNotification(firebaseRequest, push.getPushToken());
+            }
+        } catch (Exception e) {
+            log.error("친구 수락 알림 전송 실패: {}", e.getMessage());
         }
     }
 }
