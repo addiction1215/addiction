@@ -57,6 +57,13 @@ public class FriendServiceImpl implements FriendService {
         Friends existingFriendships = friendJpaRepository.findAcceptedFriendshipsBetween(requester, receiver);
         
         if (existingFriendships.hasAcceptedFriendshipBetween(requester, receiver)) {
+        boolean alreadyFriends = friendJpaRepository.existsByRequesterAndReceiver(requester, receiver) ||
+
+                friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
+
+                                friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
+
+        if (alreadyFriends) {
             throw new AddictionException("이미 친구인 사용자입니다.");
         }
 

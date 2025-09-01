@@ -24,6 +24,7 @@ include::{snippets}/friend-request/request-fields.adoc[]
 include::{snippets}/friend-request/http-response.adoc[]
 include::{snippets}/friend-request/response-fields.adoc[]
 
+
 === 친구 요청 승인
 
 ==== HTTP Request
