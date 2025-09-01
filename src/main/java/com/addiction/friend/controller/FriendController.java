@@ -34,4 +34,10 @@ public class FriendController {
         friendService.acceptFriendRequest(friendId);
         return ApiResponse.ok("친구 요청을 수락했습니다.");
     }
+
+    @DeleteMapping("/{friendId}")
+    public ApiResponse<String> deleteFriend(@PathVariable Long friendId) {
+        friendService.deleteFriend(friendId);
+        return ApiResponse.ok("친구가 삭제되었습니다.");
+    }
 }

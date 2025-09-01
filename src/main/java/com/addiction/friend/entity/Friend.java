@@ -58,4 +58,27 @@ public class Friend extends BaseTimeEntity {
     public boolean isAccepted() {
         return this.status == FriendStatus.ACCEPTED;
     }
+
+    public boolean isFriendshipBetween(User user1, User user2) {
+        return (this.requester.equals(user1) && this.receiver.equals(user2)) ||
+               (this.requester.equals(user2) && this.receiver.equals(user1));
+    }
+
+    public boolean isParticipant(User user) {
+        return this.requester.equals(user) || this.receiver.equals(user);
+    }
+
+    public boolean canBeDeletedBy(User user) {
+        return this.isAccepted() && this.isParticipant(user);
+    }
+
+    public User getOtherParticipant(User user) {
+        if (this.requester.equals(user)) {
+            return this.receiver;
+        } else if (this.receiver.equals(user)) {
+            return this.requester;
+        } else {
+            throw new IllegalArgumentException("해당 사용자는 이 친구 관계의 참여자가 아닙니다.");
+        }
+    }
 }
