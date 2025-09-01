@@ -53,7 +53,8 @@ public class FriendServiceImpl implements FriendService {
             throw new AddictionException("이미 친구 요청을 보낸 상태입니다.");
         }
 
-        boolean alreadyFriends = friendJpaRepository.existsByUsers(requester, receiver);
+        boolean alreadyFriends = friendJpaRepository.existsByRequesterAndReceiver(requester, receiver) ||
+                friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
         
         if (alreadyFriends) {
             throw new AddictionException("이미 친구인 사용자입니다.");
