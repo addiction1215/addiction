@@ -77,8 +77,7 @@ public class Friend extends BaseTimeEntity {
             return this.receiver;
         } else if (this.receiver.equals(user)) {
             return this.requester;
-        } else {
-            throw new IllegalArgumentException("해당 사용자는 이 친구 관계의 참여자가 아닙니다.");
         }
+        throw new IllegalArgumentException("해당 사용자는 이 친구 관계의 참여자가 아닙니다.");
     }
 }
