@@ -65,3 +65,6 @@ jwt:
 
 aes:
   key-value: ${AES_KEY}
+
+logging:
+  config: classpath:logback/logback-config.xml
