@@ -36,24 +36,10 @@ public class LoggingInterceptor implements HandlerInterceptor {
         String url = request.getRequestURL().toString();
         String queryStr = request.getQueryString();
         String method = cachingRequest.getMethod();
-        String requestStr = "";
-        String responseStr = "";
 
         //요청 응답이 appliction/json일 경우에만 내용 처리
-        if (cachingRequest.getContentType() != null && cachingRequest.getContentType().contains("application/json")) {
-            cachingRequest.getContentAsByteArray();
-            if (cachingRequest.getContentAsByteArray().length != 0){
-                byte[] contentBytes = cachingRequest.getContentAsByteArray();
-                requestStr = cleanString(new String(contentBytes, StandardCharsets.UTF_8));
-            }
-        }
-        if (cachingResponse.getContentType() != null && cachingResponse.getContentType().contains("application/json")) {
-            cachingResponse.getContentAsByteArray();
-            if (cachingResponse.getContentAsByteArray().length != 0) {
-                byte[] contentBytes = cachingResponse.getContentAsByteArray();
-                responseStr = cleanString(new String(contentBytes, StandardCharsets.UTF_8));
-            }
-        }
+        String requestStr = extractJsonBody(cachingRequest.getContentType(), cachingRequest.getContentAsByteArray());
+        String responseStr = extractJsonBody(cachingResponse.getContentType(), cachingResponse.getContentAsByteArray());
 
         logging(url, queryStr, method, requestStr, responseStr);
     }
@@ -61,7 +47,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
     public void logging(String url, String queryStr, String method, String requestStr, String responseStr) {
         StringBuilder logMessageBuilder = new StringBuilder("\n");
         if("GET".equals(method)) {
-            url+="/"+ Optional.ofNullable(queryStr).orElse("");
+            url+="?"+ Optional.ofNullable(queryStr).orElse("");
         }
         logMessageBuilder.append("┌───────────────────────────────────────────────────────────────────────────────────────\n");
         logMessageBuilder.append("│Request URL: ").append(url).append("\n");
@@ -78,5 +64,12 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     public String cleanString(String str) {
         return str.replace("\n", "").replace("\r", "").replace(" ", "");
+    }
+
+    private String extractJsonBody(String contentType, byte[] contentBytes) {
+        if (contentType != null && contentType.contains("application/json") && contentBytes.length != 0) {
+            return cleanString(new String(contentBytes, StandardCharsets.UTF_8));
+        }
+        return "";
     }
 }
