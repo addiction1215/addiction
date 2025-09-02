@@ -22,8 +22,8 @@ public class SurveyQuestionRepositoryImpl implements SurveyQuestionRepository {
 	}
 
 	@Override
-	public List<SurveyQuestion> findAll() {
-		return surveyQuestionJpaRepository.findAll();
+	public List<SurveyQuestion> findAllByOrderBySortAsc() {
+		return surveyQuestionJpaRepository.findAllByOrderBySortAsc();
 	}
 
 	@Override
