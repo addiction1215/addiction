@@ -5,6 +5,7 @@ import com.addiction.firebase.FirebaseService;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
 import com.addiction.friend.entity.Friend;
+import com.addiction.friend.entity.Friends;
 import com.addiction.friend.entity.FriendStatus;
 import com.addiction.friend.entity.Friends;
 import com.addiction.friend.repository.FriendJpaRepository;

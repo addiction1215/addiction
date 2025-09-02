@@ -37,7 +37,7 @@ public class SurveyControllerDocsTest extends RestDocsSupport {
 	@Test
 	void 설문조사_문항_조회_API() throws Exception {
 		// given
-		given(surveyQuestionReadService.findAll())
+		given(surveyQuestionReadService.findAllByOrderBySortAsc())
 			.willReturn(SurveyQuestionFindListServiceResponse.builder()
 				.response(
 					List.of(

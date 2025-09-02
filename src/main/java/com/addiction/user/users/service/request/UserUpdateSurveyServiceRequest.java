@@ -12,16 +12,11 @@ public class UserUpdateSurveyServiceRequest {
 	private final List<Long> answerId;
 	private final String purpose;
 	private final int cigarettePrice;
-	private final Sex sex;
-	private final String birthDay;
 
 	@Builder
-	public UserUpdateSurveyServiceRequest(List<Long> answerId, String purpose, int cigarettePrice, Sex sex,
-		String birthDay) {
+	public UserUpdateSurveyServiceRequest(List<Long> answerId, String purpose, int cigarettePrice) {
 		this.answerId = answerId;
 		this.purpose = purpose;
 		this.cigarettePrice = cigarettePrice;
-		this.sex = sex;
-		this.birthDay = birthDay;
 	}
 }

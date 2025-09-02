@@ -18,7 +18,7 @@ public class SurveyQuestionController {
 	private final SurveyQuestionReadService surveyQuestionReadService;
 
 	@GetMapping
-	public ApiResponse<SurveyQuestionFindListServiceResponse> findAll() {
-		return ApiResponse.ok(surveyQuestionReadService.findAll());
+	public ApiResponse<SurveyQuestionFindListServiceResponse> findAllByOrderBySortAsc() {
+		return ApiResponse.ok(surveyQuestionReadService.findAllByOrderBySortAsc());
 	}
 }

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.addiction.user.users.entity.enums.Sex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -228,8 +229,9 @@ public class LoginControllerTest extends ControllerTestSupport {
 		UserSaveRequest request = UserSaveRequest.builder()
 			.email("test@test.com")
 			.password("1234")
-			.phoneNumber("01012341234")
+			.birthDay("123411111")
 			.nickName("testUser")
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -252,9 +254,10 @@ public class LoginControllerTest extends ControllerTestSupport {
 	void 사용자_정보를_저장시_이메일은_필수입니다() throws Exception {
 		// given
 		UserSaveRequest request = UserSaveRequest.builder()
-			.password("1234")
-			.phoneNumber("01012341234")
-			.nickName("testUser")
+            .password("1234")
+            .birthDay("123411111")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -277,9 +280,10 @@ public class LoginControllerTest extends ControllerTestSupport {
 	void 사용자_정보를_저장시_비밀번호는_필수입니다() throws Exception {
 		// given
 		UserSaveRequest request = UserSaveRequest.builder()
-			.email("test@test.com")
-			.phoneNumber("01012341234")
-			.nickName("testUser")
+            .email("test@test.com")
+            .birthDay("123411111")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -296,15 +300,16 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.message").value("비밀번호는 필수입니다."));
 	}
 
-	@DisplayName("사용자 정보를 저장시 핸드폰번호는 필수이다.")
+	@DisplayName("사용자 정보를 저장시 생년월일은 필수이다.")
 	@Test
 	@WithMockUser(roles = "USER")
-	void 사용자_정보를_저장시_핸드폰번호는_필수이다() throws Exception {
+	void 사용자_정보를_저장시_생년월일은_필수이다() throws Exception {
 		// given
 		UserSaveRequest request = UserSaveRequest.builder()
-			.email("test@test.com")
-			.password("1234")
-			.nickName("testUser")
+            .email("test@test.com")
+            .password("1234")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -318,7 +323,7 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.statusCode").value("400"))
 			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
-			.andExpect(jsonPath("$.message").value("핸드폰번호는 필수입니다."));
+			.andExpect(jsonPath("$.message").value("생년월일은 필수입니다."));
 	}
 
 	@DisplayName("사용자 정보를 저장시 닉네임은 필수입니다.")
@@ -327,9 +332,10 @@ public class LoginControllerTest extends ControllerTestSupport {
 	void 사용자_정보를_저장시_닉네임은_필수이다() throws Exception {
 		// given
 		UserSaveRequest request = UserSaveRequest.builder()
-			.email("test@test.com")
-			.password("1234")
-			.phoneNumber("01012341234")
+            .email("test@test.com")
+            .password("1234")
+            .birthDay("123411111")
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -345,4 +351,30 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
 			.andExpect(jsonPath("$.message").value("닉네임은 필수입니다."));
 	}
+
+    @DisplayName("사용자 정보를 저장시 성별은 필수입니다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 사용자_정보를_저장시_성별_필수이다() throws Exception {
+        // given
+        UserSaveRequest request = UserSaveRequest.builder()
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName("testUser")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/join")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("성별은 필수입니다."));
+    }
 }
