@@ -6,6 +6,7 @@ import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
 import com.addiction.friend.service.request.FriendProposalRequest;
 import com.addiction.friend.entity.Friend;
+import com.addiction.friend.entity.Friends;
 import com.addiction.friend.entity.FriendStatus;
 import com.addiction.friend.repository.FriendJpaRepository;
 import com.addiction.friend.service.FriendService;
@@ -53,13 +54,9 @@ public class FriendServiceImpl implements FriendService {
             throw new AddictionException("이미 친구 요청을 보낸 상태입니다.");
         }
 
-        boolean alreadyFriends = friendJpaRepository.existsByRequesterAndReceiver(requester, receiver) ||
-
-                friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
-
-                                friendJpaRepository.existsByRequesterAndReceiver(receiver, requester);
-
-        if (alreadyFriends) {
+        Friends existingFriendships = friendJpaRepository.findAcceptedFriendshipsBetween(requester, receiver);
+        
+        if (existingFriendships.hasAcceptedFriendshipBetween(requester, receiver)) {
             throw new AddictionException("이미 친구인 사용자입니다.");
         }
 
@@ -87,6 +84,7 @@ public class FriendServiceImpl implements FriendService {
         friendRequest.accept();
         sendFriendAcceptNotification(friendRequest.getRequester(), friendRequest.getReceiver());
     }
+
     private void sendFriendRequestNotification(User receiver, User requester) {
         try {
             Optional<Push> pushOptional = receiver.getPushes().stream()
@@ -112,6 +110,23 @@ public class FriendServiceImpl implements FriendService {
         } catch (Exception e) {
             log.error("친구 요청 알림 전송 실패: {}", e.getMessage());
         }
+    }
+
+    @Override
+    public void deleteFriend(Long friendId) {
+        Long currentUserId = securityService.getCurrentLoginUserInfo().getUserId();
+        
+        User currentUser = userJpaRepository.findById(currentUserId)
+                .orElseThrow(() -> new AddictionException("사용자를 찾을 수 없습니다."));
+        
+        Friends userFriendships = friendJpaRepository.findAllAcceptedFriendshipsOfUser(currentUser);
+        Friend friendship = userFriendships.findDeletableFriendBy(currentUser, friendId);
+        
+        if (friendship == null) {
+            throw new AddictionException("삭제할 수 있는 친구 관계를 찾을 수 없습니다.");
+        }
+
+        friendJpaRepository.delete(friendship);
     }
 
     private void sendFriendAcceptNotification(User requester, User accepter) {
