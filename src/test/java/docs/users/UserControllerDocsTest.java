@@ -96,8 +96,6 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .answerId(List.of(1L, 2L))
                 .purpose("금연 화이팅")
                 .cigarettePrice(5000)
-                .sex(Sex.FEMAIL)
-                .birthDay("12341234")
                 .build();
 
         given(userService.updateSurvey(any(UserUpdateSurveyServiceRequest.class)))
@@ -107,8 +105,6 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 "지금이 좋은 기회입니다.",
                                 "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."
                         ))
-                        .sex(Sex.FEMAIL)
-                        .birthDay("12341234")
                         .build()
                 );
 
@@ -129,11 +125,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("purpose").type(JsonFieldType.STRING)
                                         .description("금연목표"),
                                 fieldWithPath("cigarettePrice").type(JsonFieldType.NUMBER)
-                                        .description("담배가격"),
-                                fieldWithPath("sex").type(JsonFieldType.STRING)
-                                        .description("성별: 값: " + Arrays.toString(Sex.values())),
-                                fieldWithPath("birthDay").type(JsonFieldType.STRING)
-                                        .description("생년월일 포맷 (YYYYMMDD)")
+                                        .description("담배가격")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
@@ -147,11 +139,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.resultTitle").type(JsonFieldType.STRING)
                                         .description("설문조사 결과 타이틀"),
                                 fieldWithPath("data.result[]").type(JsonFieldType.ARRAY)
-                                        .description("설문조사 결과 설명"),
-                                fieldWithPath("data.sex").type(JsonFieldType.STRING)
-                                        .description("성별: 값: " + Arrays.toString(Sex.values())),
-                                fieldWithPath("data.birthDay").type(JsonFieldType.STRING)
-                                        .description("생년월일 포맷 (YYYYMMDD)")
+                                        .description("설문조사 결과 설명")
                         )
                 ));
     }

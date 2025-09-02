@@ -34,9 +34,11 @@ public class UserServiceTest extends IntegrationTestSupport {
 	void 유저의_정보를_저장한다() {
 		//given
 		UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
-			.email("test@test.com")
-			.password("1234")
-			.phoneNumber("01012341234")
+            .email("test@test.com")
+            .password("1234")
+            .birthDay("123411111")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
 			.build();
 
 		//when
@@ -44,8 +46,8 @@ public class UserServiceTest extends IntegrationTestSupport {
 
 		//then
 		assertThat(userRepository.findByEmail("test@test.com").get())
-			.extracting("email", "phoneNumber")
-			.contains("test@test.com", "01012341234");
+			.extracting("email", "birthDay", "nickName", "sex")
+			.contains("test@test.com", "123411111", "testUser", Sex.FEMALE);
 	}
 
 	@DisplayName("유저의 정보를 수정한다.")
@@ -105,8 +107,6 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.answerId(List.of(surveyAnswer1.getId()))
 			.cigarettePrice(5000)
 			.purpose("금연 화이팅")
-			.sex(Sex.FEMAIL)
-			.birthDay("12341234")
 			.build();
 
 		//when
