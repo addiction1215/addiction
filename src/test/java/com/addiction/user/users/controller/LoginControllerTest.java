@@ -231,7 +231,7 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.password("1234")
 			.birthDay("123411111")
 			.nickName("testUser")
-            .sex(Sex.FEMAIL)
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -257,7 +257,7 @@ public class LoginControllerTest extends ControllerTestSupport {
             .password("1234")
             .birthDay("123411111")
             .nickName("testUser")
-            .sex(Sex.FEMAIL)
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -283,7 +283,7 @@ public class LoginControllerTest extends ControllerTestSupport {
             .email("test@test.com")
             .birthDay("123411111")
             .nickName("testUser")
-            .sex(Sex.FEMAIL)
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -309,7 +309,7 @@ public class LoginControllerTest extends ControllerTestSupport {
             .email("test@test.com")
             .password("1234")
             .nickName("testUser")
-            .sex(Sex.FEMAIL)
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then
@@ -335,7 +335,7 @@ public class LoginControllerTest extends ControllerTestSupport {
             .email("test@test.com")
             .password("1234")
             .birthDay("123411111")
-            .sex(Sex.FEMAIL)
+            .sex(Sex.FEMALE)
 			.build();
 
 		// when // then

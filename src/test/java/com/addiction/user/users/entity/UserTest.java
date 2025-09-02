@@ -37,10 +37,10 @@ public class UserTest extends IntegrationTestSupport {
 	void 회원_정보를_수정한다() {
 		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
 
-		user.update(Sex.FEMAIL, "12341234");
+		user.update(Sex.FEMALE, "12341234");
 
 		assertThat(user).extracting("sex", "birthDay")
-			.contains(Sex.FEMAIL, "12341234");
+			.contains(Sex.FEMALE, "12341234");
 	}
 
 	@DisplayName("회원 설문조사 결과를 수정한다.")

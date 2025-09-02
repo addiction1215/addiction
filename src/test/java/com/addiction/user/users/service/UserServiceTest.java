@@ -38,7 +38,7 @@ public class UserServiceTest extends IntegrationTestSupport {
             .password("1234")
             .birthDay("123411111")
             .nickName("testUser")
-            .sex(Sex.FEMAIL)
+            .sex(Sex.FEMALE)
 			.build();
 
 		//when
@@ -47,7 +47,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		//then
 		assertThat(userRepository.findByEmail("test@test.com").get())
 			.extracting("email", "birthDay", "nickName", "sex")
-			.contains("test@test.com", "123411111", "testUser", Sex.FEMAIL);
+			.contains("test@test.com", "123411111", "testUser", Sex.FEMALE);
 	}
 
 	@DisplayName("유저의 정보를 수정한다.")

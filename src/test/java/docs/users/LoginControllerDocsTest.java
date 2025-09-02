@@ -181,7 +181,7 @@ public class LoginControllerDocsTest extends RestDocsSupport {
                 .password("1234")
                 .birthDay("123411111")
                 .nickName("testUser")
-                .sex(Sex.FEMAIL)
+                .sex(Sex.FEMALE)
                 .build();
 
 		given(userService.save(any(UserSaveServiceRequest.class)))
@@ -189,7 +189,7 @@ public class LoginControllerDocsTest extends RestDocsSupport {
                 .email("test@test.com")
                 .birthDay("123411111")
                 .nickName("testUser")
-                .sex(Sex.FEMAIL)
+                .sex(Sex.FEMALE)
 				.build()
 			);
 
