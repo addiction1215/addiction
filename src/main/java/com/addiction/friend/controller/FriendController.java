@@ -40,4 +40,10 @@ public class FriendController {
         friendService.deleteFriend(friendId);
         return ApiResponse.ok("친구가 삭제되었습니다.");
     }
+
+    @PostMapping("/block/{friendId}")
+    public ApiResponse<String> blockFriend(@PathVariable Long friendId) {
+        friendService.blockFriend(friendId);
+        return ApiResponse.ok("친구가 차단되었습니다.");
+    }
 }
