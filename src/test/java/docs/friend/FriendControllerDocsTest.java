@@ -215,4 +215,36 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터")
                         )));
     }
+
+    @DisplayName("친구 차단 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void blockFriend() throws Exception {
+        // given
+        Long friendId = 1L;
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/friend/block/{friendId}", friendId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("friend-block",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("friendId").description("차단할 친구 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.STRING)
+                                        .description("응답 데이터")
+                        )));
+    }
 }

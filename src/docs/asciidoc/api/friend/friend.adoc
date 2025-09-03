@@ -48,3 +48,16 @@ include::{snippets}/friend-delete/request-fields.adoc[]
 
 include::{snippets}/friend-delete/http-response.adoc[]
 include::{snippets}/friend-delete/response-fields.adoc[]
+
+=== 친구 차단
+
+==== HTTP Request
+
+include::{snippets}/friend-block/http-request.adoc[]
+include::{snippets}/friend-block/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-block/http-response.adoc[]
+include::{snippets}/friend-block/response-fields.adoc[]
+
