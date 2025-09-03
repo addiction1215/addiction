@@ -23,6 +23,11 @@ public class FriendController {
         return ApiResponse.ok(friendReadService.getFriendList(request.toServiceRequest()));
     }
 
+    @GetMapping("/blocked")
+    public ApiResponse<PageCustom<FriendProfileDto>> getBlockedFriendList(@ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(friendReadService.getBlockedFriendList(request.toServiceRequest()));
+    }
+
     @PostMapping("/request")
     public ApiResponse<String> friendRequest(@RequestBody FriendProposalRequest request) {
         friendService.sendFriendRequest(request);

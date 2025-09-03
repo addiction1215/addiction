@@ -7,5 +7,6 @@ import com.addiction.global.page.response.PageCustom;
 public interface FriendReadService {
 
     PageCustom<FriendProfileDto> getFriendList(PageInfoServiceRequest pageRequest);
+    PageCustom<FriendProfileDto> getBlockedFriendList(PageInfoServiceRequest pageRequest);
 
 }

@@ -7,5 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface FriendRepository {
 
     Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable);
+    Page<FriendProfileDto> getBlockedFriendList(Long userId, Pageable pageable);
 
 }
