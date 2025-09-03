@@ -61,3 +61,15 @@ include::{snippets}/friend-block/request-fields.adoc[]
 include::{snippets}/friend-block/http-response.adoc[]
 include::{snippets}/friend-block/response-fields.adoc[]
 
+=== 차단된 친구 조회
+
+==== HTTP Request
+
+include::{snippets}/friend-blocked-list/http-request.adoc[]
+include::{snippets}/friend-blocked-list/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-blocked-list/http-response.adoc[]
+include::{snippets}/friend-blocked-list/response-fields.adoc[]
+
