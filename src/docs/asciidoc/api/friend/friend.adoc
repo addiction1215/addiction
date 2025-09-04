@@ -54,7 +54,7 @@ include::{snippets}/friend-delete/response-fields.adoc[]
 ==== HTTP Request
 
 include::{snippets}/friend-block/http-request.adoc[]
-include::{snippets}/friend-block/request-fields.adoc[]
+include::{snippets}/friend-block/path-parameters.adoc[]
 
 ==== HTTP Response
 
