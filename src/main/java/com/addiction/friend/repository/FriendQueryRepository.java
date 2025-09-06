@@ -43,6 +43,28 @@ public class FriendQueryRepository {
         return new PageImpl<>(content, pageable, total);
     }
 
+    public Page<FriendProfileDto> getBlockedFriendList(Long userId, Pageable pageable) {
+        List<FriendProfileDto> content = queryFactory
+                .select(Projections.constructor(FriendProfileDto.class,
+                        friend.receiver.id,
+                        friend.receiver.nickName
+                ))
+                .from(friend)
+                .join(friend.receiver, user)
+                .where(
+                        isParticipant(userId),
+                        friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED)
+                )
+                .orderBy(friend.receiver.nickName.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = getTotalBlockedFriendsCount(userId);
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private long getTotalFriendsCount(Long userId) {
         return ofNullable(
                 queryFactory
@@ -55,7 +77,24 @@ public class FriendQueryRepository {
         ).orElse(0L);
     }
 
+    private long getTotalBlockedFriendsCount(Long userId) {
+        return ofNullable(
+                queryFactory
+                        .select(friend.count())
+                        .from(friend)
+                        .where(
+                                isParticipant(userId),
+                                friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED)
+                        )
+                        .fetchOne()
+        ).orElse(0L);
+    }
+
     private BooleanExpression isRequesterIdEqualTo(Long userId) {
         return friend.requester.id.eq(userId);
+    }
+
+    private BooleanExpression isParticipant(Long userId) {
+        return friend.requester.id.eq(userId).or(friend.receiver.id.eq(userId));
     }
 }

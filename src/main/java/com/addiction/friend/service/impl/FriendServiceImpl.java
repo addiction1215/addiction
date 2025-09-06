@@ -124,6 +124,27 @@ public class FriendServiceImpl implements FriendService {
         friendJpaRepository.delete(friendship);
     }
 
+    @Override
+    public void blockFriend(Long friendId) {
+        Long currentUserId = securityService.getCurrentLoginUserInfo().getUserId();
+        User currentUser = userReadService.findById(currentUserId);
+        
+        Friends userFriendships = friendJpaRepository.findAllAcceptedFriendshipsOfUser(currentUser);
+        Friend friendship = userFriendships.findDeletableFriendBy(currentUser, friendId);
+        
+        if (friendship == null) {
+            throw new AddictionException("차단할 수 있는 친구 관계를 찾을 수 없습니다.");
+        }
+
+        if (!friendship.canBeBlockedBy(currentUser)) {
+            throw new AddictionException("해당 친구를 차단할 권한이 없습니다.");
+        }
+
+        friendship.block();
+
+        friendJpaRepository.save(friendship);
+    }
+
     private void sendFriendAcceptNotification(User requester, User accepter) {
         try {
             Optional<Push> pushOptional = requester.getPushes().stream()

@@ -18,4 +18,9 @@ public class FriendRepositoryImpl implements FriendRepository {
     public Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable) {
         return friendQueryRepository.getFriendList(userId, pageable);
     }
+
+    @Override
+    public Page<FriendProfileDto> getBlockedFriendList(Long userId, Pageable pageable) {
+        return friendQueryRepository.getBlockedFriendList(userId, pageable);
+    }
 }
