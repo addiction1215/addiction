@@ -65,6 +65,43 @@ public class FriendQueryRepository {
         return new PageImpl<>(content, pageable, total);
     }
 
+    public Page<FriendProfileDto> searchFriends(Long userId, String keyword, Pageable pageable) {
+        List<FriendProfileDto> content = queryFactory
+                .select(Projections.constructor(FriendProfileDto.class,
+                        friend.receiver.id,
+                        friend.receiver.nickName
+                ))
+                .from(friend)
+                .join(friend.receiver, user)
+                .where(
+                        isRequesterIdEqualTo(userId),
+                        friend.status.eq(com.addiction.friend.entity.FriendStatus.ACCEPTED),
+                        friend.receiver.nickName.containsIgnoreCase(keyword)
+                )
+                .orderBy(friend.receiver.nickName.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = getSearchFriendsCount(userId, keyword);
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    private long getSearchFriendsCount(Long userId, String keyword) {
+        return ofNullable(
+                queryFactory
+                        .select(friend.count())
+                        .from(friend)
+                        .where(
+                                isRequesterIdEqualTo(userId),
+                                friend.status.eq(com.addiction.friend.entity.FriendStatus.ACCEPTED),
+                                friend.receiver.nickName.containsIgnoreCase(keyword)
+                        )
+                        .fetchOne()
+        ).orElse(0L);
+    }
+
     private long getTotalFriendsCount(Long userId) {
         return ofNullable(
                 queryFactory

@@ -35,4 +35,12 @@ public class FriendReadServiceImpl implements FriendReadService {
 
         return PageCustom.of(friendRepository.getBlockedFriendList(userId, pageable));
     }
+
+    @Override
+    public PageCustom<FriendProfileDto> searchFriends(String keyword, PageInfoServiceRequest pageRequest) {
+        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Pageable pageable = pageRequest.toPageable();
+
+        return PageCustom.of(friendRepository.searchFriends(userId, keyword, pageable));
+    }
 }

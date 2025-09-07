@@ -8,5 +8,6 @@ public interface FriendReadService {
 
     PageCustom<FriendProfileDto> getFriendList(PageInfoServiceRequest pageRequest);
     PageCustom<FriendProfileDto> getBlockedFriendList(PageInfoServiceRequest pageRequest);
+    PageCustom<FriendProfileDto> searchFriends(String keyword, PageInfoServiceRequest pageRequest);
 
 }
