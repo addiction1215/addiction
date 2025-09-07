@@ -42,6 +42,84 @@ public class FriendControllerDocsTest extends RestDocsSupport {
         return new FriendController(friendReadService, friendService);
     }
 
+    @DisplayName("친구 목록 검색 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void searchFriends() throws Exception {
+        // given
+        String keyword = "친구";
+        PageInfoRequest request = PageInfoRequest.builder()
+                .page(1)
+                .size(12)
+                .build();
+
+        List<FriendProfileDto> searchResults = List.of(
+                new FriendProfileDto(2, "친구 1"),
+                new FriendProfileDto(3, "친구 2")
+        );
+
+        PageableCustom pageInfo = PageableCustom.builder()
+                .currentPage(1)
+                .totalPage(1)
+                .totalElement(2)
+                .build();
+
+        PageCustom<FriendProfileDto> searchFriendList = PageCustom.<FriendProfileDto>builder()
+                .content(searchResults)
+                .pageInfo(pageInfo)
+                .build();
+
+        given(friendReadService.searchFriends(any(String.class), any(PageInfoServiceRequest.class)))
+                .willReturn(searchFriendList);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/friend/search")
+                                .param("keyword", keyword)
+                                .param("page", String.valueOf(request.getPage()))
+                                .param("size", String.valueOf(request.getSize()))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("friend-search",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("keyword")
+                                        .description("검색할 친구 닉네임 키워드"),
+                                parameterWithName("page")
+                                        .description("페이지. 기본값: 1")
+                                        .optional(),
+                                parameterWithName("size")
+                                        .description("페이지 사이즈. 기본값: 12")
+                                        .optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                                        .description("검색된 친구 프로필 리스트"),
+                                fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
+                                        .description("친구 ID"),
+                                fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
+                                        .description("친구 닉네임"),
+                                fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
+                                        .description("페이징 정보"),
+                                fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지"),
+                                fieldWithPath("data.pageInfo.totalPage").type(JsonFieldType.NUMBER)
+                                        .description("총 페이지 수"),
+                                fieldWithPath("data.pageInfo.totalElement").type(JsonFieldType.NUMBER)
+                                        .description("총 요소 개수")
+                        )));
+    }
+
     @DisplayName("친구 목록 조회 API")
     @Test
     @WithMockUser(roles = "USER")
