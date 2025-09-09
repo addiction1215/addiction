@@ -12,7 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 
+import com.addiction.user.users.controller.request.SendAuthCodeRequest;
 import com.addiction.user.users.entity.enums.Sex;
+import com.addiction.user.users.service.request.SendAuthCodeServiceRequest;
+import com.addiction.user.users.service.response.SendAuthCodeResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -33,6 +36,7 @@ import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.response.UserSaveResponse;
 
 import docs.RestDocsSupport;
+import org.springframework.security.test.context.support.WithMockUser;
 
 public class LoginControllerDocsTest extends RestDocsSupport {
 
@@ -236,4 +240,50 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 				)
 			));
 	}
+
+
+    @DisplayName("이메일 인증코드 전송 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void sendAuthCOde() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("tkdrl8908@naver.com")
+                .build();
+
+        given(loginService.sendMail(any(SendAuthCodeServiceRequest.class)))
+                .willReturn(SendAuthCodeResponse.builder()
+                        .authCode("123456")
+                        .build()
+                );
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("send-mail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING)
+                                        .description("발송 할 이메일")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.authCode").type(JsonFieldType.STRING)
+                                        .description("인증키")
+                        )
+                ));
+    }
 }
