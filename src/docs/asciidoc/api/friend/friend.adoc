@@ -11,6 +11,19 @@ include::{snippets}/friend-list/request-fields.adoc[]
 include::{snippets}/friend-list/http-response.adoc[]
 include::{snippets}/friend-list/response-fields.adoc[]
 
+[[friend-search]]
+=== 친구 목록 검색
+
+==== HTTP Request
+
+include::{snippets}/friend-search/http-request.adoc[]
+include::{snippets}/friend-search/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-search/http-response.adoc[]
+include::{snippets}/friend-search/response-fields.adoc[]
+
 [[friend-request]]
 === 친구 요청
 
