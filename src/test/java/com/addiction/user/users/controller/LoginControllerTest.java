@@ -423,4 +423,50 @@ public class LoginControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("이메일은 필수입니다."));
     }
+
+    @DisplayName("이메일 형식이 올바르지 않으면 오류가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_형식이_올바르지_않으면_오류가_발생한다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("invalid-email")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
+    }
+
+    @DisplayName("이메일에 @가 없으면 오류가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일에_골뱅이가_없으면_오류가_발생한다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("testtest.com")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
+    }
 }
