@@ -130,7 +130,7 @@ public class LoginServiceImpl implements LoginService {
         return SendAuthCodeResponse.createResponse(authKey);
     }
 
-    public void sendMail(SendMailRequest sendMailRequest) {
+    private void sendMail(SendMailRequest sendMailRequest) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
