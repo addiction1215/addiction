@@ -68,3 +68,12 @@ aes:
 
 logging:
   config: classpath:logback/logback-config.xml
+
+oracle:
+  cloud:
+    region: ap-chuncheon-1
+  name-space-name: ${NAMESPACE_NAME}
+  user:
+    bucket-name: ${USER_BUCKET_NAME_DEV}
+  challenge:
+    bucket-name: ${CHALLENGE_BUCKET_NAME_DEV}
