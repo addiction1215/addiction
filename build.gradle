@@ -81,6 +81,9 @@ dependencies {
     implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
     //fcm
     implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+    //mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
@@ -144,7 +147,8 @@ tasks.processResources {
                 DB_USERNAME: System.getenv('DB_USERNAME'),
                 DB_PASSWORD: System.getenv('DB_PASSWORD'),
                 JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
-                AES_KEY: System.getenv('AES_KEY')
+                AES_KEY: System.getenv('AES_KEY'),
+                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD')
         )
     }
 }

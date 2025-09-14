@@ -14,6 +14,17 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           exception-handling: ignore
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: addiction1215@gmail.com
+    password: test
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
 
 oauth:
   kakao:

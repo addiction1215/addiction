@@ -46,6 +46,18 @@ spring:
           p6spy:
             enable-logging: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: addiction1215@gmail.com
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
 oauth:
   kakao:
     api:

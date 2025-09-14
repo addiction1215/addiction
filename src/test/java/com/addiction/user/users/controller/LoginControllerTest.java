@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.addiction.user.users.controller.request.SendAuthCodeRequest;
 import com.addiction.user.users.entity.enums.Sex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -376,5 +377,96 @@ public class LoginControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("성별은 필수입니다."));
+    }
+
+    @DisplayName("이메일 전송 테스트")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_전송_테스트() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("tkdrl8908@naver.com")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("이메일은 필수이다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_전송_테스트시에는_이메일은_필수이다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("이메일은 필수입니다."));
+    }
+
+    @DisplayName("이메일 형식이 올바르지 않으면 오류가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_형식이_올바르지_않으면_오류가_발생한다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("invalid-email")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
+    }
+
+    @DisplayName("이메일에 @가 없으면 오류가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일에_골뱅이가_없으면_오류가_발생한다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("testtest.com")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
     }
 }
