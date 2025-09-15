@@ -2,7 +2,9 @@ package com.addiction.user.users.service;
 
 import com.addiction.user.users.service.request.LoginServiceRequest;
 import com.addiction.user.users.service.request.OAuthLoginServiceRequest;
+import com.addiction.user.users.service.request.FindPasswordServiceRequest;
 import com.addiction.user.users.service.request.SendAuthCodeServiceRequest;
+import com.addiction.user.users.service.response.FindPasswordResponse;
 import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
@@ -16,4 +18,6 @@ public interface LoginService {
 		JsonProcessingException;
 
     SendAuthCodeResponse sendMail(SendAuthCodeServiceRequest sendAuthCodeServiceRequest);
+
+    FindPasswordResponse findPassword(FindPasswordServiceRequest findPasswordServiceRequest);
 }

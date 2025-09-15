@@ -14,8 +14,10 @@ import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.request.LoginServiceRequest;
 import com.addiction.user.users.service.request.OAuthLoginServiceRequest;
+import com.addiction.user.users.service.request.FindPasswordServiceRequest;
 import com.addiction.user.users.service.request.SendAuthCodeServiceRequest;
 import com.addiction.user.users.service.request.SendMailRequest;
+import com.addiction.user.users.service.response.FindPasswordResponse;
 import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
@@ -152,6 +154,44 @@ public class LoginServiceImpl implements LoginService {
         return jwtToken;
     }
 
+
+    @Override
+    public FindPasswordResponse findPassword(FindPasswordServiceRequest findPasswordServiceRequest) {
+        User user = userReadService.findByEmailAndNickName(findPasswordServiceRequest.getEmail(), findPasswordServiceRequest.getNickName());
+        
+        String tempPassword = generateTempPassword();
+        
+        user.updateInfo(bCryptPasswordEncoder, tempPassword, user.getPhoneNumber(), user.getEmail());
+        
+        SendMailRequest sendMailRequest = SendMailRequest.builder()
+                .email(user.getEmail())
+                .subject("[Addiction] 임시 비밀번호 발급 안내")
+                .text(
+                        "안녕하세요, Addiction입니다.\n" +
+                                "요청하신 임시 비밀번호가 발급되었습니다.\n\n" +
+                                "임시 비밀번호: " + tempPassword + "\n\n" +
+                                "보안을 위해 로그인 후 비밀번호를 변경해주세요.\n" +
+                                "감사합니다.\n" +
+                                "Addiction 드림\n\n"
+                )
+                .build();
+
+        sendMail(sendMailRequest);
+        
+        return FindPasswordResponse.of(user.getEmail());
+    }
+
+    private String generateTempPassword() {
+        SecureRandom secureRandom = new SecureRandom();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder tempPassword = new StringBuilder();
+        
+        for (int i = 0; i < 8; i++) {
+            tempPassword.append(chars.charAt(secureRandom.nextInt(chars.length())));
+        }
+        
+        return tempPassword.toString();
+    }
 
     private String generateRandomKey() {
         SecureRandom secureRandom = new SecureRandom();
