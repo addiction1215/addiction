@@ -28,7 +28,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_정보를_수정한다() throws Exception {
 		// given
 		UserUpdateRequest request = UserUpdateRequest.builder()
-			.sex(Sex.MAIL)
+			.sex(Sex.MALE)
 			.birthDay("12341234")
 			.build();
 
@@ -75,7 +75,7 @@ public class UserControllerTest extends ControllerTestSupport {
 	void 사용자_정보를_수정시_생년월일은_필수이다() throws Exception {
 		// given
 		UserUpdateRequest request = UserUpdateRequest.builder()
-			.sex(Sex.MAIL)
+			.sex(Sex.MALE)
 			.build();
 
 		// when // then

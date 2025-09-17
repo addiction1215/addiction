@@ -43,13 +43,13 @@ public class UserControllerDocsTest extends RestDocsSupport {
     void 사용자_초기정보_수정_API() throws Exception {
         // given
         UserUpdateRequest request = UserUpdateRequest.builder()
-                .sex(Sex.MAIL)
+                .sex(Sex.MALE)
                 .birthDay("19961111")
                 .build();
 
         given(userService.update(any(UserUpdateServiceRequest.class)))
                 .willReturn(UserUpdateResponse.builder()
-                        .sex(Sex.MAIL)
+                        .sex(Sex.MALE)
                         .birthDay("19961111")
                         .build()
                 );
@@ -265,7 +265,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .willReturn(UserProfileResponse.builder()
                         .nickName("테스트닉네임")
                         .introduction("테스트 소개")
-                        .sex(Sex.MAIL)
+                        .sex(Sex.MALE)
                         .birthDay("123456")
                         .build()
                 );
@@ -344,7 +344,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
         UserUpdateProfileRequest request = UserUpdateProfileRequest.builder()
                 .nickName("새로운닉네임")
                 .introduction("자기소개입니다")
-                .sex(Sex.MAIL)
+                .sex(Sex.MALE)
                 .birthDay("19961111")
                 .build();
 
@@ -352,7 +352,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .willReturn(UserUpdateProfileResponse.builder()
                         .nickName("새로운닉네임")
                         .introduction("자기소개입니다")
-                        .sex(Sex.MAIL)
+                        .sex(Sex.MALE)
                         .birthDay("19961111")
                         .build()
                 );
