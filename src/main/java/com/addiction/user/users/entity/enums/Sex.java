@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Sex {
 	FEMALE("여성"),
-	MAIL("남성");
+    MALE("남성");
 
 	private final String text;
 }

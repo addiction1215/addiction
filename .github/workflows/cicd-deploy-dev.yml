@@ -17,6 +17,7 @@ jobs:
       NAMESPACE_NAME: ${{ secrets.NAMESPACE_NAME }}
       USER_BUCKET_NAME_DEV: ${{ secrets.USER_BUCKET_NAME_DEV }}
       CHALLENGE_BUCKET_NAME_DEV: ${{ secrets.CHALLENGE_BUCKET_NAME_DEV }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

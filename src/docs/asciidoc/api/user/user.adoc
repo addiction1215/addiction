@@ -111,3 +111,16 @@ include::{snippets}/user-update-info/request-fields.adoc[]
 
 include::{snippets}/user-update-info/http-response.adoc[]
 include::{snippets}/user-update-info/response-fields.adoc[]
+
+[[send-mail]]
+=== 이메일 인증코드 전송
+
+==== HTTP Request
+
+include::{snippets}/send-mail/http-request.adoc[]
+include::{snippets}/send-mail/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/send-mail/http-response.adoc[]
+include::{snippets}/send-mail/response-fields.adoc[]

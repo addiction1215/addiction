@@ -62,7 +62,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.willReturn(createLoginUserInfo(savedUser.getId()));
 
 		UserUpdateServiceRequest userUpdateServiceRequest = UserUpdateServiceRequest.builder()
-			.sex(Sex.MAIL)
+			.sex(Sex.MALE)
 			.birthDay("12341234")
 			.build();
 
@@ -72,7 +72,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		//then
 		assertThat(userRepository.findById(savedUser.getId()).get())
 			.extracting("sex", "birthDay")
-			.contains(Sex.MAIL, "12341234");
+			.contains(Sex.MALE, "12341234");
 	}
 
 	@DisplayName("유저의 설문조사 결과를 저장한다.")
