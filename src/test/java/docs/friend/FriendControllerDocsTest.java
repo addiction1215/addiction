@@ -54,8 +54,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                 .build();
 
         List<FriendProfileDto> searchResults = List.of(
-                new FriendProfileDto(2, "친구 1"),
-                new FriendProfileDto(3, "친구 2")
+                new FriendProfileDto(2L, "친구 1"),
+                new FriendProfileDto(3L, "친구 2")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -132,9 +132,9 @@ public class FriendControllerDocsTest extends RestDocsSupport {
 
 
         List<FriendProfileDto> friendProfileList = List.of(
-                new FriendProfileDto(2, "친구 2"),
-                new FriendProfileDto(3, "친구 3"),
-                new FriendProfileDto(4, "친구 4")
+                new FriendProfileDto(2L, "친구 2"),
+                new FriendProfileDto(3L, "친구 3"),
+                new FriendProfileDto(4L, "친구 4")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -337,8 +337,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                 .build();
 
         List<FriendProfileDto> blockedFriendList = List.of(
-                new FriendProfileDto(2, "차단된 친구 1"),
-                new FriendProfileDto(3, "차단된 친구 2")
+                new FriendProfileDto(2L, "차단된 친구 1"),
+                new FriendProfileDto(3L, "차단된 친구 2")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()

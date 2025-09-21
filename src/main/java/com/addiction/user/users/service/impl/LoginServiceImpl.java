@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +36,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
+@Slf4j
 @Service
 @Transactional
 public class LoginServiceImpl implements LoginService {
@@ -63,7 +66,6 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public LoginResponse normalLogin(LoginServiceRequest loginServiceRequest) throws JsonProcessingException {
         User user = userReadService.findByEmail(loginServiceRequest.getEmail());     //1. 회원조회
-
         user.checkSnsType(SnsType.NORMAL);                                     //SNS가입여부확인
 
         if (!bCryptPasswordEncoder.matches(loginServiceRequest.getPassword(), user.getPassword())) {
