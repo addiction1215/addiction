@@ -18,9 +18,11 @@ public class UserUpdateProfileRequest {
     private Sex sex;
     @NotNull(message = "생년월일은 필수입니다.")
     private String birthDay;
+    private String profileUrl;
 
     @Builder
-    public UserUpdateProfileRequest(String birthDay, String introduction, String nickName, Sex sex) {
+    public UserUpdateProfileRequest(String profileUrl, String birthDay, String introduction, String nickName, Sex sex) {
+        this.profileUrl = profileUrl;
         this.birthDay = birthDay;
         this.introduction = introduction;
         this.nickName = nickName;
@@ -29,6 +31,7 @@ public class UserUpdateProfileRequest {
 
     public UserUpdateProfileServiceRequest toServiceRequest() {
         return UserUpdateProfileServiceRequest.builder()
+                .profileUrl(profileUrl)
                 .birthDay(birthDay)
                 .introduction(introduction)
                 .nickName(nickName)

@@ -64,4 +64,13 @@ public class UserTest extends IntegrationTestSupport {
 
 		assertThat(user.getPurpose()).isEqualTo("금연 화이팅");
 	}
+
+    @DisplayName("프로필 사진을 수정한다.")
+    @Test
+    void 프로필_사진을_수정한다() {
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+        user.updateProfileUrl("test.com");
+
+        assertThat(user.getProfileUrl()).isEqualTo("test.com");
+    }
 }
