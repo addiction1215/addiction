@@ -1,5 +1,6 @@
 package com.addiction;
 
+import com.addiction.storage.service.OracleStorageService;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +46,8 @@ public abstract class IntegrationTestSupport {
 	protected KakaoApiFeignCall kakaoApiFeignCall;
 	@MockitoBean
 	protected GoogleApiFeignCall googleApiFeignCall;
+    @MockitoBean
+    protected OracleStorageService oracleStorageService;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
