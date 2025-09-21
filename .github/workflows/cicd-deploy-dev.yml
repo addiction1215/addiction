@@ -11,6 +11,9 @@ jobs:
       DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      MYSQL_DB_ENDPOINT: ${{ secrets.MYSQL_DB_ENDPOINT }}
+      MYSQL_DB_USERNAME: ${{ secrets.MYSQL_DB_USERNAME }}
+      MYSQL_DB_PASSWORD: ${{ secrets.MYSQL_DB_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       AES_KEY: ${{ secrets.AES_KEY }}
       MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
