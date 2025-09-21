@@ -14,6 +14,9 @@ jobs:
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       AES_KEY: ${{ secrets.AES_KEY }}
       MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
+      NAMESPACE_NAME: ${{ secrets.NAMESPACE_NAME }}
+      USER_BUCKET_NAME_DEV: ${{ secrets.USER_BUCKET_NAME_DEV }}
+      CHALLENGE_BUCKET_NAME_DEV: ${{ secrets.CHALLENGE_BUCKET_NAME_DEV }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
