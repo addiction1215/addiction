@@ -48,3 +48,8 @@ include::api/inquiry/inquiry.adoc[]
 == alertHistory API
 
 include::api/alertHistory/alertHistory.adoc[]
+
+[[storage-API]]
+== storage API
+
+include::api/storage/storage.adoc[]
