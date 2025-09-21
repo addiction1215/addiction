@@ -165,7 +165,7 @@ tasks.processResources {
                 AES_KEY: System.getenv('AES_KEY'),
                 NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
                 USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
-                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV')
+                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV'),
                 EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD')
         )
     }
