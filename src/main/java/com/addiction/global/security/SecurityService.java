@@ -1,18 +1,26 @@
 package com.addiction.global.security;
 
+import com.addiction.global.exception.UnauthenticatedException;
 import com.addiction.jwt.dto.LoginUserInfo;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SecurityService {
     public LoginUserInfo getCurrentLoginUserInfo() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            throw new UnauthenticatedException("로그인이 필요합니다.");
+        }
+
+        Object principal = auth.getPrincipal();
         if (principal instanceof LoginUserInfo) {
             return (LoginUserInfo) principal;
         }
 
-        throw new RuntimeException("Unknown principal type: " + principal.getClass().getName());
+        throw new UnauthenticatedException("유효한 인증 정보가 아닙니다.");
     }
 }
