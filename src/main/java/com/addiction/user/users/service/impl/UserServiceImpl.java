@@ -81,7 +81,8 @@ public class UserServiceImpl implements UserService {
 				userUpdateProfileServiceRequest.getNickName(),
 				userUpdateProfileServiceRequest.getIntroduction(),
 				userUpdateProfileServiceRequest.getSex(),
-				userUpdateProfileServiceRequest.getBirthDay()
+                userUpdateProfileServiceRequest.getBirthDay(),
+                userUpdateProfileServiceRequest.getProfileUrl()
 		);
 		return UserUpdateProfileResponse.createResponse(user);
 	}

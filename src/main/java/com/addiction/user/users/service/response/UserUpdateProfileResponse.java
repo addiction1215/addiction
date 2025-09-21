@@ -12,9 +12,11 @@ public class UserUpdateProfileResponse {
     private final String introduction;
     private final Sex sex;
     private final String birthDay;
+    private final String profileUrl;
 
     @Builder
-    public UserUpdateProfileResponse(String birthDay, String introduction, String nickName, Sex sex) {
+    public UserUpdateProfileResponse(String profileUrl, String birthDay, String introduction, String nickName, Sex sex) {
+        this.profileUrl = profileUrl;
         this.birthDay = birthDay;
         this.introduction = introduction;
         this.nickName = nickName;
@@ -24,6 +26,7 @@ public class UserUpdateProfileResponse {
     public static UserUpdateProfileResponse createResponse(User user) {
         return UserUpdateProfileResponse.builder()
                 .birthDay(user.getBirthDay())
+                .profileUrl(user.getProfileUrl())
                 .introduction(user.getIntroduction())
                 .nickName(user.getNickName())
                 .sex(user.getSex())
