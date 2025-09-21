@@ -1,0 +1,39 @@
+package com.addiction.survey.surveyQuestion.dto.service.response;
+
+import java.util.List;
+
+import com.addiction.survey.surveyAnswer.dto.service.response.SurveyAnswerFindServiceResponse;
+import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
+import com.addiction.survey.surveyQuestion.enums.SurveyType;
+
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+public class SurveyQuestionFindServiceResponse {
+
+	private final Long id;
+	private final String question;
+	private final SurveyType surveyType;
+	private final List<SurveyAnswerFindServiceResponse> surveyAnswer;
+
+	@Builder
+	public SurveyQuestionFindServiceResponse(Long id, String question, SurveyType surveyType,
+		List<SurveyAnswerFindServiceResponse> surveyAnswer) {
+		this.id = id;
+		this.question = question;
+		this.surveyAnswer = surveyAnswer;
+		this.surveyType = surveyType;
+	}
+
+	public static SurveyQuestionFindServiceResponse createResponse(SurveyQuestion surveyQuestion) {
+		return SurveyQuestionFindServiceResponse.builder()
+			.id(surveyQuestion.getId())
+			.question(surveyQuestion.getQuestion())
+			.surveyType(surveyQuestion.getSurveyType())
+			.surveyAnswer(
+				surveyQuestion.getSurveyAnswers().stream().map(SurveyAnswerFindServiceResponse::of).toList()
+			)
+			.build();
+	}
+}

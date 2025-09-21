@@ -1,0 +1,11 @@
+[[surveyQuestion-findAll]]
+=== 설문조사 문항 조회
+
+==== HTTP Request
+
+include::{snippets}/surveyQuestion-findAll/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/surveyQuestion-findAll/http-response.adoc[]
+include::{snippets}/surveyQuestion-findAll/response-fields.adoc[]

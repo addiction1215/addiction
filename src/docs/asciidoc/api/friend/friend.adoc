@@ -1,0 +1,88 @@
+[[friend-list]]
+=== 친구 조회
+
+==== HTTP Request
+
+include::{snippets}/friend-list/http-request.adoc[]
+include::{snippets}/friend-list/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-list/http-response.adoc[]
+include::{snippets}/friend-list/response-fields.adoc[]
+
+[[friend-search]]
+=== 친구 목록 검색
+
+==== HTTP Request
+
+include::{snippets}/friend-search/http-request.adoc[]
+include::{snippets}/friend-search/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-search/http-response.adoc[]
+include::{snippets}/friend-search/response-fields.adoc[]
+
+[[friend-request]]
+=== 친구 요청
+
+==== HTTP Request
+
+include::{snippets}/friend-request/http-request.adoc[]
+include::{snippets}/friend-request/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-request/http-response.adoc[]
+include::{snippets}/friend-request/response-fields.adoc[]
+
+
+=== 친구 요청 승인
+
+==== HTTP Request
+
+include::{snippets}/friend-accept/http-request.adoc[]
+include::{snippets}/friend-accept/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-accept/http-response.adoc[]
+include::{snippets}/friend-accept/response-fields.adoc[]
+
+=== 친구 삭제
+
+==== HTTP Request
+
+include::{snippets}/friend-delete/http-request.adoc[]
+include::{snippets}/friend-delete/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-delete/http-response.adoc[]
+include::{snippets}/friend-delete/response-fields.adoc[]
+
+=== 친구 차단
+
+==== HTTP Request
+
+include::{snippets}/friend-block/http-request.adoc[]
+include::{snippets}/friend-block/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-block/http-response.adoc[]
+include::{snippets}/friend-block/response-fields.adoc[]
+
+=== 차단된 친구 조회
+
+==== HTTP Request
+
+include::{snippets}/friend-blocked-list/http-request.adoc[]
+include::{snippets}/friend-blocked-list/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-blocked-list/http-response.adoc[]
+include::{snippets}/friend-blocked-list/response-fields.adoc[]
+

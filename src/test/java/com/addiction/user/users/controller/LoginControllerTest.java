@@ -1,0 +1,472 @@
+package com.addiction.user.users.controller;
+
+import static org.springframework.http.MediaType.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.addiction.user.users.controller.request.SendAuthCodeRequest;
+import com.addiction.user.users.entity.enums.Sex;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithMockUser;
+
+import com.addiction.ControllerTestSupport;
+import com.addiction.user.users.controller.request.LoginOauthRequest;
+import com.addiction.user.users.controller.request.LoginRequest;
+import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.entity.enums.SnsType;
+
+public class LoginControllerTest extends ControllerTestSupport {
+
+	@DisplayName("일반 로그인을 한다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void normalLogin() throws Exception {
+		// given
+		LoginRequest request = LoginRequest.builder()
+			.email("tkdrl8908@naver.com")
+			.password("1234")
+			.deviceId("testdeviceId")
+			.pushKey("testPushToken")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
+	}
+
+	@DisplayName("일반 로그인을 할 시 이메일은 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void normalLoginWithoutEmail() throws Exception {
+		// given
+		LoginRequest request = LoginRequest.builder()
+			.password("1234")
+			.deviceId("testdeviceId")
+			.pushKey("testPushToken")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("이메일은 필수입니다."));
+	}
+
+	@DisplayName("일반 로그인을 할 시 비밀번호는 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void normalLoginWithoutPassword() throws Exception {
+		// given
+		LoginRequest request = LoginRequest.builder()
+			.email("tkdrl8908@naver.com")
+			.deviceId("testdeviceId")
+			.pushKey("testPushToken")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("비밀번호는 필수입니다."));
+	}
+
+	@DisplayName("일반 로그인을 할 시 디바이스ID는 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void normalLoginWithoutDeviceId() throws Exception {
+		// given
+		LoginRequest request = LoginRequest.builder()
+			.email("tkdrl8908@naver.com")
+			.password("1234")
+			.pushKey("testPushToken")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("디바이스ID는 필수입니다."));
+	}
+
+	@DisplayName("OAuth 로그인을 한다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void oauth_로그인한다() throws Exception {
+		// given
+		LoginOauthRequest request = LoginOauthRequest.builder()
+			.token("testToken")
+			.snsType(SnsType.KAKAO)
+			.pushKey("testPushKey")
+			.deviceId("testdeviceId")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/oauth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
+	}
+
+	@DisplayName("OAuth 로그인을 할 시 snsType값은 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void oauth_로그인을_할_시_snsType값은_필수이다() throws Exception {
+		// given
+		LoginOauthRequest request = LoginOauthRequest.builder()
+			.token("testToken")
+			.pushKey("testPushKey")
+			.deviceId("testdeviceId")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/oauth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("인증타입은 필수입니다."));
+	}
+
+	@DisplayName("OAuth 로그인을 할 시 token값은 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void oauth_로그인을_할_시_token값은_필수이다() throws Exception {
+		// given
+		LoginOauthRequest request = LoginOauthRequest.builder()
+			.snsType(SnsType.KAKAO)
+			.pushKey("testPushKey")
+			.deviceId("testdeviceId")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/oauth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("Token은 필수입니다."));
+	}
+
+	@DisplayName("OAuth 로그인을 할 시 DeviceId값은 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void oauth_로그인을_할_시_DeviceId값은_필수이다() throws Exception {
+		// given
+		LoginOauthRequest request = LoginOauthRequest.builder()
+			.token("testToken")
+			.snsType(SnsType.KAKAO)
+			.pushKey("testPushKey")
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/oauth/login")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("디바이스ID는 필수입니다."));
+	}
+
+	@DisplayName("사용자 정보를 저장한다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자_정보를_저장한다() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+			.email("test@test.com")
+			.password("1234")
+			.birthDay("123411111")
+			.nickName("testUser")
+            .sex(Sex.FEMALE)
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.statusCode").value("201"))
+			.andExpect(jsonPath("$.httpStatus").value("CREATED"))
+			.andExpect(jsonPath("$.message").value("CREATED"));
+	}
+
+	@DisplayName("사용자 정보를 저장시 이메일은 필수입니다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자_정보를_저장시_이메일은_필수입니다() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+            .password("1234")
+            .birthDay("123411111")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("이메일은 필수입니다."));
+	}
+
+	@DisplayName("사용자 정보를 저장시 비밀번호는 필수입니다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자_정보를_저장시_비밀번호는_필수입니다() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+            .email("test@test.com")
+            .birthDay("123411111")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("비밀번호는 필수입니다."));
+	}
+
+	@DisplayName("사용자 정보를 저장시 생년월일은 필수이다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자_정보를_저장시_생년월일은_필수이다() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+            .email("test@test.com")
+            .password("1234")
+            .nickName("testUser")
+            .sex(Sex.FEMALE)
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("생년월일은 필수입니다."));
+	}
+
+	@DisplayName("사용자 정보를 저장시 닉네임은 필수입니다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자_정보를_저장시_닉네임은_필수이다() throws Exception {
+		// given
+		UserSaveRequest request = UserSaveRequest.builder()
+            .email("test@test.com")
+            .password("1234")
+            .birthDay("123411111")
+            .sex(Sex.FEMALE)
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				post("/api/v1/auth/join")
+					.content(objectMapper.writeValueAsString(request))
+					.contentType(APPLICATION_JSON)
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.statusCode").value("400"))
+			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.message").value("닉네임은 필수입니다."));
+	}
+
+    @DisplayName("사용자 정보를 저장시 성별은 필수입니다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 사용자_정보를_저장시_성별_필수이다() throws Exception {
+        // given
+        UserSaveRequest request = UserSaveRequest.builder()
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName("testUser")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/join")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("성별은 필수입니다."));
+    }
+
+    @DisplayName("이메일 전송 테스트")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_전송_테스트() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("tkdrl8908@naver.com")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("이메일은 필수이다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_전송_테스트시에는_이메일은_필수이다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("이메일은 필수입니다."));
+    }
+
+    @DisplayName("이메일 형식이 올바르지 않으면 오류가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일_형식이_올바르지_않으면_오류가_발생한다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("invalid-email")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
+    }
+
+    @DisplayName("이메일에 @가 없으면 오류가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 이메일에_골뱅이가_없으면_오류가_발생한다() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("testtest.com")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
+    }
+}

@@ -1,0 +1,50 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Addction REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Login-API]]
+== Login API
+
+include::api/login/login.adoc[]
+
+[[User-API]]
+== User API
+
+include::api/user/user.adoc[]
+
+[[User-Cigarette-API]]
+== User-Cigarette API
+
+include::api/userCigarette/userCigarette.adoc[]
+
+[[User-Cigarette-History-API]]
+== User-Cigarette-History API
+
+include::api/userCigaretteHistory/userCigaretteHistory.adoc[]
+
+[[Survey-API]]
+== Survey API
+
+include::api/survey/survey.adoc[]
+
+[[Friend-API]]
+== Friend API
+
+include::api/friend/friend.adoc[]
+
+[[Inquiry-API]]
+== Inquiry API
+
+include::api/inquiry/inquiry.adoc[]
+
+[[alertHistory-API]]
+== alertHistory API
+
+include::api/alertHistory/alertHistory.adoc[]

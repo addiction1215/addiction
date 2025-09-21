@@ -1,0 +1,160 @@
+package com.addiction;
+
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import com.addiction.alertHistory.entity.AlertDestinationType;
+import com.addiction.alertHistory.entity.AlertHistory;
+import com.addiction.alertHistory.entity.AlertHistoryStatus;
+import com.addiction.alertHistory.repository.AlertHistoryRepository;
+import com.addiction.global.security.SecurityService;
+import com.addiction.jwt.dto.LoginUserInfo;
+import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
+import com.addiction.survey.surveyAnswer.repository.SurveyAnswerRepository;
+import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
+import com.addiction.survey.surveyQuestion.repository.SurveyQuestionRepository;
+import com.addiction.survey.surveyResult.entity.SurveyResult;
+import com.addiction.survey.surveyResult.repository.SurveyResultRepository;
+import com.addiction.survey.surveyResultDescription.entity.SurveyResultDescription;
+import com.addiction.survey.surveyResultDescription.repository.SurveyResultDescriptionRepository;
+import com.addiction.user.push.entity.Push;
+import com.addiction.user.push.repository.PushRepository;
+import com.addiction.user.refreshToken.repository.RefreshTokenRepository;
+import com.addiction.user.userCigarette.entity.UserCigarette;
+import com.addiction.user.userCigarette.repository.UserCigaretteRepository;
+import com.addiction.user.users.entity.User;
+import com.addiction.user.users.entity.enums.Role;
+import com.addiction.user.users.entity.enums.SettingStatus;
+import com.addiction.user.users.entity.enums.Sex;
+import com.addiction.user.users.entity.enums.SnsType;
+import com.addiction.user.users.oauth.feign.google.GoogleApiFeignCall;
+import com.addiction.user.users.oauth.feign.kakao.KakaoApiFeignCall;
+import com.addiction.user.users.repository.UserRepository;
+
+@ActiveProfiles("test")
+@SpringBootTest
+public abstract class IntegrationTestSupport {
+
+	@MockitoBean
+	protected SecurityService securityService;
+	@MockitoBean
+	protected KakaoApiFeignCall kakaoApiFeignCall;
+	@MockitoBean
+	protected GoogleApiFeignCall googleApiFeignCall;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	protected UserRepository userRepository;
+	@Autowired
+	protected RefreshTokenRepository refreshTokenRepository;
+	@Autowired
+	protected PushRepository pushRepository;
+	@Autowired
+	protected SurveyQuestionRepository surveyQuestionRepository;
+	@Autowired
+	protected SurveyAnswerRepository surveyAnswerRepository;
+	@Autowired
+	protected SurveyResultRepository surveyResultRepository;
+	@Autowired
+	protected SurveyResultDescriptionRepository surveyResultDescriptionRepository;
+	@Autowired
+	protected UserCigaretteRepository userCigaretteRepository;
+	@Autowired
+	protected AlertHistoryRepository alertHistoryRepository;
+
+	@AfterEach
+	public void tearDown() {
+		alertHistoryRepository.deleteAllInBatch();
+		surveyResultDescriptionRepository.deleteAllInBatch();
+		surveyResultRepository.deleteAllInBatch();
+		surveyAnswerRepository.deleteAllInBatch();
+		surveyQuestionRepository.deleteAllInBatch();
+		refreshTokenRepository.deleteAllInBatch();
+		pushRepository.deleteAllInBatch();
+		userCigaretteRepository.deleteAllInBatch();
+		userRepository.deleteAllInBatch();
+	}
+
+	protected User createUser(String email, String password, SnsType snsType, SettingStatus settingStatus) {
+		return User.builder()
+			.email(email)
+			.password(bCryptPasswordEncoder.encode(password))
+			.nickName("테스트 닉네임")
+			.phoneNumber("010-1234-1234")
+			.sex(Sex.MALE)
+			.role(Role.USER)
+			.snsType(snsType)
+			.settingStatus(settingStatus)
+			.purpose("테스트 목표")
+			.build();
+	}
+
+	protected LoginUserInfo createLoginUserInfo(Long userId) {
+		return LoginUserInfo.builder()
+			.userId(userId)
+			.build();
+	}
+
+	protected SurveyQuestion createSurveyQuestion(String question) {
+		return SurveyQuestion.builder()
+			.question(question)
+			.build();
+	}
+
+	protected SurveyAnswer createSurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score) {
+		return SurveyAnswer.builder()
+			.surveyQuestion(surveyQuestion)
+			.answer(answer)
+			.score(score)
+			.build();
+	}
+
+	protected SurveyResult createSurveyResult(String title, Integer score) {
+		return SurveyResult.builder()
+			.title(title)
+			.score(score)
+			.build();
+	}
+
+	protected SurveyResultDescription createSurveyResultDescription(SurveyResult surveyResult, String description) {
+		return SurveyResultDescription.builder()
+			.surveyResult(surveyResult)
+			.description(description)
+			.build();
+	}
+
+	protected UserCigarette createUserCigarette(User user) {
+		return UserCigarette.createEntity(user, "테스트 주소", 1000L);
+	}
+
+
+
+	protected AlertHistory createAlertHistory(User user, String alertDescription, AlertHistoryStatus alertHistoryStatus) {
+		return AlertHistory.builder()
+			.user(user)
+			.alertDescription(alertDescription)
+			.alertHistoryStatus(alertHistoryStatus)
+			.build();
+	}
+
+	protected AlertHistory createFriendCodeAlertHistory(User user, String alertDescriptionInfo,AlertHistoryStatus alertHistoryStatus) {
+		return AlertHistory.builder()
+			.user(user)
+			.alertDestinationType(AlertDestinationType.FRIEND_CODE)
+			.alertDestinationInfo(alertDescriptionInfo)
+			.alertHistoryStatus(alertHistoryStatus)
+			.build();
+	}
+
+	protected Push createPush(User user) {
+		return Push.builder()
+			.user(user)
+			.deviceId("testdeviceId")
+			.pushToken("testPushToken")
+			.build();
+	}
+}

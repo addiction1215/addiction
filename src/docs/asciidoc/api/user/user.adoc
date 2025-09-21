@@ -1,0 +1,126 @@
+[[user-update]]
+=== 회원 초기정보 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+
+[[user-survey-update]]
+=== 회원 설문조사 결과 저장
+
+==== HTTP Request
+
+include::{snippets}/user-survey-update/http-request.adoc[]
+include::{snippets}/user-survey-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-survey-update/http-response.adoc[]
+include::{snippets}/user-survey-update/response-fields.adoc[]
+
+[[user-find-startDate]]
+=== 회원 금연 시작 날짜 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-startDate/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-startDate/http-response.adoc[]
+include::{snippets}/user-find-startDate/response-fields.adoc[]
+
+[[user-find-purpose]]
+=== 회원 금연 목표 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-purpose/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-purpose/http-response.adoc[]
+include::{snippets}/user-find-purpose/response-fields.adoc[]
+
+[[user-update-purpose]]
+=== 회원 금연 목표 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update-purpose/http-request.adoc[]
+include::{snippets}/user-update-purpose/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update-purpose/http-response.adoc[]
+include::{snippets}/user-update-purpose/response-fields.adoc[]
+
+
+[[user-find-info]]
+=== 사용자 정보 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-info/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-info/http-response.adoc[]
+include::{snippets}/user-find-info/response-fields.adoc[]
+
+[[user-find-profile]]
+=== 사용자 프로필 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-profile/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-profile/http-response.adoc[]
+include::{snippets}/user-find-profile/response-fields.adoc[]
+
+[[user-update-profile]]
+=== 사용자 프로필 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update-profile/http-request.adoc[]
+include::{snippets}/user-update-profile/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update-profile/http-response.adoc[]
+include::{snippets}/user-update-profile/response-fields.adoc[]
+
+[[user-update-info]]
+=== 사용자 정보 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update-info/http-request.adoc[]
+include::{snippets}/user-update-info/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update-info/http-response.adoc[]
+include::{snippets}/user-update-info/response-fields.adoc[]
+
+[[send-mail]]
+=== 이메일 인증코드 전송
+
+==== HTTP Request
+
+include::{snippets}/send-mail/http-request.adoc[]
+include::{snippets}/send-mail/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/send-mail/http-response.adoc[]
+include::{snippets}/send-mail/response-fields.adoc[]

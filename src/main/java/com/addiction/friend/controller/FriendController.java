@@ -1,0 +1,61 @@
+package com.addiction.friend.controller;
+
+import com.addiction.friend.service.request.FriendProposalRequest;
+import com.addiction.friend.repository.response.FriendProfileDto;
+import com.addiction.friend.service.FriendReadService;
+import com.addiction.friend.service.FriendService;
+import com.addiction.global.ApiResponse;
+import com.addiction.global.page.request.PageInfoRequest;
+import com.addiction.global.page.response.PageCustom;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/friend")
+public class FriendController {
+
+    private final FriendReadService friendReadService;
+    private final FriendService friendService;
+
+    @GetMapping
+    public ApiResponse<PageCustom<FriendProfileDto>> getFriendList(@ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(friendReadService.getFriendList(request.toServiceRequest()));
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<PageCustom<FriendProfileDto>> searchFriends(
+            @RequestParam String keyword,
+            @ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(friendReadService.searchFriends(keyword, request.toServiceRequest()));
+    }
+
+    @GetMapping("/blocked")
+    public ApiResponse<PageCustom<FriendProfileDto>> getBlockedFriendList(@ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(friendReadService.getBlockedFriendList(request.toServiceRequest()));
+    }
+
+    @PostMapping("/request")
+    public ApiResponse<String> friendRequest(@RequestBody FriendProposalRequest request) {
+        friendService.sendFriendRequest(request);
+        return ApiResponse.ok("친구 요청이 전송되었습니다.");
+    }
+
+    @PostMapping("/accept/{friendId}")
+    public ApiResponse<String> acceptFriendRequest(@PathVariable Long friendId) {
+        friendService.acceptFriendRequest(friendId);
+        return ApiResponse.ok("친구 요청을 수락했습니다.");
+    }
+
+    @DeleteMapping("/{friendId}")
+    public ApiResponse<String> deleteFriend(@PathVariable Long friendId) {
+        friendService.deleteFriend(friendId);
+        return ApiResponse.ok("친구가 삭제되었습니다.");
+    }
+
+    @PostMapping("/block/{friendId}")
+    public ApiResponse<String> blockFriend(@PathVariable Long friendId) {
+        friendService.blockFriend(friendId);
+        return ApiResponse.ok("친구가 차단되었습니다.");
+    }
+}

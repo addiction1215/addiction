@@ -1,0 +1,42 @@
+package com.addiction.survey.surveyAnswer.entity;
+
+import com.addiction.global.BaseTimeEntity;
+import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class SurveyAnswer extends BaseTimeEntity {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private SurveyQuestion surveyQuestion;
+
+	private String answer;
+
+	private Integer score;
+
+    private Integer sort;
+
+	@Builder
+	public SurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score, Integer sort) {
+		this.surveyQuestion = surveyQuestion;
+		this.answer = answer;
+		this.score = score;
+        this.sort = sort;
+    }
+}

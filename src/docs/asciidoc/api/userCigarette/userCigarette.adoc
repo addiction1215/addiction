@@ -1,0 +1,24 @@
+[[user-find-cigarette]]
+=== 회원 금일 핀 담배 개수 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-cigarette/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-cigarette/http-response.adoc[]
+include::{snippets}/user-find-cigarette/response-fields.adoc[]
+
+[[user-cigarette-change]]
+=== 회원 담배갯수 수정
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-change/http-request.adoc[]
+include::{snippets}/user-cigarette-change/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-change/http-response.adoc[]
+include::{snippets}/user-cigarette-change/response-fields.adoc[]
