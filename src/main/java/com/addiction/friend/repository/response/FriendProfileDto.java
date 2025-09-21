@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class FriendProfileDto {
-    private int friendId;
+    private Long friendId;
     private String nickname;
 
-    public FriendProfileDto(int friendId, String nickname) {
+    public FriendProfileDto(Long friendId, String nickname) {
         this.friendId = friendId;
         this.nickname = nickname;
     }

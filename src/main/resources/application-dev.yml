@@ -5,11 +5,11 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 30
+      maximum-pool-size: 10
       connection-timeout: 3000
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     open-in-view: false
     properties:
       hibernate:
@@ -45,6 +45,18 @@ spring:
         datasource:
           p6spy:
             enable-logging: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: addiction1215@gmail.com
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
 
 oauth:
   kakao:

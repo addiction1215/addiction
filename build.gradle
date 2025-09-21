@@ -96,6 +96,9 @@ dependencies {
     implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.5'
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.1.5'
     implementation 'org.glassfish.jersey.connectors:jersey-apache-connector:3.1.5'
+    
+    //mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
@@ -163,6 +166,7 @@ tasks.processResources {
                 NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
                 USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
                 CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV')
+                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD')
         )
     }
 }

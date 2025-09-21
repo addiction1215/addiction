@@ -88,7 +88,7 @@ public abstract class IntegrationTestSupport {
 			.password(bCryptPasswordEncoder.encode(password))
 			.nickName("테스트 닉네임")
 			.phoneNumber("010-1234-1234")
-			.sex(Sex.MAIL)
+			.sex(Sex.MALE)
 			.role(Role.USER)
 			.snsType(snsType)
 			.settingStatus(settingStatus)
