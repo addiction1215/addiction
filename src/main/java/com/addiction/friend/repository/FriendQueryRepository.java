@@ -5,6 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 @Repository
+@Slf4j
 public class FriendQueryRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -25,6 +27,7 @@ public class FriendQueryRepository {
     public Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
+                        friend.requester.id,
                         friend.receiver.id,
                         friend.receiver.nickName
                 ))
@@ -59,8 +62,10 @@ public class FriendQueryRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+        log.info("getBlockedFriendList userId: {}, pageable: {}, content: {}", userId, pageable, content);
 
         long total = getTotalBlockedFriendsCount(userId);
+        log.info("getBlockedFriendList userId: {}, total: {}", userId, total);
 
         return new PageImpl<>(content, pageable, total);
     }
