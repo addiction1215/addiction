@@ -27,7 +27,7 @@ public class FriendQueryRepository {
     public Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
-                        friend.requester.id,
+                        friend.id,
                         friend.receiver.id,
                         friend.receiver.nickName
                 ))
@@ -49,6 +49,7 @@ public class FriendQueryRepository {
     public Page<FriendProfileDto> getBlockedFriendList(Long userId, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
+                        friend.id,
                         friend.receiver.id,
                         friend.receiver.nickName
                 ))
@@ -73,6 +74,7 @@ public class FriendQueryRepository {
     public Page<FriendProfileDto> searchFriends(Long userId, String keyword, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
+                        friend.id,
                         friend.receiver.id,
                         friend.receiver.nickName
                 ))
