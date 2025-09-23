@@ -1,5 +1,7 @@
 package com.addiction;
 
+import com.addiction.challenge.entity.Challenge;
+import com.addiction.challenge.repository.ChallengeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -65,6 +67,8 @@ public abstract class IntegrationTestSupport {
 	protected UserCigaretteRepository userCigaretteRepository;
 	@Autowired
 	protected AlertHistoryRepository alertHistoryRepository;
+    @Autowired
+    protected ChallengeRepository challengeRepository;
 
 	@AfterEach
 	public void tearDown() {
@@ -157,4 +161,13 @@ public abstract class IntegrationTestSupport {
 			.pushToken("testPushToken")
 			.build();
 	}
+
+    protected Challenge createChallenge(User user) {
+        return Challenge.builder()
+                .content("testcontent")
+                .title("testtitle")
+                .badge("testbadge")
+                .userId(user)
+                .build();
+    }
 }
