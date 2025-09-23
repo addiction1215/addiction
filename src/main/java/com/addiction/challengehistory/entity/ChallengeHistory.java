@@ -2,6 +2,7 @@ package com.addiction.challengehistory.entity;
 
 import com.addiction.challenge.entity.Challenge;
 import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.common.enums.YnStatus;
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;
@@ -26,13 +27,14 @@ public class ChallengeHistory extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User userId;
 
-    private ChallengeStatus status;
+    @Column(name = "finish_yn")
+    private YnStatus finishYn;
 
     @Builder
-    public ChallengeHistory(Long id, Challenge challengeId, User userId, ChallengeStatus status) {
+    public ChallengeHistory(Long id, Challenge challengeId, User userId, YnStatus finishYn) {
         this.id = id;
         this.challengeId = challengeId;
         this.userId = userId;
-        this.status = status;
+        this.finishYn = finishYn;
     }
 }
