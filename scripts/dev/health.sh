@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET_PORT=80
+TARGET_PORT=8080
 
 echo "> Start health check of WAS at 'http://127.0.0.1:${TARGET_PORT}' ..."
 
