@@ -21,6 +21,7 @@ public class RewardHistory extends BaseTimeEntity {
 
     private Integer point;
 
+    @Column(name = "remaining_point")
     private Integer remainingPoint;
 
     @ManyToOne(fetch = FetchType.LAZY)
