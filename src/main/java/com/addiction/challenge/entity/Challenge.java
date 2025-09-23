@@ -18,6 +18,8 @@ public class Challenge extends BaseTimeEntity {
 
     private String title;
 
+    private String content;
+
     private String badge;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,9 +27,10 @@ public class Challenge extends BaseTimeEntity {
     private User userId;
 
     @Builder
-    public Challenge(Long id, String title, String badge, User userId) {
+    public Challenge(Long id, String title, String content, String badge, User userId) {
         this.id = id;
         this.title = title;
+        this.content = content;
         this.badge = badge;
         this.userId = userId;
     }
