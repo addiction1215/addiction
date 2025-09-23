@@ -23,6 +23,7 @@ public class MissionHistory extends BaseTimeEntity {
 
     private ChallengeStatus status;
 
+    @Column(name = "acc_time")
     private Integer accTime;
 
     private String address;
