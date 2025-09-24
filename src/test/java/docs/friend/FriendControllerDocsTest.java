@@ -105,6 +105,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("검색된 친구 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 PK"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
                                         .description("친구 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
@@ -183,6 +185,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("친구 프로필 리스트"),
                                 fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
                                         .description("친구 UNIQUE ID"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 PK"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
                                         .description("친구 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
