@@ -17,6 +17,8 @@ import static com.addiction.friend.entity.QFriend.friend;
 import static com.addiction.user.users.entity.QUser.user;
 import static java.util.Optional.ofNullable;
 
+import com.querydsl.core.types.dsl.Expressions;
+
 @RequiredArgsConstructor
 @Repository
 @Slf4j
@@ -74,7 +76,7 @@ public class FriendQueryRepository {
     public Page<FriendProfileDto> searchFriends(Long userId, String keyword, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
-                        0L,
+                        Expressions.constant(0L),
                         user.id,
                         user.nickName
                 ))
