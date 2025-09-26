@@ -42,20 +42,20 @@ public class FriendControllerDocsTest extends RestDocsSupport {
         return new FriendController(friendReadService, friendService);
     }
 
-    @DisplayName("친구 목록 검색 API")
+    @DisplayName("친구 추가 가능 유저 검색 API")
     @Test
     @WithMockUser(roles = "USER")
     void searchFriends() throws Exception {
         // given
-        String keyword = "친구";
+        String keyword = "test@example.com";
         PageInfoRequest request = PageInfoRequest.builder()
                 .page(1)
                 .size(12)
                 .build();
 
         List<FriendProfileDto> searchResults = List.of(
-                new FriendProfileDto(0L, 2L, "친구 1"),
-                new FriendProfileDto(1L, 3L, "친구 2")
+                new FriendProfileDto(0L, 2L, "사용자1"),
+                new FriendProfileDto(0L, 3L, "사용자2")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -86,7 +86,7 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                         preprocessResponse(prettyPrint()),
                         queryParameters(
                                 parameterWithName("keyword")
-                                        .description("검색할 친구 닉네임 키워드"),
+                                        .description("검색할 사용자 이메일 키워드"),
                                 parameterWithName("page")
                                         .description("페이지. 기본값: 1")
                                         .optional(),
@@ -104,13 +104,13 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
-                                        .description("검색된 친구 프로필 리스트"),
+                                        .description("친구 추가 가능한 사용자 프로필 리스트"),
                                 fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
-                                        .description("친구 PK"),
+                                        .description("고정값 (0)"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
-                                        .description("친구 ID"),
+                                        .description("사용자 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
-                                        .description("친구 닉네임"),
+                                        .description("사용자 닉네임"),
                                 fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
                                         .description("페이징 정보"),
                                 fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
