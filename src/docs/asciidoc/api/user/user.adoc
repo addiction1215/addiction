@@ -124,3 +124,16 @@ include::{snippets}/send-mail/request-fields.adoc[]
 
 include::{snippets}/send-mail/http-response.adoc[]
 include::{snippets}/send-mail/response-fields.adoc[]
+
+[[find-password]]
+=== 비밀번호 찾기
+
+==== HTTP Request
+
+include::{snippets}/find-password/http-request.adoc[]
+include::{snippets}/find-password/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/find-password/http-response.adoc[]
+include::{snippets}/find-password/response-fields.adoc[]

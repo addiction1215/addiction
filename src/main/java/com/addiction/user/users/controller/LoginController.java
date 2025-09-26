@@ -1,12 +1,14 @@
 package com.addiction.user.users.controller;
 
 import com.addiction.global.ApiResponse;
+import com.addiction.user.users.controller.request.FindPasswordRequest;
 import com.addiction.user.users.controller.request.LoginOauthRequest;
 import com.addiction.user.users.controller.request.LoginRequest;
 import com.addiction.user.users.controller.request.SendAuthCodeRequest;
 import com.addiction.user.users.controller.request.UserSaveRequest;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserService;
+import com.addiction.user.users.service.response.FindPasswordResponse;
 import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
@@ -44,6 +46,11 @@ public class LoginController {
     @PostMapping("/mail")
     public ApiResponse<SendAuthCodeResponse> sendMail(@Valid @RequestBody SendAuthCodeRequest sendAuthCodeRequest) {
         return ApiResponse.ok(loginService.sendMail(sendAuthCodeRequest.toServiceRequest()));
+    }
+
+    @PostMapping("/find-password")
+    public ApiResponse<FindPasswordResponse> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
+        return ApiResponse.ok(loginService.findPassword(findPasswordRequest.toServiceRequest()));
     }
 
 }
