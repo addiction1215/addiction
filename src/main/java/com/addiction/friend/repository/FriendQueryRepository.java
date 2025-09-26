@@ -74,18 +74,22 @@ public class FriendQueryRepository {
     public Page<FriendProfileDto> searchFriends(Long userId, String keyword, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
-                        friend.id,
-                        friend.receiver.id,
-                        friend.receiver.nickName
+                        0L,
+                        user.id,
+                        user.nickName
                 ))
-                .from(friend)
-                .join(friend.receiver, user)
+                .from(user)
                 .where(
-                        isRequesterIdEqualTo(userId),
-                        friend.status.eq(com.addiction.friend.entity.FriendStatus.ACCEPTED),
-                        friend.receiver.nickName.containsIgnoreCase(keyword)
+                        user.id.ne(userId),
+                        user.email.containsIgnoreCase(keyword),
+                        user.id.notIn(
+                                queryFactory
+                                        .select(friend.receiver.id)
+                                        .from(friend)
+                                        .where(friend.requester.id.eq(userId))
+                        )
                 )
-                .orderBy(friend.receiver.nickName.asc())
+                .orderBy(user.nickName.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -98,12 +102,17 @@ public class FriendQueryRepository {
     private long getSearchFriendsCount(Long userId, String keyword) {
         return ofNullable(
                 queryFactory
-                        .select(friend.count())
-                        .from(friend)
+                        .select(user.count())
+                        .from(user)
                         .where(
-                                isRequesterIdEqualTo(userId),
-                                friend.status.eq(com.addiction.friend.entity.FriendStatus.ACCEPTED),
-                                friend.receiver.nickName.containsIgnoreCase(keyword)
+                                user.id.ne(userId),
+                                user.email.containsIgnoreCase(keyword),
+                                user.id.notIn(
+                                        queryFactory
+                                                .select(friend.receiver.id)
+                                                .from(friend)
+                                                .where(friend.requester.id.eq(userId))
+                                )
                         )
                         .fetchOne()
         ).orElse(0L);
