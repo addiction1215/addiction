@@ -54,8 +54,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                 .build();
 
         List<FriendProfileDto> searchResults = List.of(
-                new FriendProfileDto(2L, "친구 1"),
-                new FriendProfileDto(3L, "친구 2")
+                new FriendProfileDto(0L, 2L, "친구 1"),
+                new FriendProfileDto(1L, 3L, "친구 2")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -105,6 +105,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("검색된 친구 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 ID"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
                                         .description("친구 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
@@ -132,9 +134,9 @@ public class FriendControllerDocsTest extends RestDocsSupport {
 
 
         List<FriendProfileDto> friendProfileList = List.of(
-                new FriendProfileDto(2L, "친구 2"),
-                new FriendProfileDto(3L, "친구 3"),
-                new FriendProfileDto(4L, "친구 4")
+                new FriendProfileDto(0L, 2L, "친구 2"),
+                new FriendProfileDto(1L, 3L, "친구 3"),
+                new FriendProfileDto(2L, 4L, "친구 4")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -181,6 +183,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("친구 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 UNIQUE ID"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
                                         .description("친구 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
@@ -337,8 +341,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                 .build();
 
         List<FriendProfileDto> blockedFriendList = List.of(
-                new FriendProfileDto(2L, "차단된 친구 1"),
-                new FriendProfileDto(3L, "차단된 친구 2")
+                new FriendProfileDto(0L, 2L, "차단된 친구 1"),
+                new FriendProfileDto(1L, 3L, "차단된 친구 2")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -385,6 +389,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("차단된 친구 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 요청자 ID"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
                                         .description("친구 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)

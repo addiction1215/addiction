@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_ENDPOINT}:5432/postgres?useSSL=false&serverTimezone=Asia/Seoul
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: ${MYSQL_DB_ENDPOINT}
+    username: ${MYSQL_DB_USERNAME}
+    password: ${MYSQL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:postgresql://${DB_ENDPOINT}:5432/postgres?useSSL=false&serverTimezone=Asia/Seoul
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASSWORD}
+#    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
       connection-timeout: 3000
@@ -14,7 +18,7 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
         jdbc:
           exception-handling: ignore
   data:
@@ -80,3 +84,12 @@ aes:
 
 logging:
   config: classpath:logback/logback-config.xml
+
+oracle:
+  cloud:
+    region: ap-chuncheon-1
+  name-space-name: ${NAMESPACE_NAME}
+  user:
+    bucket-name: ${USER_BUCKET_NAME_DEV}
+  challenge:
+    bucket-name: ${CHALLENGE_BUCKET_NAME_DEV}
