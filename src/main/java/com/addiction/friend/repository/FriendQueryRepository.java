@@ -1,5 +1,6 @@
 package com.addiction.friend.repository;
 
+import com.addiction.friend.entity.FriendStatus;
 import com.addiction.friend.repository.response.FriendProfileDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -31,7 +32,7 @@ public class FriendQueryRepository {
                 .from(friend)
                 .join(friend.receiver, user)
                 .where(
-                        isRequesterIdEqualTo(userId)
+                        isRequesterIdEqualTo(userId).and(friend.status.eq(FriendStatus.ACCEPTED))
                 )
                 .orderBy(friend.receiver.nickName.desc())
                 .offset(pageable.getOffset())
