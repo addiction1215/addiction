@@ -60,4 +60,19 @@ public class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.httpStatus").value("OK"))
 			.andExpect(jsonPath("$.message").value("OK"));
 	}
+
+    @DisplayName("유저의 마지막 흡연 기록을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 유저의_마지막_흡연_기록을_조회한다() throws Exception {
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/lastest")
+                                .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.statusCode").value("200"))
+            .andExpect(jsonPath("$.httpStatus").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
+    }
 }
