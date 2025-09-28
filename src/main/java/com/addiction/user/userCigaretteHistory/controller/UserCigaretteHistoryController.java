@@ -2,6 +2,7 @@ package com.addiction.user.userCigaretteHistory.controller;
 
 import java.util.List;
 
+import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryLastestResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +37,10 @@ public class UserCigaretteHistoryController {
 	public ApiResponse<UserCigaretteHistoryGraphResponse> findGraphByPeriod(PeriodType periodType) {
 		return ApiResponse.ok(userCigaretteHistoryService.findGraphByPeriod(periodType));
 	}
+
+    @GetMapping("/lastest")
+    public ApiResponse<UserCigaretteHistoryLastestResponse> findLastestByUserId() {
+        return ApiResponse.ok(userCigaretteHistoryService.findLastestByUserId());
+    }
 
 }

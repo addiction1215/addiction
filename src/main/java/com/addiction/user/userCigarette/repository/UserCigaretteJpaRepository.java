@@ -24,4 +24,5 @@ public interface UserCigaretteJpaRepository extends JpaRepository<UserCigarette,
 	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
 
 	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId);
+
 }

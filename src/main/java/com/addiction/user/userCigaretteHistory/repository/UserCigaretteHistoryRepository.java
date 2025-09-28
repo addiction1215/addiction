@@ -12,4 +12,6 @@ public interface UserCigaretteHistoryRepository {
 	CigaretteHistoryDocument findByDateAndUserId(String date, Long userId);
 
 	List<CigaretteHistoryDocument> findByUserIdAndDateBetween(Long userId, String startDate, String endDate);
+
+    CigaretteHistoryDocument findLatestByUserId(Long userId);
 }

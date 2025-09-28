@@ -6,6 +6,7 @@ import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryCalenderResponse;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphResponse;
+import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryLastestResponse;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryResponse;
 
 public interface UserCigaretteHistoryService {
@@ -18,5 +19,7 @@ public interface UserCigaretteHistoryService {
 	List<UserCigaretteHistoryResponse> findHistoryByDate(String date);
 
 	UserCigaretteHistoryGraphResponse findGraphByPeriod(PeriodType periodType);
+
+    UserCigaretteHistoryLastestResponse findLastestByUserId();
 
 }

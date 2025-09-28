@@ -5,6 +5,7 @@ import static org.springframework.data.mongodb.core.query.Query.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -56,4 +57,13 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 			CigaretteHistoryDocument.class
 		);
 	}
+
+    @Override
+    public CigaretteHistoryDocument findLatestByUserId(Long userId) {
+        return mongoTemplate.findOne(
+                query(where("userId").is(userId))
+                        .with(Sort.by(Sort.Direction.DESC, "date")),
+                CigaretteHistoryDocument.class
+        );
+    }
 }
