@@ -1,6 +1,7 @@
 package com.addiction;
 
 import com.addiction.challenge.entity.Challenge;
+import com.addiction.challenge.repository.ChallengeJpaRepository;
 import com.addiction.challenge.repository.ChallengeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,8 @@ public abstract class IntegrationTestSupport {
 	protected AlertHistoryRepository alertHistoryRepository;
     @Autowired
     protected ChallengeRepository challengeRepository;
+    @Autowired
+    protected ChallengeJpaRepository cChallengeJpaRepository;
 
 	@AfterEach
 	public void tearDown() {
