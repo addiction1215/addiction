@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.List;
 
+import com.addiction.global.exception.AddictionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,25 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.extracting("email", "birthDay", "nickName", "sex")
 			.contains("test@test.com", "123411111", "testUser", Sex.FEMALE);
 	}
+
+    @DisplayName("유저의 정보를 저장할 시 이미 저장된 이메일이라면 예외가 발생한다.")
+    @Test
+    void 유저의_정보를_저장할_시_이미_저장된_이메일이라면_예외가_발생한다() {
+        //given
+        UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName("testUser")
+                .sex(Sex.FEMALE)
+                .build();
+
+        //when
+        userService.save(userSaveServiceRequest);
+
+        //then
+        assertThrows(AddictionException.class, () -> userService.save(userSaveServiceRequest));
+    }
 
 	@DisplayName("유저의 정보를 수정한다.")
 	@Test
