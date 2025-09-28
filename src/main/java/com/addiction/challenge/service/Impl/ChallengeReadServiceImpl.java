@@ -1,10 +1,10 @@
 package com.addiction.challenge.service.Impl;
 
-import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.challenge.entity.Challenge;
 import com.addiction.challenge.repository.ChallengeRepository;
 import com.addiction.challenge.service.ChallengeReadService;
 import com.addiction.challenge.service.challenge.response.ChallengeResponse;
+import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
 import com.addiction.common.enums.YnStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
@@ -25,22 +25,27 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public PageCustom<ChallengeResponse> getChallenge(YnStatus finishYn, PageInfoServiceRequest request) {
+    public ChallengeResponse getChallenge(PageInfoServiceRequest request) {
         long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
-        Page<Challenge> challengePage = challengeRepository.findByFinishYnAndUserId(
-                finishYn,
-                userId,
-                request.toPageable()
+        List<ChallengeResponseList> challengePage = challengeRepository.findByUserId(
+                userId
         );
 
-        List<ChallengeResponse> challengeResponseList = challengePage.getContent().stream()
-                .map(ChallengeResponse::of)
+        List<ChallengeResponseList> leftChallengeList = challengePage.stream()
+                .filter(challenge -> YnStatus.N.toString().equalsIgnoreCase(challenge.getFinishYn()))
                 .toList();
 
-        return PageCustom.<ChallengeResponse>builder()
-                .content(challengeResponseList)
-                .pageInfo(PageableCustom.of(challengePage))
+        List<ChallengeResponseList> finishedChallengeList = challengePage.stream()
+                .filter(challenge -> YnStatus.Y.toString().equalsIgnoreCase(challenge.getFinishYn()))
+                .toList();
+
+        ChallengeResponse challengeResponse = ChallengeResponse.builder()
+                .leftChallengeList(leftChallengeList)
+                .finishedChallengeList(finishedChallengeList)
                 .build();
+
+
+        return challengeResponse;
     }
 }

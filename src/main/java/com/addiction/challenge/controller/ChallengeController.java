@@ -2,12 +2,13 @@ package com.addiction.challenge.controller;
 
 import com.addiction.challenge.service.ChallengeReadService;
 import com.addiction.challenge.service.challenge.response.ChallengeResponse;
-import com.addiction.common.enums.YnStatus;
 import com.addiction.global.ApiResponse;
 import com.addiction.global.page.request.PageInfoRequest;
-import com.addiction.global.page.response.PageCustom;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class ChallengeController {
     private final ChallengeReadService challengeService;
 
-    @GetMapping("/{finishYn}")
-    public ApiResponse<PageCustom<ChallengeResponse>> getChallengeList(@PathVariable("finishYn") YnStatus finishYn, @ModelAttribute PageInfoRequest request) {
-        return ApiResponse.ok(challengeService.getChallenge(finishYn, request.toServiceRequest()));
+    @GetMapping("/list")
+    public ApiResponse<ChallengeResponse> getChallengeList(@ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(challengeService.getChallenge(request.toServiceRequest()));
     }
 }

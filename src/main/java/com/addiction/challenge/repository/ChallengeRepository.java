@@ -1,11 +1,12 @@
 package com.addiction.challenge.repository;
 
 import com.addiction.challenge.entity.Challenge;
-import com.addiction.common.enums.YnStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
+
+import java.util.List;
 
 public interface ChallengeRepository {
-    Page<Challenge> findByFinishYnAndUserId(YnStatus finishYn, long userId, Pageable pageable);
+    List<ChallengeResponseList> findByUserId(long userId);
+
     Challenge save(Challenge challenge);
 }

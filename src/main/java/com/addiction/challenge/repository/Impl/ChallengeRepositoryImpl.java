@@ -4,11 +4,11 @@ import com.addiction.challenge.entity.Challenge;
 import com.addiction.challenge.repository.ChallengeJpaRepository;
 import com.addiction.challenge.repository.ChallengeQueryRepository;
 import com.addiction.challenge.repository.ChallengeRepository;
-import com.addiction.common.enums.YnStatus;
+import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,8 +17,8 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     private final ChallengeJpaRepository challengeJpaRepository;
 
     @Override
-    public Page<Challenge> findByFinishYnAndUserId(YnStatus finishYn, long userId, Pageable pageable) {
-        return challengeQueryRepository.findByFinishYnAndUserId(finishYn, userId, pageable);
+    public List<ChallengeResponseList> findByUserId(long userId) {
+        return challengeQueryRepository.findByUserId(userId);
     }
 
     @Override

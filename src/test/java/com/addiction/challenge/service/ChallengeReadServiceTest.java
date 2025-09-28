@@ -2,7 +2,7 @@ package com.addiction.challenge.service;
 
 import com.addiction.IntegrationTestSupport;
 import com.addiction.challenge.entity.Challenge;
-import com.addiction.challenge.service.challenge.response.ChallengeResponse;
+import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
 import com.addiction.common.enums.YnStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
@@ -38,10 +38,10 @@ public class ChallengeReadServiceTest extends IntegrationTestSupport {
                 .size(10)
                 .build();
 
-        ChallengeResponse response = ChallengeResponse.of(savedChallenge);
+        ChallengeResponseList response = ChallengeResponseList.of(savedChallenge);
 
         // when
-        PageCustom<ChallengeResponse> result = challengeReadService.getChallenge(status, request);
+        PageCustom<ChallengeResponseList> result = challengeReadService.getChallenge(status, request);
 
         // then
         assertThat(result.getContent()).extracting("id", "title", "content")
