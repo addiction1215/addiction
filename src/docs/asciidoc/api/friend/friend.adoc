@@ -12,7 +12,7 @@ include::{snippets}/friend-list/http-response.adoc[]
 include::{snippets}/friend-list/response-fields.adoc[]
 
 [[friend-search]]
-=== 친구 목록 검색
+=== 친구 추가 가능 유저 검색
 
 ==== HTTP Request
 
