@@ -17,4 +17,6 @@ public interface UserRepository {
 	void deleteAllInBatch();
 
 	void saveAll(List<User> users);
+
+    boolean existsByEmail(String email);
 }

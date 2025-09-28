@@ -46,4 +46,9 @@ public class UserRepositoryImpl implements UserRepository {
 	public void saveAll(List<User> users) {
 		userJpaRepository.saveAll(users);
 	}
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
 }
