@@ -6,7 +6,6 @@ import java.util.List;
 import com.addiction.user.push.entity.Push;
 
 public interface PushRepository {
-	void deleteAllByUserId(Long userId);
 	Push findByDeviceIdAndUserId(String deviceId, Long userId);
 	void deleteAllInBatch();
 	Push save(Push push);
