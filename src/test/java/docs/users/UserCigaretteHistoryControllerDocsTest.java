@@ -10,9 +10,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import com.addiction.user.userCigaretteHistory.service.response.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -20,12 +22,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import com.addiction.user.userCigaretteHistory.controller.UserCigaretteHistoryController;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryCalenderResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphCountResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphDateResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphPatientResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryResponse;
 
 import docs.RestDocsSupport;
 
@@ -176,4 +172,34 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
 				)
 			));
 	}
+
+    @DisplayName("userId로 최신 흡연기록 조회 API")
+    @Test
+    void findLastestByUserId() throws Exception {
+        // given
+        given(userCigaretteHistoryService.findLastestByUserId())
+                .willReturn(UserCigaretteHistoryLastestResponse.builder()
+                        .address("서울시 송파구")
+                        .lastDate(LocalDateTime.parse("2024-06-10T10:00:00"))
+                        .build());
+
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/lastest")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-cigarette-history-lastest",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("최신 흡연 기록"),
+                                fieldWithPath("data.address").type(JsonFieldType.STRING).description("마지막 흡연 장소"),
+                                fieldWithPath("data.lastDate").type(JsonFieldType.STRING).description("마지막 흡연일시")
+                        )
+                ));
+    }
 }

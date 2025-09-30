@@ -36,3 +36,16 @@ include::{snippets}/user-cigarette-history-graph/query-parameters.adoc[]
 
 include::{snippets}/user-cigarette-history-graph/http-response.adoc[]
 include::{snippets}/user-cigarette-history-graph/response-fields.adoc[]
+
+[[user-cigarette-history-latest]]
+=== 회원 마지막 흡연 기록 조회 API
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-latest/http-request.adoc[]
+include::{snippets}/user-cigarette-history-latest/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-latest/http-response.adoc[]
+include::{snippets}/user-cigarette-history-latest/response-fields.adoc[]

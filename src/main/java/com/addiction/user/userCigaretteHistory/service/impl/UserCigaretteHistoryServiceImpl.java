@@ -5,6 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.addiction.user.userCigarette.entity.UserCigarette;
+import com.addiction.user.userCigarette.service.UserCigaretteReadService;
+import com.addiction.user.userCigaretteHistory.service.response.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,12 +16,6 @@ import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryCalenderResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphCountResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphDateResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphPatientResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphResponse;
-import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryService {
 
 	private final SecurityService securityService;
+    private final UserCigaretteReadService userCigaretteReadService;
 
 	private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
 
@@ -79,7 +77,25 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 		);
 	}
 
-	private UserCigaretteHistoryGraphCountResponse createGraphCountResponse(List<CigaretteHistoryDocument> docs) {
+    @Override
+    public UserCigaretteHistoryLastestResponse findLastestByUserId() {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        UserCigarette cigarette = userCigaretteReadService.findLatestByUserId(userId);
+        if(cigarette == null) {
+            CigaretteHistoryDocument doc = userCigaretteHistoryRepository.findLatestByUserId(userId);
+            if(doc != null) {
+                return UserCigaretteHistoryLastestResponse.createResponse(
+                    doc.getHistory().get(doc.getHistory().size() - 1).getSmokeTime(),
+                    doc.getHistory().get(doc.getHistory().size() - 1).getAddress()
+                );
+            }
+        }
+
+        assert cigarette != null;
+        return UserCigaretteHistoryLastestResponse.createResponse(cigarette.getSmokeTime(), cigarette.getAddress());
+    }
+
+    private UserCigaretteHistoryGraphCountResponse createGraphCountResponse(List<CigaretteHistoryDocument> docs) {
 		List<UserCigaretteHistoryGraphDateResponse> dateList = docs.stream()
 			.map(doc -> UserCigaretteHistoryGraphDateResponse.createResponse(doc.getDate(), doc.getSmokeCount()))
 			.toList();
