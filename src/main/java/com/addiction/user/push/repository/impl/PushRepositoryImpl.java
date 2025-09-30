@@ -18,12 +18,6 @@ public class PushRepositoryImpl implements PushRepository {
 	private final PushJpaRepository pushJpaRepository;
 
 	@Override
-	public Push findByDeviceIdAndUserId(String deviceId, Long userId) {
-		return pushJpaRepository.findByDeviceIdAndUserId(deviceId, userId)
-			.orElseThrow(() -> new AddictionException("Push 데이터가 존재하지 않습니다."));
-	}
-
-	@Override
 	public void deleteAllInBatch() {
 		pushJpaRepository.deleteAllInBatch();
 	}
