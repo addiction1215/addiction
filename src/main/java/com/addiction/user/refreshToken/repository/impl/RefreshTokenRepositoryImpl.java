@@ -16,12 +16,6 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 	private final RefreshTokenJpaRepository refreshTokenJpaRepository;
 
 	@Override
-	public RefreshToken findByUserIdAndDeviceIdAndRefreshToken(Long userId, String deviceId, String refreshToken) {
-		return refreshTokenJpaRepository.findByUserIdAndDeviceIdAndRefreshToken(userId, deviceId, refreshToken)
-			.orElseThrow(() -> new AddictionException("존재하지 않는 RefreshToken 입니다."));
-	}
-
-	@Override
 	public void deleteAllInBatch() {
 		refreshTokenJpaRepository.deleteAllInBatch();
 	}
