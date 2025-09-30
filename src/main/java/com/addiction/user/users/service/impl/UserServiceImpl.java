@@ -2,6 +2,7 @@ package com.addiction.user.users.service.impl;
 
 import java.time.LocalDateTime;
 
+import com.addiction.global.exception.AddictionException;
 import com.addiction.user.users.service.request.*;
 import com.addiction.user.users.service.response.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserSaveResponse save(UserSaveServiceRequest userSaveServiceRequest) {
+        validateDuplicateEmail(userSaveServiceRequest.getEmail());
 		return UserSaveResponse.createResponse(userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder)));
 	}
 
@@ -98,5 +100,11 @@ public class UserServiceImpl implements UserService {
 		);
 		return UserUpdateInfoResponse.createResponse(user);
 	}
+
+    private void validateDuplicateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new AddictionException("이미 존재하는 이메일입니다.");
+        }
+    }
 
 }
