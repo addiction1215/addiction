@@ -85,7 +85,7 @@ jobs:
 
       - name: 🎯 Ubuntu 서버에서 Blue/Green Switching
         run: |
-          ssh tnm_iotp@${{ secrets.DEV_SERVER_IP }} "/home/tnm_iotp/data-api/app/scripts/switch.sh"
+          ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "/home/ubuntu/app/scripts/switch.sh"
 
       - name: 🧹 임시 파일 정리
         run: |
