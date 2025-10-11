@@ -184,12 +184,12 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         .build());
 
         mockMvc.perform(
-                        get("/api/v1/user/cigarette-history/lastest")
+                        get("/api/v1/user/cigarette-history/latest")
                                 .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("user-cigarette-history-lastest",
+                .andDo(document("user-cigarette-history-latest",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(

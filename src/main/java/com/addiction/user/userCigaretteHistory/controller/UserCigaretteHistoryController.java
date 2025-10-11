@@ -38,7 +38,7 @@ public class UserCigaretteHistoryController {
 		return ApiResponse.ok(userCigaretteHistoryService.findGraphByPeriod(periodType));
 	}
 
-    @GetMapping("/lastest")
+    @GetMapping("/latest")
     public ApiResponse<UserCigaretteHistoryLastestResponse> findLastestByUserId() {
         return ApiResponse.ok(userCigaretteHistoryService.findLastestByUserId());
     }
