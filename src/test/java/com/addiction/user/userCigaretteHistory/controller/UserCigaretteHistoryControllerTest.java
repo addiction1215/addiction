@@ -66,7 +66,7 @@ public class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
     @WithMockUser(roles = "USER")
     void 유저의_마지막_흡연_기록을_조회한다() throws Exception {
         mockMvc.perform(
-                        get("/api/v1/user/cigarette-history/lastest")
+                        get("/api/v1/user/cigarette-history/latest")
                                 .with(csrf())
             )
             .andDo(print())

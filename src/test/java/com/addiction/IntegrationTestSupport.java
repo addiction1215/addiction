@@ -1,8 +1,12 @@
 package com.addiction;
 
-import com.addiction.challenge.entity.Challenge;
-import com.addiction.challenge.repository.ChallengeJpaRepository;
-import com.addiction.challenge.repository.ChallengeRepository;
+import com.addiction.challenge.challenge.entity.Challenge;
+import com.addiction.challenge.challenge.repository.ChallengeJpaRepository;
+import com.addiction.challenge.challenge.repository.ChallengeRepository;
+import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
+import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
+import com.addiction.common.enums.YnStatus;
 import com.addiction.storage.service.OracleStorageService;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +79,15 @@ public abstract class IntegrationTestSupport {
     protected ChallengeRepository challengeRepository;
     @Autowired
     protected ChallengeJpaRepository cChallengeJpaRepository;
+    @Autowired
+    protected ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
+    @Autowired
+    protected ChallengeHistoryRepository challengeHistoryRepository;
 
 	@AfterEach
 	public void tearDown() {
+        challengeHistoryRepository.deleteAllInBatch();
+        challengeRepository.deleteAllInBatch();
 		alertHistoryRepository.deleteAllInBatch();
 		surveyResultDescriptionRepository.deleteAllInBatch();
 		surveyResultRepository.deleteAllInBatch();
@@ -174,6 +184,14 @@ public abstract class IntegrationTestSupport {
                 .title("testtitle")
                 .badge("testbadge")
                 .userId(user)
+                .build();
+    }
+
+    protected ChallengeHistory createChallengeHistory(User user, Challenge challenge, YnStatus ynStatus) {
+        return ChallengeHistory.builder()
+                .userId(user)
+                .challengeId(challenge)
+                .finishYn(ynStatus)
                 .build();
     }
 }
