@@ -59,6 +59,8 @@ public class User extends BaseTimeEntity {
 
 	private LocalDateTime startDate;
 
+    private String profileUrl;
+
 	@Enumerated(EnumType.STRING)
 	private SnsType snsType;
 
@@ -78,9 +80,10 @@ public class User extends BaseTimeEntity {
 	private List<Push> pushes = new ArrayList<>();
 
 	@Builder
-	public User(String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
+	public User(String profileUrl, String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
 		Integer totalScore, String introduction, Integer cigarettePrice, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
+        this.profileUrl = profileUrl;
 		this.email = email;
 		this.password = password;
 		this.nickName = nickName;
@@ -95,6 +98,10 @@ public class User extends BaseTimeEntity {
 		this.role = role;
 		this.settingStatus = settingStatus;
 	}
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
 
 	public void checkSnsType(SnsType snsType) {
 		if (!this.snsType.equals(snsType)) {
@@ -149,11 +156,12 @@ public class User extends BaseTimeEntity {
 		this.purpose = purpose;
 	}
 
-	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay){
+	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay, String profileUrl){
 		updateNickName(nickName);
 		updateIntroduction(introduction);
 		updateSex(sex);
 		updateBirthDay(birthDay);
+        updateProfileUrl(profileUrl);
 	}
 
 	public void updateInfo(BCryptPasswordEncoder bCryptPasswordEncoder, String password, String phoneNumber, String email) {

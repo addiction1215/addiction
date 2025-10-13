@@ -3,6 +3,7 @@ package com.addiction;
 import com.addiction.challenge.entity.Challenge;
 import com.addiction.challenge.repository.ChallengeJpaRepository;
 import com.addiction.challenge.repository.ChallengeRepository;
+import com.addiction.storage.service.OracleStorageService;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,8 @@ public abstract class IntegrationTestSupport {
 	protected KakaoApiFeignCall kakaoApiFeignCall;
 	@MockitoBean
 	protected GoogleApiFeignCall googleApiFeignCall;
+    @MockitoBean
+    protected OracleStorageService oracleStorageService;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
@@ -92,7 +95,7 @@ public abstract class IntegrationTestSupport {
 			.password(bCryptPasswordEncoder.encode(password))
 			.nickName("테스트 닉네임")
 			.phoneNumber("010-1234-1234")
-			.sex(Sex.MAIL)
+			.sex(Sex.MALE)
 			.role(Role.USER)
 			.snsType(snsType)
 			.settingStatus(settingStatus)

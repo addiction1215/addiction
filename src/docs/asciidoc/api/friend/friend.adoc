@@ -11,6 +11,19 @@ include::{snippets}/friend-list/request-fields.adoc[]
 include::{snippets}/friend-list/http-response.adoc[]
 include::{snippets}/friend-list/response-fields.adoc[]
 
+[[friend-search]]
+=== 친구 추가 가능 유저 검색
+
+==== HTTP Request
+
+include::{snippets}/friend-search/http-request.adoc[]
+include::{snippets}/friend-search/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-search/http-response.adoc[]
+include::{snippets}/friend-search/response-fields.adoc[]
+
 [[friend-request]]
 === 친구 요청
 
@@ -48,3 +61,28 @@ include::{snippets}/friend-delete/request-fields.adoc[]
 
 include::{snippets}/friend-delete/http-response.adoc[]
 include::{snippets}/friend-delete/response-fields.adoc[]
+
+=== 친구 차단
+
+==== HTTP Request
+
+include::{snippets}/friend-block/http-request.adoc[]
+include::{snippets}/friend-block/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-block/http-response.adoc[]
+include::{snippets}/friend-block/response-fields.adoc[]
+
+=== 차단된 친구 조회
+
+==== HTTP Request
+
+include::{snippets}/friend-blocked-list/http-request.adoc[]
+include::{snippets}/friend-blocked-list/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/friend-blocked-list/http-response.adoc[]
+include::{snippets}/friend-blocked-list/response-fields.adoc[]
+

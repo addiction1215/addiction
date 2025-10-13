@@ -12,7 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 
+import com.addiction.user.users.controller.request.FindPasswordRequest;
+import com.addiction.user.users.controller.request.SendAuthCodeRequest;
 import com.addiction.user.users.entity.enums.Sex;
+import com.addiction.user.users.service.request.FindPasswordServiceRequest;
+import com.addiction.user.users.service.request.SendAuthCodeServiceRequest;
+import com.addiction.user.users.service.response.FindPasswordResponse;
+import com.addiction.user.users.service.response.SendAuthCodeResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -33,6 +39,7 @@ import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.response.UserSaveResponse;
 
 import docs.RestDocsSupport;
+import org.springframework.security.test.context.support.WithMockUser;
 
 public class LoginControllerDocsTest extends RestDocsSupport {
 
@@ -236,4 +243,97 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 				)
 			));
 	}
+
+
+    @DisplayName("이메일 인증코드 전송 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void sendAuthCOde() throws Exception {
+        // given
+        SendAuthCodeRequest request = SendAuthCodeRequest.builder()
+                .email("tkdrl8908@naver.com")
+                .build();
+
+        given(loginService.sendMail(any(SendAuthCodeServiceRequest.class)))
+                .willReturn(SendAuthCodeResponse.builder()
+                        .authCode("123456")
+                        .build()
+                );
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("send-mail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING)
+                                        .description("발송 할 이메일")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.authCode").type(JsonFieldType.STRING)
+                                        .description("인증키")
+                        )
+                ));
+    }
+
+    @DisplayName("비밀번호 찾기 API")
+    @Test
+    void findPassword() throws Exception {
+        // given
+        FindPasswordRequest request = FindPasswordRequest.builder()
+                .email("tkdrl8908@naver.com")
+                .nickName("testUser")
+                .build();
+
+        given(loginService.findPassword(any(FindPasswordServiceRequest.class)))
+                .willReturn(FindPasswordResponse.builder()
+                        .message("tkdrl8908@naver.com로 임시 비밀번호가 전송되었습니다.")
+                        .build()
+                );
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/find-password")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("find-password",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING)
+                                        .description("이메일"),
+                                fieldWithPath("nickName").type(JsonFieldType.STRING)
+                                        .description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.message").type(JsonFieldType.STRING)
+                                        .description("임시 비밀번호 발송 완료 메시지")
+                        )
+                ));
+    }
 }

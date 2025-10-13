@@ -10,6 +10,8 @@ public interface UserRepository {
 
 	Optional<User> findByEmail(String email);
 
+	Optional<User> findByEmailAndNickName(String email, String nickName);
+
 	Optional<User> findById(Long id);
 
 	void deleteAllInBatch();

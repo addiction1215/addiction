@@ -41,7 +41,11 @@ public class SecurityConfig {
 			CorsConfiguration config = new CorsConfiguration();
 			config.setAllowedHeaders(Collections.singletonList("*"));
 			config.setAllowedMethods(Collections.singletonList("*"));
-			config.setAllowedOriginPatterns(Arrays.asList("http://localhost:8081"));
+            config.setAllowedOrigins(Arrays.asList(
+                    "https://www.quitmate.co.kr",
+                    "https://quitmate.co.kr",
+                    "http://localhost:8081"
+            ));
 			config.setAllowCredentials(true);
 			return config;
 		};

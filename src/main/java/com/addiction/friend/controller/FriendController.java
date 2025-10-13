@@ -23,6 +23,18 @@ public class FriendController {
         return ApiResponse.ok(friendReadService.getFriendList(request.toServiceRequest()));
     }
 
+    @GetMapping("/search")
+    public ApiResponse<PageCustom<FriendProfileDto>> searchFriends(
+            @RequestParam String keyword,
+            @ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(friendReadService.searchFriends(keyword, request.toServiceRequest()));
+    }
+
+    @GetMapping("/blocked")
+    public ApiResponse<PageCustom<FriendProfileDto>> getBlockedFriendList(@ModelAttribute PageInfoRequest request) {
+        return ApiResponse.ok(friendReadService.getBlockedFriendList(request.toServiceRequest()));
+    }
+
     @PostMapping("/request")
     public ApiResponse<String> friendRequest(@RequestBody FriendProposalRequest request) {
         friendService.sendFriendRequest(request);
@@ -39,5 +51,11 @@ public class FriendController {
     public ApiResponse<String> deleteFriend(@PathVariable Long friendId) {
         friendService.deleteFriend(friendId);
         return ApiResponse.ok("친구가 삭제되었습니다.");
+    }
+
+    @PostMapping("/block/{friendId}")
+    public ApiResponse<String> blockFriend(@PathVariable Long friendId) {
+        friendService.blockFriend(friendId);
+        return ApiResponse.ok("친구가 차단되었습니다.");
     }
 }

@@ -81,6 +81,24 @@ dependencies {
     implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
     //fcm
     implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+    // Oracle Cloud Infrastructure Object Storage
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.35.0'
+
+    // OCI SDK HTTP 클라이언트 관련 의존성
+    implementation("com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3:3.73.0")
+
+    // JAX-RS API (필수!)
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+
+    // Jersey HTTP 클라이언트 구현체
+    implementation 'org.glassfish.jersey.core:jersey-client:3.1.5'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.5'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.1.5'
+    implementation 'org.glassfish.jersey.connectors:jersey-apache-connector:3.1.5'
+    
+    //mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
@@ -143,8 +161,15 @@ tasks.processResources {
                 DB_ENDPOINT: System.getenv('DB_ENDPOINT'),
                 DB_USERNAME: System.getenv('DB_USERNAME'),
                 DB_PASSWORD: System.getenv('DB_PASSWORD'),
+                MYSQL_DB_ENDPOINT: System.getenv('MYSQL_DB_ENDPOINT'),
+                MYSQL_DB_USERNAME: System.getenv('MYSQL_DB_USERNAME'),
+                MYSQL_DB_PASSWORD: System.getenv('MYSQL_DB_PASSWORD'),
                 JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
-                AES_KEY: System.getenv('AES_KEY')
+                AES_KEY: System.getenv('AES_KEY'),
+                NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
+                USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
+                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV'),
+                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD')
         )
     }
 }

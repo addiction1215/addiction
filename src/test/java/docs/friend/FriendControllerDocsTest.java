@@ -42,6 +42,86 @@ public class FriendControllerDocsTest extends RestDocsSupport {
         return new FriendController(friendReadService, friendService);
     }
 
+    @DisplayName("친구 추가 가능 유저 검색 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void searchFriends() throws Exception {
+        // given
+        String keyword = "test@example.com";
+        PageInfoRequest request = PageInfoRequest.builder()
+                .page(1)
+                .size(12)
+                .build();
+
+        List<FriendProfileDto> searchResults = List.of(
+                new FriendProfileDto(0L, 2L, "사용자1"),
+                new FriendProfileDto(0L, 3L, "사용자2")
+        );
+
+        PageableCustom pageInfo = PageableCustom.builder()
+                .currentPage(1)
+                .totalPage(1)
+                .totalElement(2)
+                .build();
+
+        PageCustom<FriendProfileDto> searchFriendList = PageCustom.<FriendProfileDto>builder()
+                .content(searchResults)
+                .pageInfo(pageInfo)
+                .build();
+
+        given(friendReadService.searchFriends(any(String.class), any(PageInfoServiceRequest.class)))
+                .willReturn(searchFriendList);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/friend/search")
+                                .param("keyword", keyword)
+                                .param("page", String.valueOf(request.getPage()))
+                                .param("size", String.valueOf(request.getSize()))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("friend-search",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("keyword")
+                                        .description("검색할 사용자 이메일 키워드"),
+                                parameterWithName("page")
+                                        .description("페이지. 기본값: 1")
+                                        .optional(),
+                                parameterWithName("size")
+                                        .description("페이지 사이즈. 기본값: 12")
+                                        .optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                                        .description("친구 추가 가능한 사용자 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("고정값 (0)"),
+                                fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
+                                        .description("사용자 ID"),
+                                fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
+                                        .description("사용자 닉네임"),
+                                fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
+                                        .description("페이징 정보"),
+                                fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지"),
+                                fieldWithPath("data.pageInfo.totalPage").type(JsonFieldType.NUMBER)
+                                        .description("총 페이지 수"),
+                                fieldWithPath("data.pageInfo.totalElement").type(JsonFieldType.NUMBER)
+                                        .description("총 요소 개수")
+                        )));
+    }
+
     @DisplayName("친구 목록 조회 API")
     @Test
     @WithMockUser(roles = "USER")
@@ -54,9 +134,9 @@ public class FriendControllerDocsTest extends RestDocsSupport {
 
 
         List<FriendProfileDto> friendProfileList = List.of(
-                new FriendProfileDto(2, "친구 2"),
-                new FriendProfileDto(3, "친구 3"),
-                new FriendProfileDto(4, "친구 4")
+                new FriendProfileDto(0L, 2L, "친구 2"),
+                new FriendProfileDto(1L, 3L, "친구 3"),
+                new FriendProfileDto(2L, 4L, "친구 4")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -103,6 +183,10 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("친구 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 UNIQUE ID"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 PK"),
                                 fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
                                         .description("친구 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
@@ -213,6 +297,114 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("메세지"),
                                 fieldWithPath("data").type(JsonFieldType.STRING)
                                         .description("응답 데이터")
+                        )));
+    }
+
+    @DisplayName("친구 차단 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void blockFriend() throws Exception {
+        // given
+        Long friendId = 1L;
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/friend/block/{friendId}", friendId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("friend-block",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("friendId").description("차단할 친구 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.STRING)
+                                        .description("응답 데이터")
+                        )));
+    }
+
+    @DisplayName("차단된 친구 목록 조회 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void getBlockedFriendList() throws Exception {
+        // given
+        PageInfoRequest request = PageInfoRequest.builder()
+                .page(1)
+                .size(12)
+                .build();
+
+        List<FriendProfileDto> blockedFriendList = List.of(
+                new FriendProfileDto(0L, 2L, "차단된 친구 1"),
+                new FriendProfileDto(1L, 3L, "차단된 친구 2")
+        );
+
+        PageableCustom pageInfo = PageableCustom.builder()
+                .currentPage(1)
+                .totalPage(1)
+                .totalElement(2)
+                .build();
+
+        PageCustom<FriendProfileDto> blockedFriends = PageCustom.<FriendProfileDto>builder()
+                .content(blockedFriendList)
+                .pageInfo(pageInfo)
+                .build();
+
+        given(friendReadService.getBlockedFriendList(any(PageInfoServiceRequest.class)))
+                .willReturn(blockedFriends);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/friend/blocked")
+                                .param("page", String.valueOf(request.getPage()))
+                                .param("size", String.valueOf(request.getSize()))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("friend-blocked-list",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("page")
+                                        .description("페이지. 기본값: 1")
+                                        .optional(),
+                                parameterWithName("size")
+                                        .description("페이지 사이즈. 기본값: 12")
+                                        .optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
+                                        .description("차단된 친구 프로필 리스트"),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                        .description("친구 PK"),
+                                fieldWithPath("data.content[].friendId").type(JsonFieldType.NUMBER)
+                                        .description("친구 ID"),
+                                fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
+                                        .description("친구 닉네임"),
+                                fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
+                                        .description("페이징 정보"),
+                                fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지"),
+                                fieldWithPath("data.pageInfo.totalPage").type(JsonFieldType.NUMBER)
+                                        .description("총 페이지 수"),
+                                fieldWithPath("data.pageInfo.totalElement").type(JsonFieldType.NUMBER)
+                                        .description("총 요소 개수")
                         )));
     }
 }
