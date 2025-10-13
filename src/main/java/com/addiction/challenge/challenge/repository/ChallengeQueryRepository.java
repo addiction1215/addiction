@@ -25,8 +25,8 @@ public class ChallengeQueryRepository {
                 ))
                 .from(challenge)
                 .innerJoin(challengeHistory)
-                .on(challengeHistory.challengeId.id.eq(challenge.id))
-                .where(challengeHistory.userId.id.eq(userId));
+                .on(challengeHistory.challenge.id.eq(challenge.id))
+                .where(challengeHistory.user.id.eq(userId));
 
         return query.fetch();
     }

@@ -23,15 +23,14 @@ public class Challenge extends BaseTimeEntity {
     private String badge;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @Builder
-    public Challenge(Long id, String title, String content, String badge, User userId) {
+    public Challenge(Long id, String title, String content, String badge, User user) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.badge = badge;
-        this.userId = userId;
+        this.user = user;
     }
 }

@@ -14,12 +14,10 @@ public class MissionHistory extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id")
-    private Mission missionId;
+    private Mission mission;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_id")
-    private Challenge challengeId;
+    private Challenge challenge;
 
     private ChallengeStatus status;
 
@@ -29,16 +27,15 @@ public class MissionHistory extends BaseTimeEntity {
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @Builder
-    public MissionHistory(Long id, Mission missionId, Challenge challengeId, Integer accTime, String address, User userId) {
+    public MissionHistory(Long id, Mission mission, Challenge challenge, Integer accTime, String address, User user) {
         this.id = id;
-        this.missionId = missionId;
-        this.challengeId = challengeId;
+        this.mission = mission;
+        this.challenge = challenge;
         this.accTime = accTime;
         this.address = address;
-        this.userId = userId;
+        this.user = user;
     }
 }

@@ -72,7 +72,7 @@ public class ChallengeReadServiceTest extends IntegrationTestSupport {
                 .content("test content")
                 .title(title)
                 .badge("test badge")
-                .userId(user)
+                .user(user)
                 .build();
     }
 }
