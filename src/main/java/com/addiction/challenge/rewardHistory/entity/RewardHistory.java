@@ -26,14 +26,14 @@ public class RewardHistory extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @Builder
-    public RewardHistory(Long id, RewardType type, Integer point, Integer remainingPoint, User userId) {
+    public RewardHistory(Long id, RewardType type, Integer point, Integer remainingPoint, User user) {
         this.id = id;
         this.type = type;
         this.point = point;
         this.remainingPoint = remainingPoint;
-        this.userId = userId;
+        this.user = user;
     }
 }

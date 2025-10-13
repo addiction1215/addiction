@@ -31,17 +31,16 @@ public class Mission extends BaseTimeEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @Builder
-    public Mission(Long id, Challenge challengeId, MissionCategoryStatus category, String title, Integer reward, String content, User userId) {
+    public Mission(Long id, Challenge challengeId, MissionCategoryStatus category, String title, Integer reward, String content, User user) {
         this.id = id;
         this.challengeId = challengeId;
         this.category = category;
         this.title = title;
         this.reward = reward;
         this.content = content;
-        this.userId = userId;
+        this.user = user;
     }
 }

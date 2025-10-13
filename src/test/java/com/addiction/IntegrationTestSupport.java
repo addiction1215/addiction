@@ -183,14 +183,14 @@ public abstract class IntegrationTestSupport {
                 .content("testcontent")
                 .title("testtitle")
                 .badge("testbadge")
-                .userId(user)
+                .user(user)
                 .build();
     }
 
     protected ChallengeHistory createChallengeHistory(User user, Challenge challenge, YnStatus ynStatus) {
         return ChallengeHistory.builder()
-                .userId(user)
-                .challengeId(challenge)
+                .user(user)
+                .challenge(challenge)
                 .finishYn(ynStatus)
                 .build();
     }
