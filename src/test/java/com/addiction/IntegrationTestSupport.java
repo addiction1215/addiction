@@ -1,5 +1,8 @@
 package com.addiction;
 
+import com.addiction.challenge.entity.Challenge;
+import com.addiction.challenge.repository.ChallengeJpaRepository;
+import com.addiction.challenge.repository.ChallengeRepository;
 import com.addiction.storage.service.OracleStorageService;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +71,10 @@ public abstract class IntegrationTestSupport {
 	protected UserCigaretteRepository userCigaretteRepository;
 	@Autowired
 	protected AlertHistoryRepository alertHistoryRepository;
+    @Autowired
+    protected ChallengeRepository challengeRepository;
+    @Autowired
+    protected ChallengeJpaRepository cChallengeJpaRepository;
 
 	@AfterEach
 	public void tearDown() {
@@ -160,4 +167,13 @@ public abstract class IntegrationTestSupport {
 			.pushToken("testPushToken")
 			.build();
 	}
+
+    protected Challenge createChallenge(User user) {
+        return Challenge.builder()
+                .content("testcontent")
+                .title("testtitle")
+                .badge("testbadge")
+                .userId(user)
+                .build();
+    }
 }
