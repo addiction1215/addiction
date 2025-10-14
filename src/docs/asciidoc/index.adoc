@@ -54,6 +54,11 @@ include::api/alertHistory/alertHistory.adoc[]
 
 include::api/storage/storage.adoc[]
 
+[[Challenge-API]]
+== Challenge API
+
+include::api/challenge/challenge.adoc[]
+
 [[Challenge-History-API]]
 == Challenge-History API
 
