@@ -267,4 +267,21 @@ public class UserControllerTest extends ControllerTestSupport {
 			.andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
 			.andExpect(jsonPath("$.message").value("금연 목표는 필수입니다."));
 	}
+
+	@DisplayName("사용자의 간단한 프로필 정보를 조회한다.")
+	@Test
+	@WithMockUser(roles = "USER")
+	void 사용자의_간단한_프로필_정보를_조회한다() throws Exception {
+		// given
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/user/simple-profile")
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
+	}
 }

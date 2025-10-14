@@ -15,6 +15,8 @@ import com.addiction.user.users.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import com.addiction.user.users.service.response.UserSimpleProfileResponse;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
@@ -69,5 +71,9 @@ public class UserController {
 		return ApiResponse.ok(userReadService.findUserInfo());
 	}
 
+	@GetMapping("/simple-profile")
+	public ApiResponse<UserSimpleProfileResponse> findSimpleProfile() {
+		return ApiResponse.ok(userReadService.findSimpleProfile());
+	}
 
 }

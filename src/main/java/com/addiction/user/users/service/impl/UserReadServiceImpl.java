@@ -15,6 +15,8 @@ import com.addiction.user.users.service.response.UserStartDateResponse;
 
 import lombok.RequiredArgsConstructor;
 
+import com.addiction.user.users.service.response.UserSimpleProfileResponse;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -69,6 +71,13 @@ public class UserReadServiceImpl implements UserReadService {
 	public UserInfoResponse findUserInfo() {
 		return UserInfoResponse.createResponse(
 				findById(securityService.getCurrentLoginUserInfo().getUserId())
+		);
+	}
+
+	@Override
+	public UserSimpleProfileResponse findSimpleProfile() {
+		return UserSimpleProfileResponse.createResponse(
+			findById(securityService.getCurrentLoginUserInfo().getUserId())
 		);
 	}
 }
