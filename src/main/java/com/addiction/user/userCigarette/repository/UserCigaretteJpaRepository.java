@@ -16,7 +16,7 @@ public interface UserCigaretteJpaRepository extends JpaRepository<UserCigarette,
 	Optional<UserCigarette> findByUserId(Long userId);
 
 	@Modifying
-	@Query(value = "DELETE FROM user_cigarette WHERE id = (SELECT id FROM user_cigarette WHERE user_id = :userId ORDER BY id DESC LIMIT 1)", nativeQuery = true)
+	@Query(value = "DELETE FROM user_cigarette WHERE id = (SELECT id FROM (SELECT id FROM user_cigarette WHERE user_id = :userId ORDER BY id DESC LIMIT 1) AS temp)", nativeQuery = true)
 	void deleteLatestByUserId(@Param("userId") Long userId);
 
 	int countByUserId(Long userId);
