@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,5 +30,10 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     @Override
     public void deleteAllInBatch() {
         challengeJpaRepository.deleteAllInBatch();
+    }
+
+    @Override
+    public Optional<Challenge> findById(Long challengeId) {
+        return challengeJpaRepository.findById(challengeId);
     }
 }
