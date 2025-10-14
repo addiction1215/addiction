@@ -4,6 +4,7 @@ import com.addiction.challenge.challenge.repository.ChallengeRepository;
 import com.addiction.challenge.challenge.service.ChallengeReadService;
 import com.addiction.challenge.challenge.service.challenge.response.ChallengeResponse;
 import com.addiction.challenge.challenge.service.challenge.response.ChallengeResponseList;
+import com.addiction.challenge.challenge.service.response.ChallengeDetailResponse;
 import com.addiction.common.enums.YnStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.security.SecurityService;
@@ -40,5 +41,11 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
                 .leftChallengeList(leftChallengeList)
                 .finishedChallengeList(finishedChallengeList)
                 .build();
+    }
+
+    @Override
+    public ChallengeDetailResponse findById(Long challengeId) {
+        return ChallengeDetailResponse.createResponse(challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 챌린지는 없습니다. id = " + challengeId)));
     }
 }
