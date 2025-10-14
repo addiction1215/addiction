@@ -463,4 +463,44 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 ));
     }
 
+    @DisplayName("사용자 간단 프로필 조회 API")
+    @Test
+    void 사용자_간단_프로필_조회_API() throws Exception {
+        // given
+        given(userReadService.findSimpleProfile())
+                .willReturn(UserSimpleProfileResponse.builder()
+                        .profileUrl("https://example.com/profile.jpg")
+                        .email("test@example.com")
+                        .nickName("테스트닉네임")
+                        .build()
+                );
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/simple-profile")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-find-simple-profile",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.profileUrl").type(JsonFieldType.STRING)
+                                        .description("프로필 URL"),
+                                fieldWithPath("data.email").type(JsonFieldType.STRING)
+                                        .description("이메일"),
+                                fieldWithPath("data.nickName").type(JsonFieldType.STRING)
+                                        .description("닉네임")
+                        )
+                ));
+    }
+
 }
