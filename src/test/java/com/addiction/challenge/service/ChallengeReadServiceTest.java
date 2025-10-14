@@ -31,12 +31,11 @@ public class ChallengeReadServiceTest extends IntegrationTestSupport {
     @Test
     void 챌린지_목록_조회() {
         //given
-        Long userId = 1L;
         User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
         userRepository.save(user);
 
         given(securityService.getCurrentLoginUserInfo())
-                .willReturn(createLoginUserInfo(userId));
+                .willReturn(createLoginUserInfo(user.getId()));
 
         Challenge challenge1 = createChallenge(user, "완료 챌린지 1");
         Challenge challenge2 = createChallenge(user, "완료 챌린지 2");
