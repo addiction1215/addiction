@@ -34,7 +34,7 @@ class ChallengeHistoryReadServiceTest {
 
     @DisplayName("유저의 챌린지 이력을 조회한다.")
     @Test
-    void findByUserId() {
+    void 유저의_챌린지_이력을_조회한다() {
         // given
         Long userId = 1L;
         LoginUserInfo loginUserInfo = LoginUserInfo.of(userId);

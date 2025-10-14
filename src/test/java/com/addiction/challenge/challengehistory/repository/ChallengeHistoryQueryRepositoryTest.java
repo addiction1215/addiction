@@ -34,7 +34,7 @@ class ChallengeHistoryQueryRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName("유저의 챌린지 이력을 조회한다.")
     @Test
-    void findByUserId() {
+    void 유저의_챌린지_이력을_조회한다() {
         // given
         User user = User.builder()
                 .email("test@example.com")
