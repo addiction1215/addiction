@@ -5,7 +5,7 @@ import java.util.List;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 
 public interface UserCigaretteHistoryRepository {
-	void save(CigaretteHistoryDocument document);
+	void save(CigaretteHistoryDocument document, String date);
 
 	List<CigaretteHistoryDocument> findByMonthAndUserId(String month, Long userId);
 
