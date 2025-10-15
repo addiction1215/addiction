@@ -24,6 +24,8 @@ public interface UserCigaretteRepository {
 
 	List<UserCigarette> findAllByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
 
+	List<UserCigarette> findAllByUserIdAndCreatedDateBetween(Long userId, LocalDateTime start, LocalDateTime end);
+
 	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId);
 
 }
