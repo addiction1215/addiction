@@ -14,9 +14,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           exception-handling: ignore
-  data:
-    mongodb:
-      database: test
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
   mail:
     host: smtp.gmail.com
     port: 587
@@ -28,12 +29,6 @@ spring:
           starttls:
             enable: true
           auth: true
-
-de:
-  flapdoodle:
-    mongodb:
-      embedded:
-        version: 5.0.5
 
 oauth:
   kakao:

@@ -1,24 +1,23 @@
 package com.addiction.user.userCigaretteHistory.service.impl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.addiction.global.security.SecurityService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
-import com.addiction.user.userCigaretteHistory.service.response.*;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.addiction.global.security.SecurityService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
-
+import com.addiction.user.userCigaretteHistory.service.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -112,7 +111,10 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         String start = startDate.format(DateTimeFormatter.BASIC_ISO_DATE);
         String end = endDate.format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        List<CigaretteHistoryDocument> docs = userCigaretteHistoryRepository.findByUserIdAndDateBetween(userId, start, end);
+        // 가변 리스트로 변환 (불변 리스트일 수 있으므로)
+        List<CigaretteHistoryDocument> docs = new ArrayList<>(
+                userCigaretteHistoryRepository.findByUserIdAndDateBetween(userId, start, end)
+        );
 
         // 당일 데이터 추가 (RDBMS에서 조회)
         String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);

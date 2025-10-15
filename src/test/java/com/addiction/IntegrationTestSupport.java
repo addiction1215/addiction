@@ -73,8 +73,10 @@ public abstract class IntegrationTestSupport {
     protected SurveyResultDescriptionRepository surveyResultDescriptionRepository;
     @Autowired
     protected UserCigaretteRepository userCigaretteRepository;
-    @Autowired
+    @MockitoBean
     protected com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository userCigaretteHistoryRepository;
+    @MockitoBean
+    protected org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
     @Autowired
     protected AlertHistoryRepository alertHistoryRepository;
     @Autowired

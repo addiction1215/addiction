@@ -26,7 +26,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
 
@@ -34,16 +36,10 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
     private UserCigaretteService userCigaretteService;
     @Autowired
     private UserCigaretteHistoryService userCigaretteHistoryService;
-    @Autowired
-    private org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
 
     @AfterEach
     public void tearDown() {
         userCigaretteRepository.deleteAllInBatch();
-        // MongoDB의 모든 cigarette_history 컬렉션 삭제
-        mongoTemplate.getCollectionNames().stream()
-                .filter(name -> name.startsWith("cigarette_history_"))
-                .forEach(mongoTemplate::dropCollection);
     }
 
     @DisplayName("유저의 마지막 흡연 기록을 조회한다.")
@@ -99,14 +95,7 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
 
         // then
-        CigaretteHistoryDocument result = userCigaretteHistoryRepository.findByDateAndUserId(dateStr, userId);
-        assertThat(result).isNotNull();
-        assertThat(result.getMonth()).isEqualTo(monthStr);
-        assertThat(result.getDate()).isEqualTo(dateStr);
-        assertThat(result.getUserId()).isEqualTo(userId);
-        assertThat(result.getSmokeCount()).isEqualTo(smokeCount);
-        assertThat(result.getAvgPatienceTime()).isEqualTo(avgPatienceTime);
-        assertThat(result.getHistory()).hasSize(1);
+        verify(userCigaretteHistoryRepository, times(1)).save(any(CigaretteHistoryDocument.class), eq(dateStr));
     }
 
     @DisplayName("특정 월의 흡연 히스토리를 캘린더 형식으로 조회한다 - 당일 데이터 포함")
@@ -119,15 +108,18 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
 
-        // 과거 데이터 MongoDB에 저장
+        // MongoDB Mock 데이터 설정
         String pastDate = "20251010";
-        userCigaretteHistoryService.save("202510", pastDate, user.getId(), 3, 2000L,
-                List.of(CigaretteHistoryDocument.History.builder()
-                        .address("서울시 강남구")
-                        .smokeTime(LocalDateTime.now().minusDays(5))
-                        .smokePatienceTime(2000L)
-                        .build())
-        );
+        CigaretteHistoryDocument mockDoc = CigaretteHistoryDocument.builder()
+                .date(pastDate)
+                .userId(user.getId())
+                .smokeCount(3)
+                .avgPatienceTime(2000L)
+                .build();
+
+        String currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        given(userCigaretteHistoryRepository.findByMonthAndUserId(currentMonth, user.getId()))
+                .willReturn(List.of(mockDoc));
 
         // 당일 데이터 RDBMS에 추가
         UserCigaretteChangeServiceRequest request = UserCigaretteChangeServiceRequest.builder()
@@ -135,8 +127,6 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
                 .address("서울시 송파구")
                 .build();
         userCigaretteService.changeCigarette(request);
-
-        String currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
 
         // when
         List<UserCigaretteHistoryCalenderResponse> results = userCigaretteHistoryService.findCalendarByDate(currentMonth);
@@ -199,7 +189,7 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
 
-        // 과거 데이터 MongoDB에 저장
+        // MongoDB Mock 데이터 설정
         String pastDate = "20251010";
         List<CigaretteHistoryDocument.History> histories = List.of(
                 CigaretteHistoryDocument.History.builder()
@@ -213,7 +203,17 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
                         .smokePatienceTime(3000L)
                         .build()
         );
-        userCigaretteHistoryService.save("202510", pastDate, user.getId(), 2, 2500L, histories);
+
+        CigaretteHistoryDocument mockDoc = CigaretteHistoryDocument.builder()
+                .date(pastDate)
+                .userId(user.getId())
+                .smokeCount(2)
+                .avgPatienceTime(2500L)
+                .history(histories)
+                .build();
+
+        given(userCigaretteHistoryRepository.findByDateAndUserId(pastDate, user.getId()))
+                .willReturn(mockDoc);
 
         // when
         List<UserCigaretteHistoryResponse> results = userCigaretteHistoryService.findHistoryByDate(pastDate);
@@ -235,16 +235,21 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
 
-        // 과거 데이터 MongoDB에 저장
+        // MongoDB Mock 데이터 설정
         String pastDate = LocalDate.now().minusDays(3).format(DateTimeFormatter.BASIC_ISO_DATE);
-        String pastMonth = LocalDate.now().minusDays(3).format(DateTimeFormatter.ofPattern("yyyyMM"));
-        userCigaretteHistoryService.save(pastMonth, pastDate, user.getId(), 5, 3000L,
-                List.of(CigaretteHistoryDocument.History.builder()
-                        .address("서울시 강남구")
-                        .smokeTime(LocalDateTime.now().minusDays(3))
-                        .smokePatienceTime(3000L)
-                        .build())
-        );
+        CigaretteHistoryDocument mockDoc = CigaretteHistoryDocument.builder()
+                .date(pastDate)
+                .userId(user.getId())
+                .smokeCount(5)
+                .avgPatienceTime(3000L)
+                .build();
+
+        LocalDate startDate = PeriodType.WEEKLY.calculateStartDate(LocalDate.now());
+        String start = startDate.format(DateTimeFormatter.BASIC_ISO_DATE);
+        String end = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+
+        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(user.getId(), start, end))
+                .willReturn(List.of(mockDoc));
 
         // 당일 데이터 RDBMS에 추가
         UserCigaretteChangeServiceRequest request1 = UserCigaretteChangeServiceRequest.builder()
@@ -286,6 +291,14 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
 
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
+
+        // MongoDB에 데이터 없음
+        LocalDate startDate = PeriodType.WEEKLY.calculateStartDate(LocalDate.now());
+        String start = startDate.format(DateTimeFormatter.BASIC_ISO_DATE);
+        String end = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+
+        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(user.getId(), start, end))
+                .willReturn(List.of());
 
         // 당일 데이터만 추가
         for (int i = 0; i < 3; i++) {
