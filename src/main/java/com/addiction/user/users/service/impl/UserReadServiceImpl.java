@@ -33,6 +33,12 @@ public class UserReadServiceImpl implements UserReadService {
 	}
 
 	@Override
+	public User findByEmailAndNickName(String email, String nickName) {
+		return userRepository.findByEmailAndNickName(email, nickName)
+			.orElseThrow(() -> new AddictionException("입력하신 이메일과 닉네임에 해당하는 회원이 존재하지 않습니다."));
+	}
+
+	@Override
 	public User findById(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));

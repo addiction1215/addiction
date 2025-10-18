@@ -59,6 +59,10 @@ public class Friend extends BaseTimeEntity {
         return this.status == FriendStatus.ACCEPTED;
     }
 
+    public boolean isBlocked() {
+        return this.status == FriendStatus.BLOCKED;
+    }
+
     public boolean isFriendshipBetween(User user1, User user2) {
         return (this.requester.equals(user1) && this.receiver.equals(user2)) ||
                (this.requester.equals(user2) && this.receiver.equals(user1));
@@ -79,5 +83,13 @@ public class Friend extends BaseTimeEntity {
             return this.requester;
         }
         throw new IllegalArgumentException("해당 사용자는 이 친구 관계의 참여자가 아닙니다.");
+    }
+
+    public void block() {
+        this.status = FriendStatus.BLOCKED;
+    }
+
+    public boolean canBeBlockedBy(User user) {
+        return this.isAccepted() && this.isParticipant(user);
     }
 }

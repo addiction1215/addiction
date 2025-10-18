@@ -14,6 +14,17 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           exception-handling: ignore
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: addiction1215@gmail.com
+    password: test
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
 
 oauth:
   kakao:
@@ -31,3 +42,12 @@ oauth:
 
 jwt:
   secret-key: 4a0pPV9g4/6OvKKzV1MpVdIchBeTfcjd/TRKbuWUgpNY3jyh6YA/aBnpe4kPsAY5WJoBBzOG358zqS5/E0TSag==
+
+oracle:
+  cloud:
+    region: ap-chuncheon-1
+  name-space-name: testnamespace
+  user:
+    bucket-name: testbucket
+  challenge:
+    bucket-name: testchallengebucket

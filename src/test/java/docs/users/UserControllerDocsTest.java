@@ -267,6 +267,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                         .introduction("테스트 소개")
                         .sex(Sex.MALE)
                         .birthDay("123456")
+                        .profileUrl("https://example.com/profile.jpg")
                         .build()
                 );
 
@@ -295,7 +296,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.birthDay").type(JsonFieldType.STRING)
                                         .description("생년월일 포맷 (YYYYMMDD)"),
                                 fieldWithPath("data.introduction").type(JsonFieldType.STRING)
-                                        .description("한줄소개")
+                                        .description("한줄소개"),
+                                fieldWithPath("data.profileUrl").type(JsonFieldType.STRING)
+                                        .description("프로필 URL")
                         )
                 ));
     }
@@ -346,6 +349,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .introduction("자기소개입니다")
                 .sex(Sex.MALE)
                 .birthDay("19961111")
+                .profileUrl("https://example.com/new-profile.jpg")
                 .build();
 
         given(userService.updateProfile(any()))
@@ -354,6 +358,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                         .introduction("자기소개입니다")
                         .sex(Sex.MALE)
                         .birthDay("19961111")
+                        .profileUrl("https://example.com/new-profile.jpg")
                         .build()
                 );
 
@@ -377,7 +382,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("sex").type(JsonFieldType.STRING)
                                         .description("성별: " + Arrays.toString(Sex.values())),
                                 fieldWithPath("birthDay").type(JsonFieldType.STRING)
-                                        .description("생년월일 포맷 (YYYYMMDD)")
+                                        .description("생년월일 포맷 (YYYYMMDD)"),
+                                fieldWithPath("profileUrl").type(JsonFieldType.STRING)
+                                        .description("프로필 URL")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
@@ -395,7 +402,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.sex").type(JsonFieldType.STRING)
                                         .description("수정된 성별"),
                                 fieldWithPath("data.birthDay").type(JsonFieldType.STRING)
-                                        .description("수정된 생년월일")
+                                        .description("수정된 생년월일"),
+                                fieldWithPath("data.profileUrl").type(JsonFieldType.STRING)
+                                        .description("수정된 프로필 URL")
                         )
                 ));
     }
