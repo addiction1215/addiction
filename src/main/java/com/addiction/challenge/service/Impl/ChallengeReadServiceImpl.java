@@ -6,7 +6,6 @@ import com.addiction.challenge.service.challenge.response.ChallengeResponse;
 import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
 import com.addiction.challenge.service.challenge.response.ProgressingChallenge;
 import com.addiction.common.enums.ChallengeStatus;
-import com.addiction.common.enums.YnStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.security.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
 
         ChallengeResponseList progressingChallenge = challengePage.stream()
                 .filter(challenge -> ChallengeStatus.PROGRESSING.toString().equalsIgnoreCase(challenge.getStatus().toString()))
-                .findFirst() // Stream에서 첫 번째 항목을 찾음 (Optional<ChallengeResponseList> 반환)
+                .findFirst()
                 .orElse(null);
 
         List<ChallengeResponseList> leftChallengeList = challengePage.stream()
@@ -45,23 +44,17 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
                 .filter(challenge -> ChallengeStatus.COMPLETED.toString().equalsIgnoreCase(challenge.getStatus().toString()))
                 .toList();
 
-        ProgressingChallenge finalProgressingChallenge = (progressingChallenge != null)
-                ? ProgressingChallenge.builder()
-                .challengeId(progressingChallenge.getChallengeId()) // ChallengeResponseList의 필드 사용
+        ProgressingChallenge finalProgressingChallenge = ProgressingChallenge.builder()
+                .challengeId(progressingChallenge.getChallengeId())
                 .title(progressingChallenge.getTitle())
                 .content(progressingChallenge.getContent())
-//                 .progressPercent(???) // 🚨 'progressPercent'는 DTO에 없으므로 값을 정해야 합니다.
-                .progressPercent(0) // 예: 기본값 0 또는 별도 계산
-                .build()
-                : null;
+                .progressPercent(0)
+                .build();
 
-        ChallengeResponse challengeResponse = ChallengeResponse.builder()
+        return ChallengeResponse.builder()
                 .progressingChallenge(finalProgressingChallenge)
                 .leftChallengeList(leftChallengeList)
                 .finishedChallengeList(finishedChallengeList)
                 .build();
-
-
-        return challengeResponse;
     }
 }
