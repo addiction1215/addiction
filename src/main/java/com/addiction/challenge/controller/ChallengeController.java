@@ -2,6 +2,7 @@ package com.addiction.challenge.controller;
 
 import com.addiction.challenge.service.ChallengeReadService;
 import com.addiction.challenge.service.ChallengeService;
+import com.addiction.challenge.service.challenge.request.FailChallengeRequest;
 import com.addiction.challenge.service.challenge.response.ChallengeResponse;
 import com.addiction.global.ApiResponse;
 import com.addiction.global.page.request.PageInfoRequest;
@@ -19,4 +20,11 @@ public class ChallengeController {
     public ApiResponse<ChallengeResponse> getChallengeList(@ModelAttribute PageInfoRequest request) {
         return ApiResponse.ok(challengeReadService.getChallenge(request.toServiceRequest()));
     }
+
+    @PostMapping("/fail")
+    public ApiResponse<String> insertFailChallenge(@RequestBody FailChallengeRequest request) {
+        challengeService.insertFailChallenge(request);
+        return ApiResponse.ok("챌린지를 포기했습니다.");
+    }
+
 }
