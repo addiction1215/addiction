@@ -2,9 +2,12 @@ package com.addiction.user.userCigaretteHistory.controller;
 
 import java.util.List;
 
+import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryLastestResponse;
+import com.addiction.user.userCigaretteHistory.service.response.WeeklyComparisonResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
@@ -42,5 +45,18 @@ public class UserCigaretteHistoryController {
     public ApiResponse<UserCigaretteHistoryLastestResponse> findLastestByUserId() {
         return ApiResponse.ok(userCigaretteHistoryService.findLastestByUserId());
     }
+
+	/**
+	 * 주간 흡연 데이터 비교 API
+	 * 지난주(월~일) vs 이번주(월~오늘) 비교
+	 * 
+	 * @param comparisonType COUNT(흡연 횟수) 또는 TIME(평균 금연 시간)
+	 * @return 주간 비교 데이터
+	 */
+	@GetMapping("/weekly-comparison")
+	public ApiResponse<WeeklyComparisonResponse> getWeeklyComparison(
+			@RequestParam ComparisonType comparisonType) {
+		return ApiResponse.ok(userCigaretteHistoryService.compareWeekly(comparisonType));
+	}
 
 }
