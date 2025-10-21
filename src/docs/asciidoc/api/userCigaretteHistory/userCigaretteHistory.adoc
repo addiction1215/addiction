@@ -1,5 +1,5 @@
 [[user-cigarette-history-calendar]]
-=== 회원 캘린더 기록 조회 API
+=== 월별 캘린더 흡연기록 조회
 
 ==== HTTP Request
 
@@ -12,7 +12,7 @@ include::{snippets}/user-cigarette-history-calendar/http-response.adoc[]
 include::{snippets}/user-cigarette-history-calendar/response-fields.adoc[]
 
 [[user-cigarette-history-history]]
-=== 회원 날짜 흡엽 기록 조회 API
+=== 특정 날짜 흡연기록 조회
 
 ==== HTTP Request
 
@@ -25,7 +25,7 @@ include::{snippets}/user-cigarette-history-history/http-response.adoc[]
 include::{snippets}/user-cigarette-history-history/response-fields.adoc[]
 
 [[user-cigarette-history-graph]]
-=== 회원 흡연 그래프 조회 API
+=== 기간별 흡연기록 그래프 조회
 
 ==== HTTP Request
 
@@ -38,14 +38,26 @@ include::{snippets}/user-cigarette-history-graph/http-response.adoc[]
 include::{snippets}/user-cigarette-history-graph/response-fields.adoc[]
 
 [[user-cigarette-history-latest]]
-=== 회원 마지막 흡연 기록 조회 API
+=== 최신 흡연기록 조회
 
 ==== HTTP Request
 
 include::{snippets}/user-cigarette-history-latest/http-request.adoc[]
-include::{snippets}/user-cigarette-history-latest/query-parameters.adoc[]
 
 ==== HTTP Response
 
 include::{snippets}/user-cigarette-history-latest/http-response.adoc[]
 include::{snippets}/user-cigarette-history-latest/response-fields.adoc[]
+
+[[user-cigarette-history-weekly-comparison-count]]
+=== 주간 흡연 비교
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-weekly-comparison/http-request.adoc[]
+include::{snippets}/user-cigarette-history-weekly-comparison/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-weekly-comparison/http-response.adoc[]
+include::{snippets}/user-cigarette-history-weekly-comparison/response-fields.adoc[]
