@@ -6,8 +6,14 @@ import com.addiction.global.BaseTimeEntity;
 import com.addiction.mission.entity.Mission;
 import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class MissionHistory extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +39,24 @@ public class MissionHistory extends BaseTimeEntity {
     private User userId;
 
     @Builder
-    public MissionHistory(Long id, Mission missionId, Challenge challengeId, Integer accTime, String address, User userId) {
+    public MissionHistory(Long id, Mission missionId, Challenge challengeId, ChallengeStatus status, Integer accTime, String address, User userId) {
         this.id = id;
         this.missionId = missionId;
         this.challengeId = challengeId;
+        this.status = status;
         this.accTime = accTime;
         this.address = address;
         this.userId = userId;
+    }
+
+    public static MissionHistory createMissionHistory(Mission missionId, Challenge challengeId, ChallengeStatus status, Integer accTime, String address, User userId) {
+        return MissionHistory.builder()
+                .missionId(missionId)
+                .challengeId(challengeId)
+                .status(status)
+                .accTime(accTime)
+                .address(address)
+                .userId(userId)
+                .build();
     }
 }

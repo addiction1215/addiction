@@ -1,4 +1,4 @@
-package com.addiction.mission.service.mission.Impl;
+package com.addiction.mission.service.Impl;
 
 import com.addiction.global.security.SecurityService;
 import com.addiction.mission.repository.MissionRepository;
@@ -17,7 +17,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MissionReadServiceImpl implements MissionReadService {
     private final SecurityService securityService;
-    private final MissionRepository  missionRepository;
+    private final MissionRepository missionRepository;
 
     @Override
     public List<MissionResponseList> getMission(Long challengeId) {
