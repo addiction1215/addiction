@@ -73,6 +73,8 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private SettingStatus settingStatus;
 
+	private String useYn;
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<RefreshToken> refreshTokens = new ArrayList<>();
 
@@ -97,6 +99,11 @@ public class User extends BaseTimeEntity {
 		this.sex = sex;
 		this.role = role;
 		this.settingStatus = settingStatus;
+		this.useYn = "Y";
+	}
+
+	public void withdraw() {
+		this.useYn = "N";
 	}
 
     public void updateProfileUrl(String profileUrl) {
