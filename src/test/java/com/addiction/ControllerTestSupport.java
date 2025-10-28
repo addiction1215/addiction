@@ -3,6 +3,9 @@ package com.addiction;
 import com.addiction.alertHistory.controller.alertHistory.AlertHistoryController;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryService;
+import com.addiction.alertSetting.controller.AlertSettingController;
+import com.addiction.alertSetting.service.AlertSettingReadService;
+import com.addiction.alertSetting.service.AlertSettingService;
 import com.addiction.challenge.challenge.controller.ChallengeController;
 import com.addiction.challenge.challenge.service.ChallengeReadService;
 import com.addiction.challenge.challengehistory.controller.ChallengeHistoryController;
@@ -35,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
         UserCigaretteController.class,
         UserCigaretteHistoryController.class,
         AlertHistoryController.class,
+        AlertSettingController.class,
         ChallengeHistoryController.class,
         ChallengeController.class,
 })
@@ -75,6 +79,12 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected AlertHistoryService alertHistoryService;
+
+    @MockitoBean
+    protected AlertSettingReadService alertSettingReadService;
+
+    @MockitoBean
+    protected AlertSettingService alertSettingService;
 
     @MockitoBean
     protected ChallengeHistoryReadService challengeHistoryReadService;
