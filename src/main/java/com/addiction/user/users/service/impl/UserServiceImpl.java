@@ -107,4 +107,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+	@Override
+	public Boolean withdraw() {
+		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+		user.withdraw();
+        return true;
+	}
+
 }

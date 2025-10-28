@@ -19,4 +19,6 @@ public interface UserService {
 	UserUpdateProfileResponse updateProfile(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest); // 테스트코드X
 
 	UserUpdateInfoResponse updateInfo(UserUpdateInfoServiceRequest userUpdateInfoServiceRequest); // 테스트코드X
+
+    Boolean withdraw();
 }
