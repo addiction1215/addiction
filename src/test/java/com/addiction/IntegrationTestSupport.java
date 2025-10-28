@@ -1,20 +1,5 @@
 package com.addiction;
 
-import com.addiction.challenge.challenge.entity.Challenge;
-import com.addiction.challenge.challenge.repository.ChallengeJpaRepository;
-import com.addiction.challenge.challenge.repository.ChallengeRepository;
-import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
-import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
-import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
-import com.addiction.common.enums.YnStatus;
-import com.addiction.storage.service.OracleStorageService;
-import org.junit.jupiter.api.AfterEach;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
 import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.alertHistory.entity.AlertHistoryStatus;
@@ -22,8 +7,16 @@ import com.addiction.alertHistory.repository.AlertHistoryRepository;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingRepository;
+import com.addiction.challenge.challenge.entity.Challenge;
+import com.addiction.challenge.challenge.repository.ChallengeJpaRepository;
+import com.addiction.challenge.challenge.repository.ChallengeRepository;
+import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
+import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
+import com.addiction.common.enums.YnStatus;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
+import com.addiction.storage.service.OracleStorageService;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyAnswer.repository.SurveyAnswerRepository;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
@@ -44,7 +37,14 @@ import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.oauth.feign.google.GoogleApiFeignCall;
 import com.addiction.user.users.oauth.feign.kakao.KakaoApiFeignCall;
+import com.addiction.user.users.repository.UserJpaRepository;
 import com.addiction.user.users.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -62,6 +62,8 @@ public abstract class IntegrationTestSupport {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     protected UserRepository userRepository;
+    @Autowired
+    protected UserJpaRepository userJpaRepository;
     @Autowired
     protected RefreshTokenRepository refreshTokenRepository;
     @Autowired
