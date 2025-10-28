@@ -19,6 +19,9 @@ import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.alertHistory.entity.AlertHistoryStatus;
 import com.addiction.alertHistory.repository.AlertHistoryRepository;
+import com.addiction.alertSetting.entity.AlertSetting;
+import com.addiction.alertSetting.entity.enums.AlertType;
+import com.addiction.alertSetting.repository.AlertSettingRepository;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
@@ -80,6 +83,8 @@ public abstract class IntegrationTestSupport {
     @Autowired
     protected AlertHistoryRepository alertHistoryRepository;
     @Autowired
+    protected AlertSettingRepository alertSettingRepository;
+    @Autowired
     protected ChallengeRepository challengeRepository;
     @Autowired
     protected ChallengeJpaRepository cChallengeJpaRepository;
@@ -93,6 +98,7 @@ public abstract class IntegrationTestSupport {
         challengeHistoryRepository.deleteAllInBatch();
         challengeRepository.deleteAllInBatch();
         alertHistoryRepository.deleteAllInBatch();
+        alertSettingRepository.deleteAllInBatch();
         surveyResultDescriptionRepository.deleteAllInBatch();
         surveyResultRepository.deleteAllInBatch();
         surveyAnswerRepository.deleteAllInBatch();
@@ -195,6 +201,18 @@ public abstract class IntegrationTestSupport {
                 .user(user)
                 .challenge(challenge)
                 .finishYn(ynStatus)
+                .build();
+    }
+
+    protected AlertSetting createAlertSetting(User user, AlertType all, AlertType smokingWarning,
+                                              AlertType leaderboardRank, AlertType challenge, AlertType report) {
+        return AlertSetting.builder()
+                .user(user)
+                .all(all)
+                .smokingWarning(smokingWarning)
+                .leaderboardRank(leaderboardRank)
+                .challenge(challenge)
+                .report(report)
                 .build();
     }
 }
