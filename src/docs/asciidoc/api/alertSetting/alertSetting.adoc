@@ -1,0 +1,24 @@
+[[alertSetting-get]]
+=== 알림 설정 조회
+
+==== HTTP Request
+
+include::{snippets}/alertSetting-get/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/alertSetting-get/http-response.adoc[]
+include::{snippets}/alertSetting-get/response-fields.adoc[]
+
+[[alertSetting-update]]
+=== 알림 설정 수정
+
+==== HTTP Request
+
+include::{snippets}/alertSetting-update/http-request.adoc[]
+include::{snippets}/alertSetting-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/alertSetting-update/http-response.adoc[]
+include::{snippets}/alertSetting-update/response-fields.adoc[]
