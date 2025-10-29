@@ -16,6 +16,7 @@ import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHis
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphResponse;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryResponse;
+import com.addiction.user.userCigaretteHistory.service.response.WeeklyCigaretteResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,17 +47,15 @@ public class UserCigaretteHistoryController {
         return ApiResponse.ok(userCigaretteHistoryService.findLastestByUserId());
     }
 
-	/**
-	 * 주간 흡연 데이터 비교 API
-	 * 지난주(월~일) vs 이번주(월~오늘) 비교
-	 * 
-	 * @param comparisonType COUNT(흡연 횟수) 또는 TIME(평균 금연 시간)
-	 * @return 주간 비교 데이터
-	 */
 	@GetMapping("/weekly-comparison")
 	public ApiResponse<WeeklyComparisonResponse> getWeeklyComparison(
 			@RequestParam ComparisonType comparisonType) {
 		return ApiResponse.ok(userCigaretteHistoryService.compareWeekly(comparisonType));
+	}
+
+	@GetMapping("/this-week")
+	public ApiResponse<WeeklyCigaretteResponse> getThisWeekCigarettes() {
+		return ApiResponse.ok(userCigaretteHistoryService.findThisWeekCigarettes());
 	}
 
 }

@@ -261,4 +261,74 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         )
                 ));
     }
+
+    @DisplayName("이번 주 흡연량 조회 API")
+    @Test
+    void 이번_주_흡연량_조회_API() throws Exception {
+        // given
+        WeeklyCigaretteResponse response = WeeklyCigaretteResponse.builder()
+                .weekData(List.of(
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251026")
+                                .dayOfWeek("SUN")
+                                .count(5)
+                                .build(),
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251027")
+                                .dayOfWeek("MON")
+                                .count(3)
+                                .build(),
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251028")
+                                .dayOfWeek("TUE")
+                                .count(7)
+                                .build(),
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251029")
+                                .dayOfWeek("WED")
+                                .count(2)
+                                .build(),
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251030")
+                                .dayOfWeek("THU")
+                                .count(0)
+                                .build(),
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251031")
+                                .dayOfWeek("FRI")
+                                .count(0)
+                                .build(),
+                        WeeklyCigaretteResponse.DailyCigaretteCount.builder()
+                                .date("20251101")
+                                .dayOfWeek("SAT")
+                                .count(0)
+                                .build()
+                ))
+                .build();
+
+        given(userCigaretteHistoryService.findThisWeekCigarettes())
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/this-week")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-cigarette-history-this-week",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("이번 주 흡연량 데이터"),
+                                fieldWithPath("data.weekData").type(JsonFieldType.ARRAY).description("일요일부터 토요일까지의 흡연 데이터"),
+                                fieldWithPath("data.weekData[].date").type(JsonFieldType.STRING).description("날짜 (yyyyMMdd 형식)"),
+                                fieldWithPath("data.weekData[].dayOfWeek").type(JsonFieldType.STRING).description("요일 (SUN, MON, TUE, WED, THU, FRI, SAT)"),
+                                fieldWithPath("data.weekData[].count").type(JsonFieldType.NUMBER).description("해당 날짜의 흡연 개피 수")
+                        )
+                ));
+    }
 }

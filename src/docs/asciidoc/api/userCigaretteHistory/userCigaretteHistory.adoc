@@ -61,3 +61,16 @@ include::{snippets}/user-cigarette-history-weekly-comparison/query-parameters.ad
 
 include::{snippets}/user-cigarette-history-weekly-comparison/http-response.adoc[]
 include::{snippets}/user-cigarette-history-weekly-comparison/response-fields.adoc[]
+
+[[user-cigarette-history-this-week]]
+=== 이번 주 흡연량 조회
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-this-week/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-this-week/http-response.adoc[]
+include::{snippets}/user-cigarette-history-this-week/response-fields.adoc[]
+

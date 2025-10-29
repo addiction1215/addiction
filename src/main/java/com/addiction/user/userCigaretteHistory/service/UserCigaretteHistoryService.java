@@ -10,6 +10,7 @@ import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHis
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryLastestResponse;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryResponse;
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyComparisonResponse;
+import com.addiction.user.userCigaretteHistory.service.response.WeeklyCigaretteResponse;
 
 public interface UserCigaretteHistoryService {
 
@@ -24,11 +25,8 @@ public interface UserCigaretteHistoryService {
 
     UserCigaretteHistoryLastestResponse findLastestByUserId();
 
-	/**
-	 * 지난주 vs 이번주 흡연 데이터 비교
-	 * @param comparisonType COUNT(횟수) 또는 TIME(시간)
-	 * @return 주간 비교 응답
-	 */
 	WeeklyComparisonResponse compareWeekly(ComparisonType comparisonType);
+
+	WeeklyCigaretteResponse findThisWeekCigarettes();
 
 }
