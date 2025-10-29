@@ -341,7 +341,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         double difference = thisWeekAvgTime - lastWeekAvgTime;
 
         // 증감률 계산
-        double changeRate = 0.0;
+        double changeRate;
         if (lastWeekAvgTime == 0) {
             changeRate = thisWeekAvgTime > 0 ? PERCENTAGE_MULTIPLIER : 0.0;
         } else {
@@ -369,9 +369,6 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         if (today.isBefore(thisSunday)) {
             thisSunday = thisSunday.minusWeeks(ONE_WEEK);
         }
-
-        // 이번 주 토요일 계산
-        LocalDate thisSaturday = thisSunday.plusDays(DAYS_FROM_SUNDAY_TO_SATURDAY);
 
         // MongoDB에서 일요일 ~ 어제까지 데이터 조회
         List<CigaretteHistoryDocument> weekDocs = new ArrayList<>();
