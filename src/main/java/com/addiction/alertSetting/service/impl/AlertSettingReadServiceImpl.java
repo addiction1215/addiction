@@ -34,4 +34,5 @@ public class AlertSettingReadServiceImpl implements AlertSettingReadService {
 		return alertSettingRepository.findByUser(user)
 			.orElseGet(() -> alertSettingRepository.save(AlertSetting.createDefault(user)));
 	}
+
 }
