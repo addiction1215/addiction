@@ -10,7 +10,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -44,7 +47,7 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 
     @Override
     public List<CigaretteHistoryDocument> findByMonthAndUserId(String month, Long userId) {
-        // 월 단위 조회: 해당 월의 모든 날짜 컬렉션 조회
+        // 월 단위 조회: 해당 월의 모든 날짜 컬렉션을 병렬로 조회
         // month 형식: yyyyMM (예: 202406)
         LocalDate firstDayOfMonth = LocalDate.parse(month + "01", DateTimeFormatter.BASIC_ISO_DATE);
         LocalDate lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth());
@@ -52,21 +55,26 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
         String startDate = firstDayOfMonth.format(DateTimeFormatter.BASIC_ISO_DATE);
         String endDate = lastDayOfMonth.format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        List<CigaretteHistoryDocument> results = new ArrayList<>();
         List<String> collections = getCollectionNames(startDate, endDate);
 
-        for (String collectionName : collections) {
-            if (mongoTemplate.collectionExists(collectionName)) {
-                List<CigaretteHistoryDocument> docs = mongoTemplate.find(
-                        query(where("userId").is(userId)),
-                        CigaretteHistoryDocument.class,
-                        collectionName
-                );
-                results.addAll(docs);
-            }
-        }
+        // 병렬 스트림으로 각 컬렉션 조회 및 결과 수집
+        ConcurrentLinkedQueue<CigaretteHistoryDocument> concurrentResults = new ConcurrentLinkedQueue<>();
 
-        return results;
+        collections.parallelStream()
+                .filter(mongoTemplate::collectionExists)
+                .forEach(collectionName -> {
+                    List<CigaretteHistoryDocument> docs = mongoTemplate.find(
+                            query(where("userId").is(userId)),
+                            CigaretteHistoryDocument.class,
+                            collectionName
+                    );
+                    concurrentResults.addAll(docs);
+                });
+
+        // 날짜순으로 정렬하여 반환
+        return concurrentResults.stream()
+                .sorted(Comparator.comparing(CigaretteHistoryDocument::getDate))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -84,21 +92,26 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 
     @Override
     public List<CigaretteHistoryDocument> findByUserIdAndDateBetween(Long userId, String startDate, String endDate) {
-        List<CigaretteHistoryDocument> results = new java.util.ArrayList<>();
         List<String> collections = getCollectionNames(startDate, endDate);
 
-        for (String collectionName : collections) {
-            if (mongoTemplate.collectionExists(collectionName)) {
-                List<CigaretteHistoryDocument> docs = mongoTemplate.find(
-                        query(where("userId").is(userId)),
-                        CigaretteHistoryDocument.class,
-                        collectionName
-                );
-                results.addAll(docs);
-            }
-        }
+        // 병렬 스트림으로 각 컬렉션 조회 및 결과 수집
+        ConcurrentLinkedQueue<CigaretteHistoryDocument> concurrentResults = new ConcurrentLinkedQueue<>();
 
-        return results;
+        collections.parallelStream()
+                .filter(mongoTemplate::collectionExists)
+                .forEach(collectionName -> {
+                    List<CigaretteHistoryDocument> docs = mongoTemplate.find(
+                            query(where("userId").is(userId)),
+                            CigaretteHistoryDocument.class,
+                            collectionName
+                    );
+                    concurrentResults.addAll(docs);
+                });
+
+        // 날짜순으로 정렬하여 반환
+        return concurrentResults.stream()
+                .sorted(Comparator.comparing(CigaretteHistoryDocument::getDate))
+                .collect(Collectors.toList());
     }
 
     @Override
