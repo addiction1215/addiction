@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class AlertSettingReadServiceImpl implements AlertSettingReadService {
 
 	private final SecurityService securityService;
