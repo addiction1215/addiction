@@ -1,6 +1,9 @@
 package com.addiction.friend.service.impl;
 
 import com.addiction.alertHistory.entity.AlertDestinationType;
+import com.addiction.alertSetting.entity.AlertSetting;
+import com.addiction.alertSetting.entity.enums.AlertType;
+import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.firebase.FirebaseService;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
@@ -31,6 +34,7 @@ public class FriendServiceImpl implements FriendService {
     private final FirebaseService firebaseService;
     private final SecurityService securityService;
     private final UserReadService userReadService;
+    private final AlertSettingReadService alertSettingReadService;
 
     @Override
     public void sendFriendRequest(FriendProposalRequest request) {
@@ -81,6 +85,14 @@ public class FriendServiceImpl implements FriendService {
     }
 
     private void sendFriendRequestNotification(User receiver, User requester) {
+        // AlertSetting 조회 및 체크
+        AlertSetting alertSetting = alertSettingReadService.findByUserOrCreateDefault(receiver);
+        
+        // all_alerts가 OFF인 경우 푸시 발송 건너뛰기
+        if (alertSetting.getAll() == AlertType.OFF) {
+            return;
+        }
+        
         receiver.getPushes().forEach(push -> {
                     SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
                             .alert_destination_type(AlertDestinationType.FRIEND_CODE)
@@ -136,6 +148,14 @@ public class FriendServiceImpl implements FriendService {
     }
 
     private void sendFriendAcceptNotification(User requester, User accepter) {
+        // AlertSetting 조회 및 체크
+        AlertSetting alertSetting = alertSettingReadService.findByUserOrCreateDefault(requester);
+        
+        // all_alerts가 OFF인 경우 푸시 발송 건너뛰기
+        if (alertSetting.getAll() == AlertType.OFF) {
+            return;
+        }
+        
         requester.getPushes().forEach(push -> {
             SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
                     .alert_destination_type(AlertDestinationType.FRIEND_CODE)

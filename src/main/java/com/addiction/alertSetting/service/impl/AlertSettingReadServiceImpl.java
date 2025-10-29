@@ -30,7 +30,6 @@ public class AlertSettingReadServiceImpl implements AlertSettingReadService {
 	}
 
 	@Override
-	@Transactional
 	public AlertSetting findByUserOrCreateDefault(User user) {
 		return alertSettingRepository.findByUser(user)
 			.orElseGet(() -> alertSettingRepository.save(AlertSetting.createDefault(user)));
