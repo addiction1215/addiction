@@ -35,6 +35,7 @@ echo "> $JAR_NAME 실행"
 nohup java -jar \
           -Dserver.port=${TARGET_PORT} \
           -Dspring.profiles.active=dev \
+          -Duser.timezone=Asia/Seoul \
           $JAR_NAME > $LOG_FILE 2>&1 &
 
 echo "> Now new WAS runs at ${TARGET_PORT}."
