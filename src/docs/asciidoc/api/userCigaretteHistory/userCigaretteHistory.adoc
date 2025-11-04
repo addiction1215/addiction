@@ -74,3 +74,17 @@ include::{snippets}/user-cigarette-history-this-week/http-request.adoc[]
 include::{snippets}/user-cigarette-history-this-week/http-response.adoc[]
 include::{snippets}/user-cigarette-history-this-week/response-fields.adoc[]
 
+[[cigarette-history-feedback]]
+=== 메인화면 흡연 피드백 조회
+
+==== HTTP Request
+
+include::{snippets}/cigarette-history-feedback/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/cigarette-history-feedback/http-response.adoc[]
+include::{snippets}/cigarette-history-feedback/response-fields.adoc[]
+
+
+

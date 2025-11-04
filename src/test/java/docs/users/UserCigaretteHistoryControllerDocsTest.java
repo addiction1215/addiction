@@ -331,4 +331,40 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         )
                 ));
     }
+
+
+    @DisplayName("금연 피드백 조회 API")
+    @Test
+    void 금연_피드백_조회_API() throws Exception {
+        // given
+        SmokingFeedbackResponse response = SmokingFeedbackResponse.builder()
+                .message("큰 성과에요! 지금 흐름을 이어가면 금연이 훨씬 가까워져요.")
+                .build();
+
+        given(userCigaretteHistoryService.getSmokingFeedback())
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/feedback")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("cigarette-history-feedback",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("상태 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.message").type(JsonFieldType.STRING)
+                                        .description("피드백 메시지")
+                        )
+                ));
+    }
 }
