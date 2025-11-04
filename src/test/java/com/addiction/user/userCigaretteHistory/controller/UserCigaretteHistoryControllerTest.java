@@ -4,6 +4,7 @@ import com.addiction.ControllerTestSupport;
 import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.response.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -246,5 +247,65 @@ class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data.weekData[6].date").value("20251101"))
                 .andExpect(jsonPath("$.data.weekData[6].dayOfWeek").value("SAT"))
                 .andExpect(jsonPath("$.data.weekData[6].count").value(0));
+    }
+
+    @DisplayName("금연 피드백을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 금연_피드백을_조회한다() throws Exception {
+        // given
+        SmokingFeedbackResponse response = SmokingFeedbackResponse.builder()
+                .message("큰 성과에요! 지금 흐름을 이어가면 금연이 훨씬 가까워져요.")
+                .build();
+
+        given(userCigaretteHistoryService.getSmokingFeedback()).willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/feedback")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.message").value("큰 성과에요! 지금 흐름을 이어가면 금연이 훨씬 가까워져요."));
+    }
+
+    @DisplayName("완전 금연 상태의 피드백을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 완전_금연_상태의_피드백을_조회한다() throws Exception {
+        // given
+        SmokingFeedbackResponse response = SmokingFeedbackResponse.builder()
+                .message("어제 단 한 개비도 안 피셨군요! 금연 완성 단계입니다. 작은 보상 습관으로 유지하세요.")
+                .build();
+
+        given(userCigaretteHistoryService.getSmokingFeedback()).willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/feedback")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.message").value("어제 단 한 개비도 안 피셨군요! 금연 완성 단계입니다. 작은 보상 습관으로 유지하세요."));
+    }
+
+    @DisplayName("흡연량이 증가한 상태의 피드백을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 흡연량이_증가한_상태의_피드백을_조회한다() throws Exception {
+        // given
+        SmokingFeedbackResponse response = SmokingFeedbackResponse.builder()
+                .message("흡연량이 폭발적으로 늘었어요. 지금은 전문가 도움도 고려해 보세요.")
+                .build();
+
+        given(userCigaretteHistoryService.getSmokingFeedback()).willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/feedback")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.message").value("흡연량이 폭발적으로 늘었어요. 지금은 전문가 도움도 고려해 보세요."));
     }
 }
