@@ -83,11 +83,17 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
             return null;
         }
 
-        return mongoTemplate.findOne(
+        CigaretteHistoryDocument cigaretteHistoryDocument =  mongoTemplate.findOne(
                 query(where("userId").is(userId)),
                 CigaretteHistoryDocument.class,
                 date
         );
+
+        if (cigaretteHistoryDocument == null) {
+            cigaretteHistoryDocument = createEmptyDocument(LocalDate.parse(date), userId);
+        }
+
+        return cigaretteHistoryDocument;
     }
 
     @Override
@@ -138,5 +144,18 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
         }
 
         return null;
+    }
+
+    /**
+     * 빈 문서 생성 (데이터가 없는 경우)
+     */
+    private CigaretteHistoryDocument createEmptyDocument(LocalDate date, Long userId) {
+        return CigaretteHistoryDocument.builder()
+                .date(date.format(DateTimeFormatter.BASIC_ISO_DATE))
+                .userId(userId)
+                .smokeCount(0)
+                .avgPatienceTime(0L)
+                .history(List.of())
+                .build();
     }
 }

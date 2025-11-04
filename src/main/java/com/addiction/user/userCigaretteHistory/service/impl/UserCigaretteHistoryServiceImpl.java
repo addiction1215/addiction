@@ -6,9 +6,12 @@ import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
+import com.addiction.user.userCigaretteHistory.enums.SmokingFeedback;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.*;
+import com.addiction.user.users.entity.User;
+import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +51,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     private final SecurityService securityService;
     private final UserCigaretteReadService userCigaretteReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
+    private final UserReadService userReadService;
 
     @Override
     public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
@@ -66,7 +70,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
     @Override
     public List<UserCigaretteHistoryCalenderResponse> findCalendarByDate(String month) {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         List<UserCigaretteHistoryCalenderResponse> results = userCigaretteHistoryRepository.findByMonthAndUserId(month, userId).stream()
                 .map(doc -> UserCigaretteHistoryCalenderResponse.createResponse(doc.getDate(), doc.getSmokeCount()))
                 .collect(Collectors.toList());
@@ -91,7 +95,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
     @Override
     public List<UserCigaretteHistoryResponse> findHistoryByDate(String date) {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         String today = LocalDate.now().format(BASIC_ISO_DATE);
 
         // 당일 데이터인 경우 RDBMS에서 조회
@@ -125,7 +129,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
     @Override
     public UserCigaretteHistoryGraphResponse findGraphByPeriod(PeriodType periodType) {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = periodType.calculateStartDate(endDate);
 
@@ -173,7 +177,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
     @Override
     public WeeklyComparisonResponse compareWeekly(ComparisonType comparisonType) {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
         // 지난주 데이터 조회 (MongoDB 전체)
         List<CigaretteHistoryDocument> lastWeekDocs = getLastWeekDocuments(userId);
@@ -193,7 +197,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      * 지난주 데이터 조회 (MongoDB)
      * 지난주 월요일 ~ 일요일의 데이터를 MongoDB에서 조회
      */
-    private List<CigaretteHistoryDocument> getLastWeekDocuments(long userId) {
+    private List<CigaretteHistoryDocument> getLastWeekDocuments(Long userId) {
         LocalDate today = LocalDate.now();
 
         // 이번주 월요일 계산
@@ -266,7 +270,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                 .collect(Collectors.toList());
 
         // 평균 금연 시간 계산
-        long avgPatienceTime = (long) cigarettes.stream()
+        Long avgPatienceTime = (long) cigarettes.stream()
                 .mapToLong(UserCigarette::getSmokePatienceTime)
                 .average()
                 .orElse(0);
@@ -359,7 +363,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
     @Override
     public WeeklyCigaretteResponse findThisWeekCigarettes() {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         LocalDate today = LocalDate.now();
 
         // 이번 주 일요일 계산 (DayOfWeek.SUNDAY는 7)
@@ -434,12 +438,58 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                 .map(doc -> UserCigaretteHistoryGraphDateResponse.createResponse(doc.getDate(), doc.getAvgPatienceTime()))
                 .collect(Collectors.toList());
 
-        long avgSmokePatientTime = dateList.isEmpty() ? 0 :
+        Long avgSmokePatientTime = dateList.isEmpty() ? 0 :
                 Math.round(dateList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
 
         return UserCigaretteHistoryGraphPatientResponse.createResponse(
                 avgSmokePatientTime,
                 dateList
         );
+    }
+
+    @Override
+    public SmokingFeedbackResponse getSmokingFeedback() {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        LocalDate yesterday = LocalDate.now().minusDays(ONE_DAY);
+        LocalDate dayBeforeYesterday = LocalDate.now().minusDays(2);
+
+        // 어제 데이터 조회 (MongoDB)
+        CigaretteHistoryDocument yesterdayDoc = userCigaretteHistoryRepository.findByDateAndUserId(
+                yesterday.format(BASIC_ISO_DATE), userId);
+
+        // 그제 데이터 조회 (MongoDB)
+        CigaretteHistoryDocument dayBeforeDoc = userCigaretteHistoryRepository.findByDateAndUserId(
+                dayBeforeYesterday.format(BASIC_ISO_DATE), userId);
+
+        int yesterdaySmokeCount = yesterdayDoc.getSmokeCount();
+        int dayBeforeSmokeCount = dayBeforeDoc.getSmokeCount();
+
+        // 평소 흡연량 조회 (User의 totalScore)
+        User user = userReadService.findById(userId);
+        int usualSmokeCount = user.getTotalScore() != null ? user.getTotalScore() : 0;
+
+        // 피드백 조건 찾기
+        return SmokingFeedbackResponse.createResponse(
+                SmokingFeedback.findFeedback(
+                        calculateChangeRate(yesterdaySmokeCount, usualSmokeCount), // 평소 대비 변화율 계산
+                        calculateChangeRate(yesterdaySmokeCount, dayBeforeSmokeCount) // 그제 대비 변화율 계산
+                )
+        );
+    }
+
+    /**
+     * 변화율 계산
+     *
+     * @param current  현재 값 (어제 흡연량)
+     * @param previous 비교 대상 값 (평소 또는 그제 흡연량)
+     * @return 변화율 (%)
+     */
+    private double calculateChangeRate(int current, int previous) {
+        if (previous == 0) {
+            return current == 0 ? 0.0 : -100.0;
+        }
+
+        double rate = ((double) (current - previous) / previous) * PERCENTAGE_MULTIPLIER;
+        return Math.round(rate * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER;
     }
 }
