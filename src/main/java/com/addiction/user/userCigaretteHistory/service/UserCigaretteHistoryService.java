@@ -11,6 +11,7 @@ import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHis
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryResponse;
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyComparisonResponse;
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyCigaretteResponse;
+import com.addiction.user.userCigaretteHistory.service.response.SmokingFeedbackResponse;
 
 public interface UserCigaretteHistoryService {
 
@@ -28,5 +29,7 @@ public interface UserCigaretteHistoryService {
 	WeeklyComparisonResponse compareWeekly(ComparisonType comparisonType);
 
 	WeeklyCigaretteResponse findThisWeekCigarettes();
+
+	SmokingFeedbackResponse getSmokingFeedback();
 
 }
