@@ -6,6 +6,8 @@ import java.util.Optional;
 import com.addiction.user.users.entity.User;
 
 public interface UserRepository {
+    List<User> findAll();
+
 	User save(User user);
 
 	Optional<User> findByEmail(String email);

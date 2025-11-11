@@ -1,5 +1,6 @@
 package com.addiction.user.users.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 import com.addiction.user.users.entity.User;
 
 public interface UserJpaRepository extends JpaRepository<User, Long> {
+
+    @Query("select u from User u where u.useYn = 'Y'")
+    List<User> findAll();
 
 	@Query("select u from User u where u.email = :email and u.useYn = 'Y'")
 	Optional<User> findByEmail(@Param("email") String email);

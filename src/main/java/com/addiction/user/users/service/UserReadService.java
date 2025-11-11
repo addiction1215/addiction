@@ -3,7 +3,11 @@ package com.addiction.user.users.service;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.response.*;
 
+import java.util.List;
+
 public interface UserReadService {
+
+    List<User> findAll();
 
 	User findByEmail(String email);
 

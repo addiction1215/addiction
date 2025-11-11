@@ -17,7 +17,12 @@ public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
 
-	@Override
+    @Override
+    public List<User> findAll() {
+        return userJpaRepository.findAll();
+    }
+
+    @Override
 	public User save(User user) {
 		return userJpaRepository.save(user);
 	}
