@@ -106,7 +106,7 @@ public class FriendServiceImpl implements FriendService {
                             .sendFirebaseDataDto(dataDto)
                             .build();
 
-                    firebaseService.sendPushNotification(firebaseRequest, push.getPushToken());
+                    firebaseService.sendPushNotification(firebaseRequest);
                 }
         );
     }
@@ -169,7 +169,7 @@ public class FriendServiceImpl implements FriendService {
                     .sendFirebaseDataDto(dataDto)
                     .build();
 
-            firebaseService.sendPushNotification(firebaseRequest, push.getPushToken());
+            firebaseService.sendPushNotification(firebaseRequest);
         });
     }
 }

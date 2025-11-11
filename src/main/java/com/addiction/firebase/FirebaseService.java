@@ -2,6 +2,7 @@ package com.addiction.firebase;
 
 import java.util.Map;
 
+import com.addiction.user.push.entity.Push;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +30,11 @@ public class FirebaseService {
     private final AlertHistoryService alertHistoryService;
     private final ObjectMapper objectMapper;
 
-    public void sendPushNotification(SendFirebaseServiceRequest sendPushServiceRequest, String pushToken) {
+    public void sendPushNotification(SendFirebaseServiceRequest sendPushServiceRequest) {
         try {
             // PushToken이 있으면 푸시전송
-            if (pushToken != null) {
+            Push push = sendPushServiceRequest.getPush();
+            if (push != null) {
                 Message message = Message.builder()
                         .setApnsConfig(ApnsConfig.builder()
                                 .setAps(Aps.builder()
@@ -44,7 +46,7 @@ public class FirebaseService {
                                                 .build())
                                         .build())
                                 .build())
-                        .setToken(pushToken)
+                        .setToken(push.getPushToken())
                         .build();
 
                 // firebaseMessaging.send(message);
