@@ -23,6 +23,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -459,6 +460,74 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .description("수정된 핸드폰번호"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING)
                                         .description("수정된 이메일")
+                        )
+                ));
+    }
+
+    @DisplayName("사용자 간단 프로필 조회 API")
+    @Test
+    void 사용자_간단_프로필_조회_API() throws Exception {
+        // given
+        given(userReadService.findSimpleProfile())
+                .willReturn(UserSimpleProfileResponse.builder()
+                        .profileUrl("https://example.com/profile.jpg")
+                        .email("test@example.com")
+                        .nickName("테스트닉네임")
+                        .build()
+                );
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/simple-profile")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-find-simple-profile",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.profileUrl").type(JsonFieldType.STRING)
+                                        .description("프로필 URL"),
+                                fieldWithPath("data.email").type(JsonFieldType.STRING)
+                                        .description("이메일"),
+                                fieldWithPath("data.nickName").type(JsonFieldType.STRING)
+                                        .description("닉네임")
+                        )
+                ));
+    }
+    @DisplayName("회원 탈퇴 API")
+    @Test
+    void 회원_탈퇴_API() throws Exception {
+        // given
+        given(userService.withdraw())
+                .willReturn(true);
+
+        // when // then
+        mockMvc.perform(
+                        delete("/api/v1/user")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-withdraw",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.BOOLEAN)
+                                        .description("응답 데이터")
                         )
                 ));
     }

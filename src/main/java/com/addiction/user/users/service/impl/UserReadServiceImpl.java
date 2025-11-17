@@ -15,6 +15,10 @@ import com.addiction.user.users.service.response.UserStartDateResponse;
 
 import lombok.RequiredArgsConstructor;
 
+import com.addiction.user.users.service.response.UserSimpleProfileResponse;
+
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,7 +30,12 @@ public class UserReadServiceImpl implements UserReadService {
 
 	private final UserRepository userRepository;
 
-	@Override
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));
@@ -69,6 +78,13 @@ public class UserReadServiceImpl implements UserReadService {
 	public UserInfoResponse findUserInfo() {
 		return UserInfoResponse.createResponse(
 				findById(securityService.getCurrentLoginUserInfo().getUserId())
+		);
+	}
+
+	@Override
+	public UserSimpleProfileResponse findSimpleProfile() {
+		return UserSimpleProfileResponse.createResponse(
+			findById(securityService.getCurrentLoginUserInfo().getUserId())
 		);
 	}
 }

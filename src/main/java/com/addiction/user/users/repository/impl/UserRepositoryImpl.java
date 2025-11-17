@@ -17,7 +17,12 @@ public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
 
-	@Override
+    @Override
+    public List<User> findAll() {
+        return userJpaRepository.findAll();
+    }
+
+    @Override
 	public User save(User user) {
 		return userJpaRepository.save(user);
 	}
@@ -46,4 +51,9 @@ public class UserRepositoryImpl implements UserRepository {
 	public void saveAll(List<User> users) {
 		userJpaRepository.saveAll(users);
 	}
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
 }

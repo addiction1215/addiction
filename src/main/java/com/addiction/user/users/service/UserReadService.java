@@ -1,12 +1,13 @@
 package com.addiction.user.users.service;
 
 import com.addiction.user.users.entity.User;
-import com.addiction.user.users.service.response.UserInfoResponse;
-import com.addiction.user.users.service.response.UserProfileResponse;
-import com.addiction.user.users.service.response.UserPurposeResponse;
-import com.addiction.user.users.service.response.UserStartDateResponse;
+import com.addiction.user.users.service.response.*;
+
+import java.util.List;
 
 public interface UserReadService {
+
+    List<User> findAll();
 
 	User findByEmail(String email);
 
@@ -21,4 +22,6 @@ public interface UserReadService {
 	UserProfileResponse findProfile();
 
 	UserInfoResponse findUserInfo();
+
+	UserSimpleProfileResponse findSimpleProfile();
 }

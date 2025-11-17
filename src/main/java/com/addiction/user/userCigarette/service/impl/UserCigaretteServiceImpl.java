@@ -16,6 +16,8 @@ import com.addiction.user.users.service.UserReadService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -38,7 +40,7 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
 
 			if (lastCigarette != null) {
 				intervalMinutes = java.time.Duration.between(
-					lastCigarette.getCreatedDate(), java.time.LocalDateTime.now()
+					lastCigarette.getCreatedDate(), LocalDateTime.now()
 				).toMinutes();
 			}
 			UserCigarette userCigarette = UserCigarette.createEntity(

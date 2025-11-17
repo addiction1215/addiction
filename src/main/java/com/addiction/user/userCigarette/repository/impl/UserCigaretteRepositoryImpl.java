@@ -59,6 +59,11 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	}
 
 	@Override
+	public List<UserCigarette> findAllByUserIdAndCreatedDateBetween(Long userId, LocalDateTime start, LocalDateTime end) {
+		return userCigaretteJpaRepository.findAllByUserIdAndCreatedDateBetween(userId, start, end);
+	}
+
+	@Override
 	public Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId) {
 		return userCigaretteJpaRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
 	}

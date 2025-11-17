@@ -13,6 +13,8 @@ import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.repository.UserRepository;
 
+import com.addiction.user.users.service.response.UserSimpleProfileResponse;
+
 public class UserReadServiceTest extends IntegrationTestSupport {
 
 	@Autowired
@@ -34,5 +36,25 @@ public class UserReadServiceTest extends IntegrationTestSupport {
 		//when
 		//then
 		assertThat(userReadService.findPurpose().getPurpose()).isEqualTo("테스트 목표");
+	}
+
+	@DisplayName("유저의 간단한 프로필 정보를 조회한다.")
+	@Test
+	void 유저의_간단한_프로필_정보를_조회한다() {
+		//given
+		User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+		user.updateProfileUrl("test.com");
+		userRepository.save(user);
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(user.getId()));
+
+		//when
+		UserSimpleProfileResponse response = userReadService.findSimpleProfile();
+
+		//then
+		assertThat(response.getProfileUrl()).isEqualTo("test.com");
+		assertThat(response.getEmail()).isEqualTo("test@test.com");
+		assertThat(response.getNickName()).isEqualTo("테스트 닉네임");
 	}
 }

@@ -103,6 +103,12 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    
+    // 테스트 실패 시 로그 출력
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
 }
 
 jar {

@@ -42,6 +42,11 @@ public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 	}
 
 	@Override
+	public List<UserCigarette> findAllByUserIdAndCreatedDateBetween(Long userId, LocalDateTime start, LocalDateTime end) {
+		return userCigaretteRepository.findAllByUserIdAndCreatedDateBetween(userId, start, end);
+	}
+
+	@Override
 	public UserCigarette findLatestByUserId(Long userId) {
 		return userCigaretteRepository.findTopByUserIdOrderByCreatedDateDesc(userId)
 			.orElse(null);

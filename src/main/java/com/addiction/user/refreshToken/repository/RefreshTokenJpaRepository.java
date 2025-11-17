@@ -1,13 +1,7 @@
 package com.addiction.user.refreshToken.repository;
 
-import java.util.Optional;
-
+import com.addiction.user.refreshToken.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.addiction.user.refreshToken.entity.RefreshToken;
-
 public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Long> {
-	void deleteAllByUserId(Long userId);
-
-	Optional<RefreshToken> findByUserIdAndDeviceIdAndRefreshToken(Long userId, String deviceId, String refreshToken);
 }

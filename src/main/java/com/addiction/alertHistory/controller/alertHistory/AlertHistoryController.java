@@ -1,10 +1,6 @@
 package com.addiction.alertHistory.controller.alertHistory;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryService;
@@ -16,19 +12,20 @@ import com.addiction.global.page.response.PageCustom;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/v1/alertHistories")
+@RequiredArgsConstructor
 public class AlertHistoryController {
 
 	private final AlertHistoryService alertHistoryService;
 	private final AlertHistoryReadService alertHistoryReadService;
 
-	@GetMapping("/api/v1/alertHistories")
+	@GetMapping
 	public ApiResponse<PageCustom<AlertHistoryResponse>> getAlertHistory(@ModelAttribute PageInfoRequest request) {
 		return ApiResponse.ok(alertHistoryReadService.getAlertHistory(request.toServiceRequest()));
 	}
 
-	@PatchMapping("/api/v1/alertHistories/{id}")
+	@PatchMapping("/{id}")
 	public ApiResponse<AlertHistoryStatusResponse> updateAlertHistoryStatus(@PathVariable Long id) {
 		return ApiResponse.ok(alertHistoryService.updateAlertHistoryStatus(id));
 	}

@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "cigarette_history")
+@Document  // collection 이름을 동적으로 지정하기 위해 제거
 public class CigaretteHistoryDocument {
 	@Id
 	private String id;
@@ -38,4 +38,5 @@ public class CigaretteHistoryDocument {
 		private LocalDateTime smokeTime;
 		private Long smokePatienceTime;
 	}
+
 }

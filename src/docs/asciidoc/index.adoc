@@ -49,7 +49,22 @@ include::api/inquiry/inquiry.adoc[]
 
 include::api/alertHistory/alertHistory.adoc[]
 
+[[alertSetting-API]]
+== alertSetting API
+
+include::api/alertSetting/alertSetting.adoc[]
+
 [[storage-API]]
 == storage API
 
 include::api/storage/storage.adoc[]
+
+[[Challenge-API]]
+== Challenge API
+
+include::api/challenge/challenge.adoc[]
+
+[[Challenge-History-API]]
+== Challenge-History API
+
+include::api/challengehistory/challengehistory.adoc[]
