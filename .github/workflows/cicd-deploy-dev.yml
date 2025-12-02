@@ -83,9 +83,9 @@ jobs:
         run: |
           ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "/home/ubuntu/app/scripts/health.sh"
 
-      - name: 🎯 Ubuntu 서버에서 Blue/Green Switching
-        run: |
-          ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "/home/ubuntu/app/scripts/switch.sh"
+#      - name: 🎯 Ubuntu 서버에서 Blue/Green Switching
+#        run: |
+#          ssh ubuntu@${{ secrets.DEV_SERVER_IP }} "/home/ubuntu/app/scripts/switch.sh"
 
       - name: 🧹 임시 파일 정리
         run: |
