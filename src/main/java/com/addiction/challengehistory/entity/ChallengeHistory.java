@@ -2,8 +2,6 @@ package com.addiction.challengehistory.entity;
 
 import com.addiction.challenge.entity.Challenge;
 import com.addiction.common.enums.ChallengeStatus;
-import com.addiction.common.enums.MissionStatus;
-import com.addiction.common.enums.YnStatus;
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;

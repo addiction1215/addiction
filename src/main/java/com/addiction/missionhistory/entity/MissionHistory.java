@@ -1,11 +1,18 @@
 package com.addiction.missionhistory.entity;
 
 import com.addiction.challenge.entity.Challenge;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.common.enums.MissionStatus;
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.mission.entity.Mission;
 import com.addiction.user.users.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +34,7 @@ public class MissionHistory extends BaseTimeEntity {
     @JoinColumn(name = "challenge_id")
     private Challenge challengeId;
 
-    private ChallengeStatus status;
+    private MissionStatus status;
 
     @Column(name = "acc_time")
     private Integer accTime;
@@ -39,7 +46,7 @@ public class MissionHistory extends BaseTimeEntity {
     private User userId;
 
     @Builder
-    public MissionHistory(Long id, Mission missionId, Challenge challengeId, ChallengeStatus status, Integer accTime, String address, User userId) {
+    public MissionHistory(Long id, Mission missionId, Challenge challengeId, MissionStatus status, Integer accTime, String address, User userId) {
         this.id = id;
         this.missionId = missionId;
         this.challengeId = challengeId;
@@ -49,7 +56,7 @@ public class MissionHistory extends BaseTimeEntity {
         this.userId = userId;
     }
 
-    public static MissionHistory createMissionHistory(Mission missionId, Challenge challengeId, ChallengeStatus status, Integer accTime, String address, User userId) {
+    public static MissionHistory createMissionHistory(Mission missionId, Challenge challengeId, MissionStatus status, Integer accTime, String address, User userId) {
         return MissionHistory.builder()
                 .missionId(missionId)
                 .challengeId(challengeId)
@@ -59,4 +66,12 @@ public class MissionHistory extends BaseTimeEntity {
                 .userId(userId)
                 .build();
     }
+
+	public static MissionHistory updateMissionHistoryForFail(Challenge challengeId, MissionStatus status, User userId) {
+		return MissionHistory.builder()
+				.challengeId(challengeId)
+				.status(status)
+				.userId(userId)
+				.build();
+	}
 }

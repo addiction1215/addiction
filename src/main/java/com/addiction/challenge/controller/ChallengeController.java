@@ -21,9 +21,9 @@ public class ChallengeController {
         return ApiResponse.ok(challengeReadService.getChallenge(request.toServiceRequest()));
     }
 
-    @PostMapping("/fail")
-    public ApiResponse<String> insertFailChallenge(@RequestBody FailChallengeRequest request) {
-        challengeService.insertFailChallenge(request);
+    @PutMapping("/fail")
+    public ApiResponse<String> updateFailChallenge(@RequestBody FailChallengeRequest request) {
+        challengeService.updateFailChallenge(request);
         return ApiResponse.ok("챌린지를 포기했습니다.");
     }
 
