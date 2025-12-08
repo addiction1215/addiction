@@ -1,6 +1,7 @@
 package com.addiction.mission.service.mission.request;
 
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.common.enums.MissionCategoryStatus;
+import com.addiction.common.enums.MissionStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,9 @@ public class MissionReportRequest {
 
     private Long challengeId;
 
-    private ChallengeStatus status;
+    private MissionStatus status;
+
+	private MissionCategoryStatus categoryStatus;
 
     private Integer accTime;
 
