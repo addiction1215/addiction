@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class MissionRepositoryImpl implements MissionHistoryRepository {
+public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
 }

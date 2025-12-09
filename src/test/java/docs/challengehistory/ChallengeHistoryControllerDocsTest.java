@@ -1,17 +1,14 @@
 package docs.challengehistory;
 
-import com.addiction.challenge.challengehistory.controller.ChallengeHistoryController;
-import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
-import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryUserResponse;
+import com.addiction.challengehistory.Controller.ChallengeHistoryController;
+import com.addiction.challengehistory.service.ChallengeHistoryReadService;
+import com.addiction.challengehistory.service.ChallengeHistoryService;
 import docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import java.util.List;
-
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -23,34 +20,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
 
+    private final ChallengeHistoryService challengeHistoryService = mock(ChallengeHistoryService.class);
     private final ChallengeHistoryReadService challengeHistoryReadService = mock(ChallengeHistoryReadService.class);
 
     @Override
     protected Object initController() {
-        return new ChallengeHistoryController(challengeHistoryReadService);
+        return new ChallengeHistoryController(challengeHistoryService, challengeHistoryReadService);
     }
 
     @DisplayName("챌린지 이력 조회 API")
     @Test
     @WithMockUser(roles = "USER")
     void 유저의_챌린지_이력을_조회한다() throws Exception {
-        // given
-        ChallengeHistoryUserResponse response1 = ChallengeHistoryUserResponse.builder()
-                .challengeId(1L)
-                .badge("badge_url_1")
-                .title("챌린지 1")
-                .build();
-
-        ChallengeHistoryUserResponse response2 = ChallengeHistoryUserResponse.builder()
-                .challengeId(2L)
-                .badge("badge_url_2")
-                .title("챌린지 2")
-                .build();
-
-        List<ChallengeHistoryUserResponse> response = List.of(response1, response2);
-
-        given(challengeHistoryReadService.findByUserId())
-                .willReturn(response);
 
         // when // then
         mockMvc.perform(
