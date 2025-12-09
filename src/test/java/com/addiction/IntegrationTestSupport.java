@@ -7,12 +7,10 @@ import com.addiction.alertHistory.repository.AlertHistoryRepository;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingRepository;
-import com.addiction.challenge.challenge.entity.Challenge;
-import com.addiction.challenge.challenge.repository.ChallengeJpaRepository;
-import com.addiction.challenge.challenge.repository.ChallengeRepository;
-import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
-import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
-import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
+import com.addiction.challenge.entity.Challenge;
+import com.addiction.challenge.repository.ChallengeJpaRepository;
+import com.addiction.challenge.repository.ChallengeRepository;
+import com.addiction.challengehistory.entity.ChallengeHistory;
 import com.addiction.common.enums.YnStatus;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
@@ -90,15 +88,9 @@ public abstract class IntegrationTestSupport {
     protected ChallengeRepository challengeRepository;
     @Autowired
     protected ChallengeJpaRepository cChallengeJpaRepository;
-    @Autowired
-    protected ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
-    @Autowired
-    protected ChallengeHistoryRepository challengeHistoryRepository;
 
     @AfterEach
     public void tearDown() {
-        challengeHistoryRepository.deleteAllInBatch();
-        challengeRepository.deleteAllInBatch();
         alertHistoryRepository.deleteAllInBatch();
         alertSettingRepository.deleteAllInBatch();
         surveyResultDescriptionRepository.deleteAllInBatch();
@@ -131,79 +123,61 @@ public abstract class IntegrationTestSupport {
                 .build();
     }
 
-	protected SurveyQuestion createSurveyQuestion(String question) {
-		return SurveyQuestion.builder()
-			.question(question)
-			.build();
-	}
+    protected SurveyQuestion createSurveyQuestion(String question) {
+        return SurveyQuestion.builder()
+                .question(question)
+                .build();
+    }
 
-	protected SurveyAnswer createSurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score) {
-		return SurveyAnswer.builder()
-			.surveyQuestion(surveyQuestion)
-			.answer(answer)
-			.score(score)
-			.build();
-	}
+    protected SurveyAnswer createSurveyAnswer(SurveyQuestion surveyQuestion, String answer, Integer score) {
+        return SurveyAnswer.builder()
+                .surveyQuestion(surveyQuestion)
+                .answer(answer)
+                .score(score)
+                .build();
+    }
 
-	protected SurveyResult createSurveyResult(String title, Integer score) {
-		return SurveyResult.builder()
-			.title(title)
-			.score(score)
-			.build();
-	}
+    protected SurveyResult createSurveyResult(String title, Integer score) {
+        return SurveyResult.builder()
+                .title(title)
+                .score(score)
+                .build();
+    }
 
-	protected SurveyResultDescription createSurveyResultDescription(SurveyResult surveyResult, String description) {
-		return SurveyResultDescription.builder()
-			.surveyResult(surveyResult)
-			.description(description)
-			.build();
-	}
+    protected SurveyResultDescription createSurveyResultDescription(SurveyResult surveyResult, String description) {
+        return SurveyResultDescription.builder()
+                .surveyResult(surveyResult)
+                .description(description)
+                .build();
+    }
 
-	protected UserCigarette createUserCigarette(User user) {
-		return UserCigarette.createEntity(user, "테스트 주소", 1000L);
-	}
+    protected UserCigarette createUserCigarette(User user) {
+        return UserCigarette.createEntity(user, "테스트 주소", 1000L);
+    }
 
 
+    protected AlertHistory createAlertHistory(User user, String alertDescription, AlertHistoryStatus alertHistoryStatus) {
+        return AlertHistory.builder()
+                .user(user)
+                .alertDescription(alertDescription)
+                .alertHistoryStatus(alertHistoryStatus)
+                .build();
+    }
 
-	protected AlertHistory createAlertHistory(User user, String alertDescription, AlertHistoryStatus alertHistoryStatus) {
-		return AlertHistory.builder()
-			.user(user)
-			.alertDescription(alertDescription)
-			.alertHistoryStatus(alertHistoryStatus)
-			.build();
-	}
-
-	protected AlertHistory createFriendCodeAlertHistory(User user, String alertDescriptionInfo,AlertHistoryStatus alertHistoryStatus) {
-		return AlertHistory.builder()
-			.user(user)
-			.alertDestinationType(AlertDestinationType.FRIEND_CODE)
-			.alertDestinationInfo(alertDescriptionInfo)
-			.alertHistoryStatus(alertHistoryStatus)
-			.build();
-	}
+    protected AlertHistory createFriendCodeAlertHistory(User user, String alertDescriptionInfo, AlertHistoryStatus alertHistoryStatus) {
+        return AlertHistory.builder()
+                .user(user)
+                .alertDestinationType(AlertDestinationType.FRIEND_CODE)
+                .alertDestinationInfo(alertDescriptionInfo)
+                .alertHistoryStatus(alertHistoryStatus)
+                .build();
+    }
 
     protected Push createPush(User user) {
         return Push.builder()
                 .user(user)
                 .deviceId("testdeviceId")
                 .pushToken("testPushToken")
-                .build();
-    }
-
-    protected Challenge createChallenge(User user) {
-        return Challenge.builder()
-                .content("testcontent")
-                .title("testtitle")
-                .badge("testbadge")
-                .user(user)
-                .build();
-    }
-
-    protected ChallengeHistory createChallengeHistory(User user, Challenge challenge, YnStatus ynStatus) {
-        return ChallengeHistory.builder()
-                .user(user)
-                .challenge(challenge)
-                .finishYn(ynStatus)
                 .build();
     }
 
