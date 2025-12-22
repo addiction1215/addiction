@@ -21,8 +21,7 @@ public class MissionReadServiceImpl implements MissionReadService {
 
     @Override
     public List<MissionResponseList> getMission(Long challengeId) {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
-
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         return missionRepository.findByChallengeIdAndUserId(challengeId, userId);
     }
 }

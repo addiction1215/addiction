@@ -26,7 +26,7 @@ public class MissionServiceImpl implements MissionService {
     private final UserJpaRepository userRepository;
 
     @Override
-    public void insertMissionReport(MissionReportRequest request) {
+    public boolean insertMissionReport(MissionReportRequest request) {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
         Mission mission = missionRepository.getReferenceById(request.getMissionId());
@@ -37,5 +37,7 @@ public class MissionServiceImpl implements MissionService {
                 mission, challenge, request.getStatus(), request.getAccTime(), request.getAddress(), user);
 
         missionHistoryJpaRepository.save(missionHistory);
+
+        return true;
     }
 }

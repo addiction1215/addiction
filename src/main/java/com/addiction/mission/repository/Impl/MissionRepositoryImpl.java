@@ -14,7 +14,7 @@ public class MissionRepositoryImpl implements MissionRepository {
     private final MissionQueryRepository missionQueryRepository;
 
     @Override
-    public List<MissionResponseList> findByChallengeIdAndUserId(Long challengeId, long userId) {
+    public List<MissionResponseList> findByChallengeIdAndUserId(Long challengeId, Long userId) {
         return missionQueryRepository.findByChallengeIdAndUserId(challengeId, userId);
     }
 }
