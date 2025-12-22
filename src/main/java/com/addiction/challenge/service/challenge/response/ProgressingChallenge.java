@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class ProgressingChallenge {
-    private Long challengeId;
-    private String title;
-    private String content;
-    private Integer progressPercent;
+    private final Long challengeId;
+    private final String title;
+    private final String content;
+    private final Integer progressPercent;
 
     @Builder
     public ProgressingChallenge(Long challengeId, String title, String content, Integer progressPercent) {
@@ -18,5 +17,14 @@ public class ProgressingChallenge {
         this.title = title;
         this.content = content;
         this.progressPercent = progressPercent;
+    }
+
+    public static ProgressingChallenge createProgressingChallenge(Long challengeId, String title, String content, Integer progressPercent) {
+        return ProgressingChallenge.builder()
+                .challengeId(challengeId)
+                .title(title)
+                .content(content)
+                .progressPercent(progressPercent)
+                .build();
     }
 }

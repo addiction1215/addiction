@@ -1,12 +1,13 @@
 package com.addiction.challenge.repository;
 
 import com.addiction.challenge.entity.Challenge;
-import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
+import com.addiction.challenge.repository.response.ChallengeDto;
+import com.addiction.challenge.service.challenge.response.ChallengeResponse;
 
 import java.util.List;
 
 public interface ChallengeRepository {
-    List<ChallengeResponseList> findByUserId(long userId);
+    List<ChallengeDto> findByUserId(Long userId);
 
     Challenge save(Challenge challenge);
 }

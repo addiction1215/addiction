@@ -4,7 +4,8 @@ import com.addiction.challenge.entity.Challenge;
 import com.addiction.challenge.repository.ChallengeJpaRepository;
 import com.addiction.challenge.repository.ChallengeQueryRepository;
 import com.addiction.challenge.repository.ChallengeRepository;
-import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
+import com.addiction.challenge.repository.response.ChallengeDto;
+import com.addiction.challenge.service.challenge.response.ChallengeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     private final ChallengeJpaRepository challengeJpaRepository;
 
     @Override
-    public List<ChallengeResponseList> findByUserId(long userId) {
+    public List<ChallengeDto> findByUserId(Long userId) {
         return challengeQueryRepository.findByUserId(userId);
     }
 
