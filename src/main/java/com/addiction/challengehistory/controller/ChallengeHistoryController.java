@@ -1,4 +1,4 @@
-package com.addiction.challengehistory.Controller;
+package com.addiction.challengehistory.controller;
 
 import com.addiction.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challengehistory.service.ChallengeHistoryService;
