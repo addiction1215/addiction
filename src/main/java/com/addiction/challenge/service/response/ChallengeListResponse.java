@@ -1,17 +1,15 @@
-package com.addiction.challenge.service.challenge.response;
+package com.addiction.challenge.service.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 public class ChallengeListResponse {
-    private ChallengeResponse progressingChallenge;
-    private List<ChallengeResponse> leftChallengeList;
-    private List<ChallengeResponse> finishedChallengeList;
+    private final ChallengeResponse progressingChallenge;
+    private final List<ChallengeResponse> leftChallengeList;
+    private final List<ChallengeResponse> finishedChallengeList;
 
     @Builder
     public ChallengeListResponse(ChallengeResponse progressingChallenge, List<ChallengeResponse> leftChallengeList, List<ChallengeResponse> finishedChallengeList) {

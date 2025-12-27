@@ -8,7 +8,6 @@ import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.alertSetting.service.AlertSettingService;
 import com.addiction.challenge.controller.ChallengeController;
 import com.addiction.challenge.service.ChallengeReadService;
-import com.addiction.challenge.service.ChallengeService;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.userCigarette.controller.UserCigaretteController;
@@ -86,9 +85,6 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected ChallengeReadService challengeReadService;
-
-    @MockitoBean
-    protected ChallengeService challengeService;
 
 }
 

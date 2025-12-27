@@ -19,21 +19,23 @@ public class ChallengeHistory extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_id")
-    private Challenge challengeId;
+    private Challenge challenge;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
-    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
     @Builder
-    public ChallengeHistory(Long id, Challenge challengeId, User userId, ChallengeStatus status) {
+    public ChallengeHistory(Long id, Challenge challenge, User user, ChallengeStatus status) {
         this.id = id;
-        this.challengeId = challengeId;
-        this.userId = userId;
+        this.challenge = challenge;
+        this.user = user;
+        this.status = status;
+    }
+
+    public void updateStatus(ChallengeStatus status) {
         this.status = status;
     }
 }

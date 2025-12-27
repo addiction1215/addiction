@@ -5,7 +5,6 @@ import com.addiction.challenge.repository.ChallengeJpaRepository;
 import com.addiction.challenge.repository.ChallengeQueryRepository;
 import com.addiction.challenge.repository.ChallengeRepository;
 import com.addiction.challenge.repository.response.ChallengeDto;
-import com.addiction.challenge.service.challenge.response.ChallengeResponse;
 import com.addiction.common.enums.ChallengeStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

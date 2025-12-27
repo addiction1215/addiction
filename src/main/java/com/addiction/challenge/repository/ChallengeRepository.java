@@ -2,7 +2,6 @@ package com.addiction.challenge.repository;
 
 import com.addiction.challenge.entity.Challenge;
 import com.addiction.challenge.repository.response.ChallengeDto;
-import com.addiction.challenge.service.challenge.response.ChallengeResponse;
 import com.addiction.common.enums.ChallengeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

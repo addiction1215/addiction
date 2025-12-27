@@ -34,8 +34,8 @@ public class ChallengeQueryRepository {
                 ))
                 .from(challenge)
                 .leftJoin(challengeHistory)
-                .on(challenge.id.eq(challengeHistory.challengeId.id)
-                        .and(challengeHistory.userId.id.eq(userId)));
+                .on(challenge.id.eq(challengeHistory.challenge.id)
+                        .and(challengeHistory.user.id.eq(userId)));
 
         return query.fetch();
     }
@@ -53,9 +53,9 @@ public class ChallengeQueryRepository {
                         challengeHistory.status
                 ))
                 .from(challengeHistory)
-                .innerJoin(challenge).on(challengeHistory.challengeId.id.eq(challenge.id))
+                .innerJoin(challenge).on(challengeHistory.challenge.id.eq(challenge.id))
                 .where(
-                        challengeHistory.userId.id.eq(userId),
+                        challengeHistory.user.id.eq(userId),
                         challengeHistory.status.eq(ChallengeStatus.PROGRESSING)
                 )
                 .orderBy(challengeHistory.createdDate.desc())
@@ -78,9 +78,9 @@ public class ChallengeQueryRepository {
                         challengeHistory.status
                 ))
                 .from(challengeHistory)
-                .innerJoin(challenge).on(challengeHistory.challengeId.id.eq(challenge.id))
+                .innerJoin(challenge).on(challengeHistory.challenge.id.eq(challenge.id))
                 .where(
-                        challengeHistory.userId.id.eq(userId),
+                        challengeHistory.user.id.eq(userId),
                         challengeHistory.status.eq(status)
                 )
                 .orderBy(challengeHistory.createdDate.desc())
@@ -97,7 +97,7 @@ public class ChallengeQueryRepository {
                         .select(challengeHistory.count())
                         .from(challengeHistory)
                         .where(
-                                challengeHistory.userId.id.eq(userId),
+                                challengeHistory.user.id.eq(userId),
                                 challengeHistory.status.eq(status)
                         )
                         .fetchOne()

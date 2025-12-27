@@ -3,7 +3,6 @@ package com.addiction.mission.entity;
 import com.addiction.challenge.entity.Challenge;
 import com.addiction.common.enums.MissionCategoryStatus;
 import com.addiction.global.BaseTimeEntity;
-import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,8 +18,7 @@ public class Mission extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_id")
-    private Challenge challengeId;
+    private Challenge challenge;
 
     private MissionCategoryStatus category;
 
@@ -30,18 +28,13 @@ public class Mission extends BaseTimeEntity {
 
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User userId;
-
     @Builder
-    public Mission(Long id, Challenge challengeId, MissionCategoryStatus category, String title, Integer reward, String content, User userId) {
+    public Mission(Long id, Challenge challenge, MissionCategoryStatus category, String title, Integer reward, String content) {
         this.id = id;
-        this.challengeId = challengeId;
+        this.challenge = challenge;
         this.category = category;
         this.title = title;
         this.reward = reward;
         this.content = content;
-        this.userId = userId;
     }
 }

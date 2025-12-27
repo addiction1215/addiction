@@ -1,8 +1,7 @@
-package com.addiction.challenge.service.challenge.response;
+package com.addiction.challenge.service.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class ProgressingChallenge {

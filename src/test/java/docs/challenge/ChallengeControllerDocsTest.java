@@ -2,8 +2,7 @@ package docs.challenge;
 
 import com.addiction.challenge.controller.ChallengeController;
 import com.addiction.challenge.service.ChallengeReadService;
-import com.addiction.challenge.service.ChallengeService;
-import com.addiction.challenge.service.challenge.response.ChallengeResponse;
+import com.addiction.challenge.service.response.ChallengeResponse;
 import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.page.response.PageableCustom;
@@ -32,60 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ChallengeControllerDocsTest extends RestDocsSupport {
 
     private final ChallengeReadService challengeReadService = mock(ChallengeReadService.class);
-    private final ChallengeService challengeService = mock(ChallengeService.class);
 
     @Override
     protected Object initController() {
-        return new ChallengeController(challengeReadService, challengeService);
+        return new ChallengeController(challengeReadService);
     }
 
-    @DisplayName("진행중인 챌린지 조회 API")
-    @Test
-    void 진행중인_챌린지_조회_API() throws Exception {
-        // given
-        ChallengeResponse response = ChallengeResponse.builder()
-                .challengeId(1L)
-                .title("7일 연속 금연")
-                .content("7일 동안 연속으로 금연하기")
-                .badge("https://example.com/badge/7days.png")
-                .status(ChallengeStatus.PROGRESSING)
-                .build();
-
-        given(challengeReadService.getProgressingChallenge())
-                .willReturn(response);
-
-        // when // then
-        mockMvc.perform(
-                        get("/api/v1/challenge/progressing")
-                                .contentType(APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("challenge-get-progressing",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메세지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.challengeId").type(JsonFieldType.NUMBER)
-                                        .description("챌린지 ID"),
-                                fieldWithPath("data.title").type(JsonFieldType.STRING)
-                                        .description("챌린지 제목"),
-                                fieldWithPath("data.content").type(JsonFieldType.STRING)
-                                        .description("챌린지 내용"),
-                                fieldWithPath("data.badge").type(JsonFieldType.STRING)
-                                        .description("배지 이미지 URL"),
-                                fieldWithPath("data.status").type(JsonFieldType.STRING)
-                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values()))
-                        )
-                ));
-    }
 
     @DisplayName("남은 챌린지 리스트 조회 API")
     @Test
@@ -97,14 +48,12 @@ public class ChallengeControllerDocsTest extends RestDocsSupport {
                         .title("7일 연속 금연")
                         .content("7일 동안 연속으로 금연하기")
                         .badge("https://example.com/badge/7days.png")
-                        .status(ChallengeStatus.LEFT)
                         .build(),
                 ChallengeResponse.builder()
                         .challengeId(2L)
                         .title("30일 연속 금연")
                         .content("30일 동안 연속으로 금연하기")
                         .badge("https://example.com/badge/30days.png")
-                        .status(ChallengeStatus.LEFT)
                         .build()
         );
 
@@ -157,8 +106,6 @@ public class ChallengeControllerDocsTest extends RestDocsSupport {
                                         .description("챌린지 내용"),
                                 fieldWithPath("data.content[].badge").type(JsonFieldType.STRING)
                                         .description("배지 이미지 URL"),
-                                fieldWithPath("data.content[].status").type(JsonFieldType.STRING)
-                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values())),
                                 fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
                                         .description("페이지 정보"),
                                 fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
@@ -170,89 +117,4 @@ public class ChallengeControllerDocsTest extends RestDocsSupport {
                         )
                 ));
     }
-
-    @DisplayName("완료된 챌린지 리스트 조회 API")
-    @Test
-    void 완료된_챌린지_리스트_조회_API() throws Exception {
-        // given
-        List<ChallengeResponse> challengeList = List.of(
-                ChallengeResponse.builder()
-                        .challengeId(3L)
-                        .title("첫 금연일 달성")
-                        .content("첫날 금연 성공하기")
-                        .badge("https://example.com/badge/first.png")
-                        .status(ChallengeStatus.COMPLETED)
-                        .build(),
-                ChallengeResponse.builder()
-                        .challengeId(4L)
-                        .title("3일 연속 금연")
-                        .content("3일 동안 연속으로 금연하기")
-                        .badge("https://example.com/badge/3days.png")
-                        .status(ChallengeStatus.COMPLETED)
-                        .build()
-        );
-
-        PageableCustom pageableCustom = PageableCustom.builder()
-                .currentPage(1)
-                .totalPage(3)
-                .totalElement(30L)
-                .build();
-
-        PageCustom<ChallengeResponse> pageResponse = PageCustom.<ChallengeResponse>builder()
-                .content(challengeList)
-                .pageInfo(pageableCustom)
-                .build();
-
-        given(challengeReadService.getFinishedChallengeList(any()))
-                .willReturn(pageResponse);
-
-        // when // then
-        mockMvc.perform(
-                        get("/api/v1/challenge/finished")
-                                .param("page", "1")
-                                .param("size", "12")
-                                .contentType(APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("challenge-get-finished-list",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        queryParameters(
-                                parameterWithName("page").description("페이지 번호 (기본값: 1)").optional(),
-                                parameterWithName("size").description("페이지 크기 (기본값: 12)").optional()
-                        ),
-                        responseFields(
-                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메세지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
-                                        .description("챌린지 리스트"),
-                                fieldWithPath("data.content[].challengeId").type(JsonFieldType.NUMBER)
-                                        .description("챌린지 ID"),
-                                fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
-                                        .description("챌린지 제목"),
-                                fieldWithPath("data.content[].content").type(JsonFieldType.STRING)
-                                        .description("챌린지 내용"),
-                                fieldWithPath("data.content[].badge").type(JsonFieldType.STRING)
-                                        .description("배지 이미지 URL"),
-                                fieldWithPath("data.content[].status").type(JsonFieldType.STRING)
-                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values())),
-                                fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
-                                        .description("페이지 정보"),
-                                fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
-                                        .description("현재 페이지"),
-                                fieldWithPath("data.pageInfo.totalPage").type(JsonFieldType.NUMBER)
-                                        .description("전체 페이지 수"),
-                                fieldWithPath("data.pageInfo.totalElement").type(JsonFieldType.NUMBER)
-                                        .description("전체 요소 수")
-                        )
-                ));
-    }
-
 }
