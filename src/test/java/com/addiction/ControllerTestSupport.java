@@ -10,6 +10,8 @@ import com.addiction.challenge.challange.controller.ChallengeController;
 import com.addiction.challenge.challange.service.ChallengeReadService;
 import com.addiction.challenge.mission.controller.MissionController;
 import com.addiction.challenge.mission.service.MissionReadService;
+import com.addiction.challenge.missionhistory.controller.MissionHistoryController;
+import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.userCigarette.controller.UserCigaretteController;
@@ -41,6 +43,7 @@ import org.springframework.test.web.servlet.MockMvc;
         AlertSettingController.class,
         ChallengeController.class,
         MissionController.class,
+        MissionHistoryController.class,
 })
 public abstract class ControllerTestSupport {
 
@@ -91,5 +94,8 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected MissionReadService missionReadService;
+
+    @MockitoBean
+    protected MissionHistoryReadService missionHistoryReadService;
 
 }

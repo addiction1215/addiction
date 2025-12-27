@@ -10,10 +10,17 @@ import com.addiction.alertSetting.repository.AlertSettingRepository;
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challange.repository.ChallengeJpaRepository;
 import com.addiction.challenge.challange.repository.ChallengeRepository;
+import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
 import com.addiction.challenge.mission.entity.Mission;
 import com.addiction.challenge.mission.repository.MissionJpaRepository;
 import com.addiction.challenge.mission.repository.MissionRepository;
+import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.repository.MissionHistoryJpaRepository;
+import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
+import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.common.enums.MissionCategoryStatus;
+import com.addiction.common.enums.MissionStatus;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.storage.service.OracleStorageService;
@@ -91,12 +98,20 @@ public abstract class IntegrationTestSupport {
     @Autowired
     protected ChallengeJpaRepository cChallengeJpaRepository;
     @Autowired
+    protected ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
+    @Autowired
     protected MissionRepository missionRepository;
     @Autowired
     protected MissionJpaRepository missionJpaRepository;
+    @Autowired
+    protected MissionHistoryRepository missionHistoryRepository;
+    @Autowired
+    protected MissionHistoryJpaRepository missionHistoryJpaRepository;
 
     @AfterEach
     public void tearDown() {
+        missionHistoryJpaRepository.deleteAllInBatch();
+        challengeHistoryJpaRepository.deleteAllInBatch();
         missionJpaRepository.deleteAllInBatch();
         cChallengeJpaRepository.deleteAllInBatch();
         alertHistoryRepository.deleteAllInBatch();
@@ -217,6 +232,25 @@ public abstract class IntegrationTestSupport {
                 .title(title)
                 .content(content)
                 .reward(reward)
+                .build();
+    }
+
+    protected ChallengeHistory createChallengeHistory(Challenge challenge, User user, ChallengeStatus status) {
+        return ChallengeHistory.builder()
+                .challenge(challenge)
+                .user(user)
+                .status(status)
+                .build();
+    }
+
+    protected MissionHistory createMissionHistory(ChallengeHistory challengeHistory, Mission mission, User user, MissionStatus status, String address) {
+        return MissionHistory.builder()
+                .challengeHistory(challengeHistory)
+                .mission(mission)
+                .user(user)
+                .status(status)
+                .address(address)
+                .completeAt(status == MissionStatus.COMPLETED ? java.time.LocalDateTime.now() : null)
                 .build();
     }
 }
