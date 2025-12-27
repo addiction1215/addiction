@@ -5,5 +5,4 @@ public enum ChallengeStatus {
     COMPLETED, // 완료
     FAILED, // 실패
     CANCELLED, // 포기
-    LEFT // 남은
 }

@@ -68,3 +68,13 @@ include::api/challenge/challenge.adoc[]
 == Challenge-History API
 
 include::api/challengehistory/challengehistory.adoc[]
+
+[[Mission-API]]
+== Mission API
+
+include::api/mission/mission.adoc[]
+
+[[Mission-History-API]]
+== Mission-History API
+
+include::api/missionHistory/missionHistory.adoc[]

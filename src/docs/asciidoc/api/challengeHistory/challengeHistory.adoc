@@ -1,0 +1,24 @@
+[[challenge-history-get-progressing]]
+=== 진행중인 챌린지 조회
+
+==== HTTP Request
+
+include::{snippets}/challenge-history-get-progressing/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/challenge-history-get-progressing/http-response.adoc[]
+include::{snippets}/challenge-history-get-progressing/response-fields.adoc[]
+
+[[challenge-history-get-finished-list]]
+=== 완료된 챌린지 리스트 조회
+
+==== HTTP Request
+
+include::{snippets}/challenge-history-get-finished-list/http-request.adoc[]
+include::{snippets}/challenge-history-get-finished-list/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/challenge-history-get-finished-list/http-response.adoc[]
+include::{snippets}/challenge-history-get-finished-list/response-fields.adoc[]

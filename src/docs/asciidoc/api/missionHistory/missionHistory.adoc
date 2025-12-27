@@ -1,0 +1,12 @@
+[[mission-history-get-progress]]
+=== 미션 진행 상황 조회
+
+==== HTTP Request
+
+include::{snippets}/mission-history-get-progress/http-request.adoc[]
+include::{snippets}/mission-history-get-progress/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-get-progress/http-response.adoc[]
+include::{snippets}/mission-history-get-progress/response-fields.adoc[]
