@@ -24,11 +24,14 @@ public class Challenge extends BaseTimeEntity {
 
     private String badge;
 
+    private Integer reward;
+
     @Builder
-    public Challenge(Long id, String title, String content, String badge) {
+    public Challenge(Long id, String title, String content, String badge, Integer reward) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.badge = badge;
+        this.reward = reward;
     }
 }

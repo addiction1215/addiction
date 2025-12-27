@@ -8,39 +8,33 @@ import lombok.Getter;
 
 @Getter
 public class ChallengeHistoryResponse {
-    private final Long challengeId;
+    private final Long challengeHistoryId;
     private final String title;
     private final String content;
     private final String badge;
+    private final Integer reward;
     private final ChallengeStatus status;
 
     @Builder
-    public ChallengeHistoryResponse(Long challengeId, String title, String content, String badge, ChallengeStatus status) {
-        this.challengeId = challengeId;
+    public ChallengeHistoryResponse(Long challengeHistoryId, String title, String content, String badge, Integer reward, ChallengeStatus status) {
+        this.challengeHistoryId = challengeHistoryId;
         this.title = title;
         this.content = content;
         this.badge = badge;
         this.status = status;
+        this.reward = reward;
     }
 
     public static ChallengeHistoryResponse createResponse(ChallengeHistory challengeHistory) {
         Challenge challenge = challengeHistory.getChallenge();
         return ChallengeHistoryResponse.builder()
-                .challengeId(challenge.getId())
+                .challengeHistoryId(challengeHistory.getId())
                 .title(challenge.getTitle())
                 .content(challenge.getContent())
                 .badge(challenge.getBadge())
+                .reward(challenge.getReward())
                 .status(challengeHistory.getStatus())
                 .build();
     }
 
-    public static ChallengeHistoryResponse fromChallenge(Challenge challenge) {
-        return ChallengeHistoryResponse.builder()
-                .challengeId(challenge.getId())
-                .title(challenge.getTitle())
-                .content(challenge.getContent())
-                .badge(challenge.getBadge())
-                .status(ChallengeStatus.LEFT)
-                .build();
-    }
 }
