@@ -1,15 +1,13 @@
 package com.addiction.missionhistory.repository;
 
-import com.addiction.common.enums.MissionStatus;
 import com.addiction.missionhistory.entity.MissionHistory;
-import com.addiction.user.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface MissionHistoryJpaRepository extends JpaRepository<MissionHistory, Long> {
-    /**
-     * 사용자의 특정 상태 미션 조회
-     */
-    Optional<MissionHistory> findByUserIdAndStatus(User userId, MissionStatus status);
+    @Query("SELECT mh FROM MissionHistory mh WHERE mh.user.id = :userId AND mh.challenge.id = :challengeId")
+    List<MissionHistory> findByUserIdAndChallengeId(@Param("userId") Long userId, @Param("challengeId") Long challengeId);
 }
