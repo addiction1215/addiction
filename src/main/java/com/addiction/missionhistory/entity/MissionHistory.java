@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -20,32 +22,28 @@ public class MissionHistory extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_history_id")
     private ChallengeHistory challengeHistory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id")
     private Mission mission;
 
     @Enumerated(EnumType.STRING)
     private MissionStatus status;
 
-    @Column(name = "acc_time")
-    private Integer accTime;
+    private LocalDateTime completeAt;
 
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public MissionHistory(Long id, Mission mission, ChallengeHistory challengeHistory, MissionStatus status, Integer accTime, String address, User user) {
+    public MissionHistory(Long id, Mission mission, ChallengeHistory challengeHistory, MissionStatus status, LocalDateTime completeAt, String address, User user) {
         this.id = id;
         this.mission = mission;
         this.challengeHistory = challengeHistory;
         this.status = status;
-        this.accTime = accTime;
+        this.completeAt = completeAt;
         this.address = address;
         this.user = user;
     }
