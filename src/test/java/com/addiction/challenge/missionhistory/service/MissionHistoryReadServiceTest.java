@@ -5,7 +5,6 @@ import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.mission.entity.Mission;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
-import com.addiction.challenge.missionhistory.service.response.MissionHistoryResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionProgressResponse;
 import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.common.enums.MissionCategoryStatus;
@@ -300,14 +299,12 @@ class MissionHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getTotalPossibleReward()).isEqualTo(85);
         assertThat(response.getMissions()).hasSize(1);
 
-        // MissionHistoryResponse 모든 필드(7개) 개별 검증
-        MissionHistoryResponse missionHistoryResponse = response.getMissions().get(0);
-        assertThat(missionHistoryResponse.getMissionHistoryId()).isEqualTo(savedMissionHistory.getId());
-        assertThat(missionHistoryResponse.getMissionId()).isEqualTo(savedMission.getId());
-        assertThat(missionHistoryResponse.getMissionTitle()).isEqualTo("테스트 미션");
-        assertThat(missionHistoryResponse.getMissionContent()).isEqualTo("테스트 미션 내용");
-        assertThat(missionHistoryResponse.getCategory()).isEqualTo(MissionCategoryStatus.REPLACE_ACTION);
-        assertThat(missionHistoryResponse.getReward()).isEqualTo(85);
-        assertThat(missionHistoryResponse.getStatus()).isEqualTo(MissionStatus.COMPLETED);
+        // MissionHistoryResponse 모든 필드(7개) 검증
+        assertThat(response.getMissions())
+                .extracting("missionHistoryId", "missionId", "missionTitle", "missionContent", "category", "reward", "status")
+                .containsExactly(
+                        tuple(savedMissionHistory.getId(), savedMission.getId(), "테스트 미션", 
+                              "테스트 미션 내용", MissionCategoryStatus.REPLACE_ACTION, 85, MissionStatus.COMPLETED)
+                );
     }
 }

@@ -33,8 +33,7 @@ public class ChallengeHistoryQueryRepository {
                 .select(challengeHistory.challenge.id)
                 .from(challengeHistory)
                 .where(
-                        challengeHistory.user.id.eq(userId),
-                        challengeHistory.status.eq(ChallengeStatus.COMPLETED)
+                        challengeHistory.user.id.eq(userId)
                 )
                 .fetch();
 

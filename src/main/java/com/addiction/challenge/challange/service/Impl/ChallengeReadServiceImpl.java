@@ -27,9 +27,7 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
     @Override
     public PageCustom<ChallengeResponse> getLeftChallengeList(PageInfoServiceRequest request) {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        PageRequest pageRequest = PageRequest.of(request.getPage() - 1, request.getSize());
-
-        Page<Challenge> page = challengeHistoryRepository.findLeftChallenges(userId, pageRequest);
+        Page<Challenge> page = challengeHistoryRepository.findLeftChallenges(userId, request.toPageable());
 
         List<ChallengeResponse> challengeResponses = page.getContent().stream()
                 .map(ChallengeResponse::createResponse)
