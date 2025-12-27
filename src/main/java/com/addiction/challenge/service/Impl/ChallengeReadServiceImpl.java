@@ -1,15 +1,18 @@
 package com.addiction.challenge.service.Impl;
 
 import com.addiction.challenge.repository.ChallengeRepository;
+import com.addiction.challenge.repository.response.ChallengeDto;
 import com.addiction.challenge.service.ChallengeReadService;
 import com.addiction.challenge.service.challenge.response.ChallengeResponse;
-import com.addiction.challenge.service.challenge.response.ChallengeResponseList;
-import com.addiction.challenge.service.challenge.response.ProgressingChallenge;
 import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
+import com.addiction.global.page.response.PageCustom;
+import com.addiction.global.page.response.PageableCustom;
 import com.addiction.global.security.SecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,37 +27,45 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public ChallengeResponse getChallenge(PageInfoServiceRequest request) {
-        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+    public ChallengeResponse getProgressingChallenge() {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
-        List<ChallengeResponseList> challengePage = challengeRepository.findByUserId(
-                userId
-        );
-
-        ChallengeResponseList progressingChallenge = challengePage.stream()
-                .filter(challenge -> ChallengeStatus.PROGRESSING.toString().equalsIgnoreCase(challenge.getStatus().toString()))
-                .findFirst()
+        return challengeRepository.findProgressingChallengeByUserId(userId)
+                .map(ChallengeResponse::createResponse)
                 .orElse(null);
+    }
 
-        List<ChallengeResponseList> leftChallengeList = challengePage.stream()
-                .filter(challenge -> ChallengeStatus.LEFT.toString().equalsIgnoreCase(challenge.getStatus().toString()))
+    @Override
+    public PageCustom<ChallengeResponse> getLeftChallengeList(PageInfoServiceRequest request) {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+
+        Page<ChallengeDto> page = challengeRepository.findByUserIdAndStatus(userId, ChallengeStatus.LEFT, pageRequest);
+
+        List<ChallengeResponse> challengeResponses = page.getContent().stream()
+                .map(ChallengeResponse::createResponse)
                 .toList();
 
-        List<ChallengeResponseList> finishedChallengeList = challengePage.stream()
-                .filter(challenge -> ChallengeStatus.COMPLETED.toString().equalsIgnoreCase(challenge.getStatus().toString()))
-                .toList();
-
-        ProgressingChallenge finalProgressingChallenge = ProgressingChallenge.builder()
-                .challengeId(progressingChallenge.getChallengeId())
-                .title(progressingChallenge.getTitle())
-                .content(progressingChallenge.getContent())
-                .progressPercent(0)
+        return PageCustom.<ChallengeResponse>builder()
+                .content(challengeResponses)
+                .pageInfo(PageableCustom.of(page))
                 .build();
+    }
 
-        return ChallengeResponse.builder()
-                .progressingChallenge(finalProgressingChallenge)
-                .leftChallengeList(leftChallengeList)
-                .finishedChallengeList(finishedChallengeList)
+    @Override
+    public PageCustom<ChallengeResponse> getFinishedChallengeList(PageInfoServiceRequest request) {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+
+        Page<ChallengeDto> page = challengeRepository.findByUserIdAndStatus(userId, ChallengeStatus.COMPLETED, pageRequest);
+
+        List<ChallengeResponse> challengeResponses = page.getContent().stream()
+                .map(ChallengeResponse::createResponse)
+                .toList();
+
+        return PageCustom.<ChallengeResponse>builder()
+                .content(challengeResponses)
+                .pageInfo(PageableCustom.of(page))
                 .build();
     }
 }

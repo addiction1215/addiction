@@ -1,12 +1,38 @@
-[[challenge-detail]]
-=== 챌린지 상세 조회
+[[challenge-get-progressing]]
+=== 진행중인 챌린지 조회
 
 ==== HTTP Request
 
-include::{snippets}/challenge-detail/http-request.adoc[]
-include::{snippets}/challenge-detail/path-parameters.adoc[]
+include::{snippets}/challenge-get-progressing/http-request.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/challenge-detail/http-response.adoc[]
-include::{snippets}/challenge-detail/response-fields.adoc[]
+include::{snippets}/challenge-get-progressing/http-response.adoc[]
+include::{snippets}/challenge-get-progressing/response-fields.adoc[]
+
+[[challenge-get-left-list]]
+=== 남은 챌린지 리스트 조회
+
+==== HTTP Request
+
+include::{snippets}/challenge-get-left-list/http-request.adoc[]
+include::{snippets}/challenge-get-left-list/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/challenge-get-left-list/http-response.adoc[]
+include::{snippets}/challenge-get-left-list/response-fields.adoc[]
+
+[[challenge-get-finished-list]]
+=== 완료된 챌린지 리스트 조회
+
+==== HTTP Request
+
+include::{snippets}/challenge-get-finished-list/http-request.adoc[]
+include::{snippets}/challenge-get-finished-list/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/challenge-get-finished-list/http-response.adoc[]
+include::{snippets}/challenge-get-finished-list/response-fields.adoc[]
+
