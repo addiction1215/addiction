@@ -18,8 +18,10 @@ public class Mission extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
+    @Enumerated(EnumType.STRING)
     private MissionCategoryStatus category;
 
     private String title;

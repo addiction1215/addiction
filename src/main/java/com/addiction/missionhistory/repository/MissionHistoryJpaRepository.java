@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MissionHistoryJpaRepository extends JpaRepository<MissionHistory, Long> {
-    @Query("SELECT mh FROM MissionHistory mh WHERE mh.user.id = :userId AND mh.challenge.id = :challengeId")
+    @Query("SELECT mh FROM MissionHistory mh WHERE mh.user.id = :userId AND mh.mission.challenge.id = :challengeId")
     List<MissionHistory> findByUserIdAndChallengeId(@Param("userId") Long userId, @Param("challengeId") Long challengeId);
 }

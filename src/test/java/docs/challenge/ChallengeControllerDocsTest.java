@@ -3,7 +3,6 @@ package docs.challenge;
 import com.addiction.challenge.controller.ChallengeController;
 import com.addiction.challenge.service.ChallengeReadService;
 import com.addiction.challenge.service.response.ChallengeResponse;
-import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.page.response.PageableCustom;
 import docs.RestDocsSupport;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -48,12 +46,14 @@ public class ChallengeControllerDocsTest extends RestDocsSupport {
                         .title("7일 연속 금연")
                         .content("7일 동안 연속으로 금연하기")
                         .badge("https://example.com/badge/7days.png")
+                        .reward(100)
                         .build(),
                 ChallengeResponse.builder()
                         .challengeId(2L)
                         .title("30일 연속 금연")
                         .content("30일 동안 연속으로 금연하기")
                         .badge("https://example.com/badge/30days.png")
+                        .reward(100)
                         .build()
         );
 
@@ -106,6 +106,8 @@ public class ChallengeControllerDocsTest extends RestDocsSupport {
                                         .description("챌린지 내용"),
                                 fieldWithPath("data.content[].badge").type(JsonFieldType.STRING)
                                         .description("배지 이미지 URL"),
+                                fieldWithPath("data.content[].reward").type(JsonFieldType.NUMBER)
+                                        .description("리워드 점수"),
                                 fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
                                         .description("페이지 정보"),
                                 fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)

@@ -17,14 +17,13 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,11 +44,12 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
     void 진행중인_챌린지_조회_API() throws Exception {
         // given
         ChallengeHistoryResponse response = ChallengeHistoryResponse.builder()
-                .challengeId(1L)
+                .challengeHistoryId(1L)
                 .title("7일 연속 금연")
                 .content("7일 동안 연속으로 금연하기")
                 .badge("https://example.com/badge/7days.png")
                 .status(ChallengeStatus.PROGRESSING)
+                .reward(100)
                 .build();
 
         given(challengeHistoryReadService.getProgressingChallenge())
@@ -74,14 +74,16 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("메세지"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.challengeId").type(JsonFieldType.NUMBER)
-                                        .description("챌린지 ID"),
+                                fieldWithPath("data.challengeHistoryId").type(JsonFieldType.NUMBER)
+                                        .description("챌린지 이력 ID"),
                                 fieldWithPath("data.title").type(JsonFieldType.STRING)
                                         .description("챌린지 제목"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING)
                                         .description("챌린지 내용"),
                                 fieldWithPath("data.badge").type(JsonFieldType.STRING)
                                         .description("배지 이미지 URL"),
+                                fieldWithPath("data.reward").type(JsonFieldType.NUMBER)
+                                        .description("리워드 점수"),
                                 fieldWithPath("data.status").type(JsonFieldType.STRING)
                                         .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values()))
                         )
@@ -94,18 +96,20 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
         // given
         List<ChallengeHistoryResponse> challengeList = List.of(
                 ChallengeHistoryResponse.builder()
-                        .challengeId(3L)
+                        .challengeHistoryId(3L)
                         .title("첫 금연일 달성")
                         .content("첫날 금연 성공하기")
                         .badge("https://example.com/badge/first.png")
                         .status(ChallengeStatus.COMPLETED)
+                        .reward(100)
                         .build(),
                 ChallengeHistoryResponse.builder()
-                        .challengeId(4L)
+                        .challengeHistoryId(4L)
                         .title("3일 연속 금연")
                         .content("3일 동안 연속으로 금연하기")
                         .badge("https://example.com/badge/3days.png")
                         .status(ChallengeStatus.COMPLETED)
+                        .reward(100)
                         .build()
         );
 
@@ -150,8 +154,8 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.content[]").type(JsonFieldType.ARRAY)
                                         .description("챌린지 리스트"),
-                                fieldWithPath("data.content[].challengeId").type(JsonFieldType.NUMBER)
-                                        .description("챌린지 ID"),
+                                fieldWithPath("data.content[].challengeHistoryId").type(JsonFieldType.NUMBER)
+                                        .description("챌린지 이력 ID"),
                                 fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
                                         .description("챌린지 제목"),
                                 fieldWithPath("data.content[].content").type(JsonFieldType.STRING)
@@ -160,6 +164,8 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("배지 이미지 URL"),
                                 fieldWithPath("data.content[].status").type(JsonFieldType.STRING)
                                         .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values())),
+                                fieldWithPath("data.content[].reward").type(JsonFieldType.NUMBER)
+                                        .description("리워드 점수"),
                                 fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
                                         .description("페이지 정보"),
                                 fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
