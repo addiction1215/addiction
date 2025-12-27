@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 public class MissionProgressResponse {
     private final Long challengeHistoryId;
+    private final Long challengeId;
     private final String challengeTitle;
     private final Integer totalMissionCount;
     private final Integer completedMissionCount;
@@ -16,8 +17,11 @@ public class MissionProgressResponse {
     private final List<MissionHistoryResponse> missions;
 
     @Builder
-    public MissionProgressResponse(Long challengeHistoryId, String challengeTitle, Integer totalMissionCount, Integer completedMissionCount, Integer totalEarnedReward, Integer totalPossibleReward, List<MissionHistoryResponse> missions) {
+    public MissionProgressResponse(Long challengeHistoryId, Long challengeId, String challengeTitle, Integer totalMissionCount,
+                                   Integer completedMissionCount, Integer totalEarnedReward,
+                                   Integer totalPossibleReward, List<MissionHistoryResponse> missions) {
         this.challengeHistoryId = challengeHistoryId;
+        this.challengeId = challengeId;
         this.challengeTitle = challengeTitle;
         this.totalMissionCount = totalMissionCount;
         this.completedMissionCount = completedMissionCount;
@@ -26,11 +30,14 @@ public class MissionProgressResponse {
         this.missions = missions;
     }
 
-    public static MissionProgressResponse createResponse(Long challengeHistoryId, String challengeTitle,
-                                                         Integer totalMissionCount, Integer completedMissionCount, Integer totalEarnedReward,
-                                                         Integer totalPossibleReward, List<MissionHistoryResponse> missions) {
+    public static MissionProgressResponse createResponse(Long challengeHistoryId, Long challengeId, String challengeTitle,
+                                                         Integer totalMissionCount, Integer completedMissionCount,
+                                                         Integer totalPossibleReward, Integer totalEarnedReward,
+                                                         List<MissionHistoryResponse> missions) {
+
         return MissionProgressResponse.builder()
                 .challengeHistoryId(challengeHistoryId)
+                .challengeId(challengeId)
                 .challengeTitle(challengeTitle)
                 .totalMissionCount(totalMissionCount)
                 .completedMissionCount(completedMissionCount)

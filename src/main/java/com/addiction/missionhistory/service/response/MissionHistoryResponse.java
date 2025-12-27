@@ -17,11 +17,9 @@ public class MissionHistoryResponse {
     private final MissionCategoryStatus category;
     private final Integer reward;
     private final MissionStatus status;
-    private final String address;
-    private final LocalDateTime completeAt;
 
     @Builder
-    public MissionHistoryResponse(Long missionHistoryId, Long missionId, String missionTitle, String missionContent, MissionCategoryStatus category, Integer reward, MissionStatus status, String address, LocalDateTime completeAt) {
+    public MissionHistoryResponse(Long missionHistoryId, Long missionId, String missionTitle, String missionContent, MissionCategoryStatus category, Integer reward, MissionStatus status) {
         this.missionHistoryId = missionHistoryId;
         this.missionId = missionId;
         this.missionTitle = missionTitle;
@@ -29,8 +27,6 @@ public class MissionHistoryResponse {
         this.category = category;
         this.reward = reward;
         this.status = status;
-        this.address = address;
-        this.completeAt = completeAt;
     }
 
     public static MissionHistoryResponse createResponse(MissionHistory missionHistory) {
@@ -42,8 +38,6 @@ public class MissionHistoryResponse {
                 .category(missionHistory.getMission().getCategory())
                 .reward(missionHistory.getMission().getReward())
                 .status(missionHistory.getStatus())
-                .address(missionHistory.getAddress())
-                .completeAt(missionHistory.getCompleteAt())
                 .build();
     }
 }

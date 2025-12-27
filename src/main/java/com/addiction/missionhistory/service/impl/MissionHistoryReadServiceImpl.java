@@ -49,6 +49,7 @@ public class MissionHistoryReadServiceImpl implements MissionHistoryReadService 
 
         return MissionProgressResponse.createResponse(
                 challengeHistory.getId(),
+                challengeHistory.getChallenge().getId(),
                 challengeHistory.getChallenge().getTitle(),
                 missionHistories.size(),
                 completedCount,
