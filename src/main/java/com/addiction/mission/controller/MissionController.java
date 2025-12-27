@@ -17,14 +17,13 @@ public class MissionController {
     private final MissionReadService missionReadService;
     private final MissionService missionService;
 
-    @GetMapping("list")
+    @GetMapping("/list")
     public ApiResponse<List<MissionResponseList>> getMissionList(@RequestParam Long challengeId) {
         return ApiResponse.ok(missionReadService.getMission(challengeId));
     }
 
-    @PostMapping("report")
-    public ApiResponse<String> insertMissionReport(@RequestBody MissionReportRequest request) {
-        missionService.insertMissionReport(request);
-        return ApiResponse.ok("미션 결과가 제출되었습니다.");
+    @PostMapping("/report")
+    public ApiResponse<Boolean> insertMissionReport(@RequestBody MissionReportRequest request) {
+        return ApiResponse.ok(missionService.insertMissionReport(request));
     }
 }
