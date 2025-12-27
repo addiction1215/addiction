@@ -7,8 +7,13 @@ import com.addiction.alertHistory.repository.AlertHistoryRepository;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingRepository;
+import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challange.repository.ChallengeJpaRepository;
 import com.addiction.challenge.challange.repository.ChallengeRepository;
+import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.repository.MissionJpaRepository;
+import com.addiction.challenge.mission.repository.MissionRepository;
+import com.addiction.common.enums.MissionCategoryStatus;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.storage.service.OracleStorageService;
@@ -85,9 +90,15 @@ public abstract class IntegrationTestSupport {
     protected ChallengeRepository challengeRepository;
     @Autowired
     protected ChallengeJpaRepository cChallengeJpaRepository;
+    @Autowired
+    protected MissionRepository missionRepository;
+    @Autowired
+    protected MissionJpaRepository missionJpaRepository;
 
     @AfterEach
     public void tearDown() {
+        missionJpaRepository.deleteAllInBatch();
+        cChallengeJpaRepository.deleteAllInBatch();
         alertHistoryRepository.deleteAllInBatch();
         alertSettingRepository.deleteAllInBatch();
         surveyResultDescriptionRepository.deleteAllInBatch();
@@ -187,6 +198,25 @@ public abstract class IntegrationTestSupport {
                 .leaderboardRank(leaderboardRank)
                 .challenge(challenge)
                 .report(report)
+                .build();
+    }
+
+    protected Challenge createChallenge(String title, String content, String badge, Integer reward) {
+        return Challenge.builder()
+                .title(title)
+                .content(content)
+                .badge(badge)
+                .reward(reward)
+                .build();
+    }
+
+    protected Mission createMission(Challenge challenge, MissionCategoryStatus category, String title, String content, Integer reward) {
+        return Mission.builder()
+                .challenge(challenge)
+                .category(category)
+                .title(title)
+                .content(content)
+                .reward(reward)
                 .build();
     }
 }
