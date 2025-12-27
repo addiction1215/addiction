@@ -32,10 +32,4 @@ public class ChallengeController {
         return ApiResponse.ok(challengeReadService.getFinishedChallengeList(request.toServiceRequest()));
     }
 
-    @PutMapping("/fail")
-    public ApiResponse<String> updateFailChallenge(@RequestBody FailChallengeRequest request) {
-        challengeService.updateFailChallenge(request);
-        return ApiResponse.ok("챌린지를 포기했습니다.");
-    }
-
 }
