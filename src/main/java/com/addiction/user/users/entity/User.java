@@ -57,6 +57,8 @@ public class User extends BaseTimeEntity {
 
 	private Integer cigarettePrice;
 
+    private Integer cigaretteCount;
+
 	private LocalDateTime startDate;
 
     private String profileUrl;
@@ -83,7 +85,7 @@ public class User extends BaseTimeEntity {
 
 	@Builder
 	public User(String profileUrl, String email, String password, String nickName, String phoneNumber, String birthDay, String purpose,
-		Integer totalScore, String introduction, Integer cigarettePrice, SnsType snsType, Sex sex, Role role,
+		Integer totalScore, String introduction, Integer cigarettePrice, Integer cigaretteCount, SnsType snsType, Sex sex, Role role,
 		SettingStatus settingStatus) {
         this.profileUrl = profileUrl;
 		this.email = email;
@@ -95,6 +97,7 @@ public class User extends BaseTimeEntity {
 		this.totalScore = totalScore;
 		this.introduction = introduction;
 		this.cigarettePrice = cigarettePrice;
+        this.cigaretteCount = cigaretteCount;
 		this.snsType = snsType;
 		this.sex = sex;
 		this.role = role;
@@ -147,10 +150,11 @@ public class User extends BaseTimeEntity {
 		updateBirthDay(birthDay);
 	}
 
-	public void updateSurvey(String purpose, Integer totalScore, Integer cigarettePrice, LocalDateTime startDate) {
+	public void updateSurvey(String purpose, Integer totalScore, Integer cigarettePrice, Integer cigaretteCount, LocalDateTime startDate) {
 		updatePurpose(purpose);
 		updateTotalScore(totalScore);
 		updateCigarettePrice(cigarettePrice);
+        updateCigaretteCount(cigaretteCount);
 		completeSetting();
 		updateStartDate(startDate);
 	}
@@ -206,6 +210,10 @@ public class User extends BaseTimeEntity {
 	private void updateCigarettePrice(Integer cigarettePrice) {
 		this.cigarettePrice = cigarettePrice;
 	}
+
+    private void updateCigaretteCount(Integer cigaretteCount) {
+        this.cigaretteCount = cigaretteCount;
+    }
 
 	private void completeSetting() {
 		this.settingStatus = SettingStatus.COMPLETE;

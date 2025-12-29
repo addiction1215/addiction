@@ -1,4 +1,4 @@
-package com.addiction.survey.surveyAnswer.dto.repository.response;
+package com.addiction.survey.surveyAnswer.repository.response;
 
 import lombok.Builder;
 

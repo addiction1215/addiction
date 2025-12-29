@@ -1,8 +1,8 @@
-package com.addiction.survey.surveyQuestion.dto.repository.response;
+package com.addiction.survey.surveyQuestion.repository.response;
 
 import java.util.List;
 
-import com.addiction.survey.surveyAnswer.dto.repository.response.SurveyAnswerDto;
+import com.addiction.survey.surveyAnswer.repository.response.SurveyAnswerDto;
 
 public class SurveyQuestionDto {
 

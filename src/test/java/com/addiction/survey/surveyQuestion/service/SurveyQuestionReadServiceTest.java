@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.addiction.IntegrationTestSupport;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
-import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindListServiceResponse;
+import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindListServiceResponse;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 

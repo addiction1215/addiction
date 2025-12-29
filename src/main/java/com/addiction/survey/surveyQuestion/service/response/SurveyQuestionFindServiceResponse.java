@@ -1,8 +1,8 @@
-package com.addiction.survey.surveyQuestion.dto.service.response;
+package com.addiction.survey.surveyQuestion.service.response;
 
 import java.util.List;
 
-import com.addiction.survey.surveyAnswer.dto.service.response.SurveyAnswerFindServiceResponse;
+import com.addiction.survey.surveyAnswer.service.response.SurveyAnswerFindServiceResponse;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
 import com.addiction.survey.surveyQuestion.enums.SurveyType;
 

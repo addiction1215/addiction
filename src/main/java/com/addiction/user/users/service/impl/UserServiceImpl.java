@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
 			userUpdateSurveyServiceRequest.getPurpose(),
 			totalScore,
 			userUpdateSurveyServiceRequest.getCigarettePrice(),
+            userUpdateSurveyServiceRequest.getCigaretteCount(),
 			LocalDateTime.now()
 		);
 

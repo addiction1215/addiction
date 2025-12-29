@@ -1,4 +1,4 @@
-package com.addiction.survey.surveyQuestion.dto.service.response;
+package com.addiction.survey.surveyQuestion.service.response;
 
 import java.util.List;
 

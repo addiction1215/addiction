@@ -3,8 +3,8 @@ package com.addiction.survey.surveyQuestion.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindListServiceResponse;
-import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindServiceResponse;
+import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindListServiceResponse;
+import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindServiceResponse;
 import com.addiction.survey.surveyQuestion.repository.SurveyQuestionRepository;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 
