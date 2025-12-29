@@ -100,6 +100,7 @@ public class UserControllerTest extends ControllerTestSupport {
                 .answerId(List.of(1L, 2L))
                 .purpose("금연 화이팅")
                 .cigarettePrice(5000)
+                .cigaretteCount(10)
                 .build();
 
         // when // then
@@ -124,6 +125,7 @@ public class UserControllerTest extends ControllerTestSupport {
         UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
                 .purpose("금연 화이팅")
                 .cigarettePrice(5000)
+                .cigaretteCount(10)
                 .build();
 
         // when // then

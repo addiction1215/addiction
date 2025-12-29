@@ -11,12 +11,14 @@ import lombok.Getter;
 public class UserUpdateSurveyServiceRequest {
 	private final List<Long> answerId;
 	private final String purpose;
-	private final int cigarettePrice;
+	private final Integer cigarettePrice;
+    private final Integer cigaretteCount;
 
 	@Builder
-	public UserUpdateSurveyServiceRequest(List<Long> answerId, String purpose, int cigarettePrice) {
+	public UserUpdateSurveyServiceRequest(List<Long> answerId, String purpose, Integer cigarettePrice, Integer cigaretteCount) {
 		this.answerId = answerId;
 		this.purpose = purpose;
 		this.cigarettePrice = cigarettePrice;
+        this.cigaretteCount = cigaretteCount;
 	}
 }

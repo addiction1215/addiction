@@ -1,4 +1,4 @@
-package com.addiction.survey.surveyAnswer.dto.service.response;
+package com.addiction.survey.surveyAnswer.service.response;
 
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 

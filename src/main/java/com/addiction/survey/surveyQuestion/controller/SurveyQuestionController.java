@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
-import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindListServiceResponse;
+import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindListServiceResponse;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 
 import lombok.RequiredArgsConstructor;
