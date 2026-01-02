@@ -85,17 +85,7 @@ src/
 ├── main/
 │   ├── java/com/addiction/
 │   │   ├── user/              # 사용자 관리
-│   │   │   ├── users/         # 사용자 엔티티 및 비즈니스 로직
-│   │   │   ├── userCigarette/ # 사용자 흡연 데이터
-│   │   │   ├── userCigaretteHistory/ # 흡연 이력 추적
-│   │   │   ├── push/          # 푸시 알림 관리
-│   │   │   └── refreshToken/  # JWT 리프레시 토큰
 │   │   ├── challenge/         # 챌린지 시스템
-│   │   │   ├── challenge/     # 챌린지 관리
-│   │   │   ├── mission/       # 미션 관리
-│   │   │   ├── challengehistory/ # 챌린지 참여 이력
-│   │   │   ├── missionhistory/    # 미션 수행 이력
-│   │   │   └── rewardHistory/ # 보상 지급 이력
 │   │   ├── friend/            # 친구 관리
 │   │   ├── alertSetting/      # 알림 설정
 │   │   ├── alertHistory/      # 알림 히스토리
