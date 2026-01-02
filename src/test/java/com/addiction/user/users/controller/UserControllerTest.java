@@ -174,6 +174,7 @@ public class UserControllerTest extends ControllerTestSupport {
         UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
                 .answerId(List.of(1L, 2L))
                 .purpose("금연 화이팅")
+                .cigaretteCount(10)
                 .build();
 
         // when // then
