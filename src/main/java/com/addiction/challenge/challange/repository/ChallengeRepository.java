@@ -23,4 +23,6 @@ public interface ChallengeRepository {
      * 특정 상태의 챌린지 목록 조회 (페이징)
      */
     Page<ChallengeDto> findByUserIdAndStatus(Long userId, ChallengeStatus status, Pageable pageable);
+
+    Optional<Challenge> findById(Long challengeId);
 }

@@ -1,9 +1,9 @@
 package com.addiction.challenge.missionhistory.entity;
 
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.mission.entity.Mission;
 import com.addiction.common.enums.MissionStatus;
 import com.addiction.global.BaseTimeEntity;
-import com.addiction.challenge.mission.entity.Mission;
 import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -46,5 +46,14 @@ public class MissionHistory extends BaseTimeEntity {
         this.completeAt = completeAt;
         this.address = address;
         this.user = user;
+    }
+
+    public static MissionHistory createEntity(Mission mission, ChallengeHistory challengeHistory, User user, MissionStatus status) {
+        return MissionHistory.builder()
+                .mission(mission)
+                .challengeHistory(challengeHistory)
+                .status(status)
+                .user(user)
+                .build();
     }
 }

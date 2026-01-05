@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MissionHistoryRepository {
     List<MissionHistory> findByChallengeHistoryId(Long challengeHistoryId);
+
+    List<MissionHistory> saveAll(List<MissionHistory> missionHistories);
 }

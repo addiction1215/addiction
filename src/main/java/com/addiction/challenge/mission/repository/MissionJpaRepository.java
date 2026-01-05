@@ -14,4 +14,5 @@ public interface MissionJpaRepository extends JpaRepository<Mission, Long> {
      */
     @Query("SELECT m FROM Mission m WHERE m.challenge.id = :challengeId ORDER BY m.id ASC")
     List<Mission> findByChallengeId(@Param("challengeId") Long challengeId);
+
 }

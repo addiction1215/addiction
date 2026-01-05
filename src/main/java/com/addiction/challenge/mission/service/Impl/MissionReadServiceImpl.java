@@ -2,6 +2,8 @@ package com.addiction.challenge.mission.service.Impl;
 
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challange.repository.ChallengeJpaRepository;
+import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.repository.MissionJpaRepository;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.challenge.mission.repository.MissionRepository;
 import com.addiction.challenge.mission.service.MissionReadService;
@@ -21,6 +23,7 @@ import java.util.List;
 public class MissionReadServiceImpl implements MissionReadService {
 
     private final MissionRepository missionRepository;
+    private final MissionJpaRepository missionJpaRepository;
     private final ChallengeJpaRepository challengeJpaRepository;
 
     @Override
@@ -44,5 +47,10 @@ public class MissionReadServiceImpl implements MissionReadService {
                 missions,
                 totalReward
         );
+    }
+
+    @Override
+    public List<Mission> findByChallengeId(Long challengeId) {
+        return missionJpaRepository.findByChallengeId(challengeId);
     }
 }

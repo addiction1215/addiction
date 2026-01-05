@@ -41,4 +41,9 @@ public class ChallengeHistoryRepositoryImpl implements ChallengeHistoryRepositor
     public Optional<ChallengeHistory> findByUserIdAndChallengeId(Long userId, Long challengeId) {
         return challengeHistoryJpaRepository.findByUserIdAndChallengeId(userId, challengeId);
     }
+
+    @Override
+    public Optional<ChallengeHistory> findById(Long challengeHistoryId) {
+        return challengeHistoryJpaRepository.findById(challengeHistoryId);
+    }
 }

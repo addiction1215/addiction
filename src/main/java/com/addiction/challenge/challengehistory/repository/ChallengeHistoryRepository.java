@@ -33,4 +33,6 @@ public interface ChallengeHistoryRepository {
      * 사용자의 특정 챌린지 히스토리 조회
      */
     Optional<ChallengeHistory> findByUserIdAndChallengeId(Long userId, Long challengeId);
+
+    Optional<ChallengeHistory> findById(Long challengeHistoryId);
 }

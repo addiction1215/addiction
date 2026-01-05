@@ -39,4 +39,9 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     public Page<ChallengeDto> findByUserIdAndStatus(Long userId, ChallengeStatus status, Pageable pageable) {
         return challengeQueryRepository.findByUserIdAndStatus(userId, status, pageable);
     }
+
+    @Override
+    public Optional<Challenge> findById(Long challengeId) {
+        return challengeJpaRepository.findById(challengeId);
+    }
 }
