@@ -3,8 +3,8 @@ package com.addiction.challenge.challengehistory.service;
 import com.addiction.IntegrationTestSupport;
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
-import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.jwt.dto.LoginUserInfo;
@@ -15,9 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 
 class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {

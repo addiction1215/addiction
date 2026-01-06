@@ -1,7 +1,6 @@
 package com.addiction.challenge.mission.entity;
 
 import com.addiction.challenge.challange.entity.Challenge;
-import com.addiction.common.enums.MissionCategoryStatus;
 import com.addiction.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,7 +17,6 @@ public class Mission extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
     @Enumerated(EnumType.STRING)

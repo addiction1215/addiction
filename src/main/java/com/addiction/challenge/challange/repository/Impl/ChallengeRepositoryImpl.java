@@ -5,7 +5,7 @@ import com.addiction.challenge.challange.repository.ChallengeJpaRepository;
 import com.addiction.challenge.challange.repository.ChallengeQueryRepository;
 import com.addiction.challenge.challange.repository.ChallengeRepository;
 import com.addiction.challenge.challange.repository.response.ChallengeDto;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,5 +38,10 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     @Override
     public Page<ChallengeDto> findByUserIdAndStatus(Long userId, ChallengeStatus status, Pageable pageable) {
         return challengeQueryRepository.findByUserIdAndStatus(userId, status, pageable);
+    }
+
+    @Override
+    public Optional<Challenge> findById(Long challengeId) {
+        return challengeJpaRepository.findById(challengeId);
     }
 }

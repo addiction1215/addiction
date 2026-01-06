@@ -3,15 +3,13 @@ package com.addiction.challenge.mission.service;
 import com.addiction.IntegrationTestSupport;
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
 import com.addiction.challenge.mission.service.response.MissionListResponse;
 import com.addiction.challenge.mission.service.response.MissionResponse;
-import com.addiction.common.enums.MissionCategoryStatus;
 import com.addiction.global.exception.AddictionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -27,13 +25,13 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         Challenge challenge = createChallenge("유혹 피하기", "흡연 유혹 상황을 피하는 챌린지", "badge_url", 500);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
-        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, 
+        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION,
                 "평소 흡연 루트 피해보기", "평소 다니는 흡연 루트를 피해서 이동하기", 50);
-        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION, 
+        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
                 "평소 흡연 시간대 산책하기", "평소 흡연하는 시간대에 산책해보기", 70);
-        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.HOLD, 
+        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.HOLD,
                 "5분간 참기", "흡연 욕구가 생길 때 5분간 참아보기", 30);
-        
+
         Mission savedMission1 = missionJpaRepository.save(mission1);
         Mission savedMission2 = missionJpaRepository.save(mission2);
         Mission savedMission3 = missionJpaRepository.save(mission3);
@@ -49,17 +47,17 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getTotalMissionCount()).isEqualTo(3);
         assertThat(response.getTotalReward()).isEqualTo(150);
         assertThat(response.getMissions()).isNotNull().hasSize(3);
-        
+
         // 각 MissionResponse의 모든 필드(6개) 검증: missionId, title, content, reward, category, status
         assertThat(response.getMissions())
                 .extracting("missionId", "title", "content", "reward", "category", "status")
                 .containsExactlyInAnyOrder(
-                        tuple(savedMission1.getId(), "평소 흡연 루트 피해보기", 
-                              "평소 다니는 흡연 루트를 피해서 이동하기", 50, MissionCategoryStatus.LOCATION, null),
-                        tuple(savedMission2.getId(), "평소 흡연 시간대 산책하기", 
-                              "평소 흡연하는 시간대에 산책해보기", 70, MissionCategoryStatus.REPLACE_ACTION, null),
-                        tuple(savedMission3.getId(), "5분간 참기", 
-                              "흡연 욕구가 생길 때 5분간 참아보기", 30, MissionCategoryStatus.HOLD, null)
+                        tuple(savedMission1.getId(), "평소 흡연 루트 피해보기",
+                                "평소 다니는 흡연 루트를 피해서 이동하기", 50, MissionCategoryStatus.LOCATION, null),
+                        tuple(savedMission2.getId(), "평소 흡연 시간대 산책하기",
+                                "평소 흡연하는 시간대에 산책해보기", 70, MissionCategoryStatus.REPLACE_ACTION, null),
+                        tuple(savedMission3.getId(), "5분간 참기",
+                                "흡연 욕구가 생길 때 5분간 참아보기", 30, MissionCategoryStatus.HOLD, null)
                 );
     }
 
@@ -102,17 +100,17 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         Challenge challenge = createChallenge("종합 챌린지", "다양한 미션들", "badge_url", 1000);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
-        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, 
+        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION,
                 "위치 미션1", "위치 기반 미션1", 100);
-        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION, 
+        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
                 "대체 행동 미션1", "대체 행동 미션1", 150);
-        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.HOLD, 
+        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.HOLD,
                 "참기 미션1", "참기 미션1", 80);
-        Mission mission4 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, 
+        Mission mission4 = createMission(savedChallenge, MissionCategoryStatus.LOCATION,
                 "위치 미션2", "위치 기반 미션2", 120);
-        Mission mission5 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION, 
+        Mission mission5 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
                 "대체 행동 미션2", "대체 행동 미션2", 90);
-        
+
         Mission savedMission1 = missionJpaRepository.save(mission1);
         Mission savedMission2 = missionJpaRepository.save(mission2);
         Mission savedMission3 = missionJpaRepository.save(mission3);
@@ -130,21 +128,21 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getTotalMissionCount()).isEqualTo(5);
         assertThat(response.getTotalReward()).isEqualTo(540);
         assertThat(response.getMissions()).isNotNull().hasSize(5);
-        
+
         // 각 MissionResponse의 모든 필드(6개) 검증: missionId, title, content, reward, category, status
         assertThat(response.getMissions())
                 .extracting("missionId", "title", "content", "reward", "category", "status")
                 .containsExactlyInAnyOrder(
-                        tuple(savedMission1.getId(), "위치 미션1", "위치 기반 미션1", 
-                              100, MissionCategoryStatus.LOCATION, null),
-                        tuple(savedMission2.getId(), "대체 행동 미션1", "대체 행동 미션1", 
-                              150, MissionCategoryStatus.REPLACE_ACTION, null),
-                        tuple(savedMission3.getId(), "참기 미션1", "참기 미션1", 
-                              80, MissionCategoryStatus.HOLD, null),
-                        tuple(savedMission4.getId(), "위치 미션2", "위치 기반 미션2", 
-                              120, MissionCategoryStatus.LOCATION, null),
-                        tuple(savedMission5.getId(), "대체 행동 미션2", "대체 행동 미션2", 
-                              90, MissionCategoryStatus.REPLACE_ACTION, null)
+                        tuple(savedMission1.getId(), "위치 미션1", "위치 기반 미션1",
+                                100, MissionCategoryStatus.LOCATION, null),
+                        tuple(savedMission2.getId(), "대체 행동 미션1", "대체 행동 미션1",
+                                150, MissionCategoryStatus.REPLACE_ACTION, null),
+                        tuple(savedMission3.getId(), "참기 미션1", "참기 미션1",
+                                80, MissionCategoryStatus.HOLD, null),
+                        tuple(savedMission4.getId(), "위치 미션2", "위치 기반 미션2",
+                                120, MissionCategoryStatus.LOCATION, null),
+                        tuple(savedMission5.getId(), "대체 행동 미션2", "대체 행동 미션2",
+                                90, MissionCategoryStatus.REPLACE_ACTION, null)
                 );
     }
 
@@ -156,10 +154,10 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
         Mission mission = createMission(
-                savedChallenge, 
-                MissionCategoryStatus.LOCATION, 
-                "상세 미션 제목", 
-                "상세 미션 내용입니다. 이것은 미션에 대한 자세한 설명입니다.", 
+                savedChallenge,
+                MissionCategoryStatus.LOCATION,
+                "상세 미션 제목",
+                "상세 미션 내용입니다. 이것은 미션에 대한 자세한 설명입니다.",
                 200
         );
         Mission savedMission = missionJpaRepository.save(mission);
@@ -175,7 +173,7 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getTotalMissionCount()).isEqualTo(1);
         assertThat(response.getTotalReward()).isEqualTo(200);
         assertThat(response.getMissions()).isNotNull().hasSize(1);
-        
+
         // MissionResponse의 모든 필드(6개) 개별 검증: missionId, title, content, reward, category, status
         MissionResponse missionResponse = response.getMissions().get(0);
         assertThat(missionResponse.getMissionId()).isEqualTo(savedMission.getId());
@@ -193,13 +191,13 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         Challenge challenge = createChallenge("보상 테스트 챌린지", "보상 합산 테스트", "badge_url", 1000);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
-        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, 
+        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION,
                 "미션1", "내용1", 100);
-        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION, 
+        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
                 "미션2", "내용2", 250);
-        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.HOLD, 
+        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.HOLD,
                 "미션3", "내용3", 175);
-        
+
         Mission savedMission1 = missionJpaRepository.save(mission1);
         Mission savedMission2 = missionJpaRepository.save(mission2);
         Mission savedMission3 = missionJpaRepository.save(mission3);
@@ -215,7 +213,7 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getTotalMissionCount()).isEqualTo(3);
         assertThat(response.getTotalReward()).isEqualTo(525); // 100 + 250 + 175
         assertThat(response.getMissions()).isNotNull().hasSize(3);
-        
+
         // 각 MissionResponse의 모든 필드(6개) 검증
         assertThat(response.getMissions())
                 .extracting("missionId", "title", "content", "reward", "category", "status")
@@ -233,7 +231,7 @@ class MissionReadServiceTest extends IntegrationTestSupport {
         Challenge challenge = createChallenge("단일 미션 챌린지", "단일 미션 테스트", "badge_test", 100);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
-        Mission mission = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION, 
+        Mission mission = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
                 "테스트 미션", "테스트 미션 상세 내용", 85);
         Mission savedMission = missionJpaRepository.save(mission);
 

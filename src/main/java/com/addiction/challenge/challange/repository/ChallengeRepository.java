@@ -2,7 +2,7 @@ package com.addiction.challenge.challange.repository;
 
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challange.repository.response.ChallengeDto;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,4 +23,6 @@ public interface ChallengeRepository {
      * 특정 상태의 챌린지 목록 조회 (페이징)
      */
     Page<ChallengeDto> findByUserIdAndStatus(Long userId, ChallengeStatus status, Pageable pageable);
+
+    Optional<Challenge> findById(Long challengeId);
 }

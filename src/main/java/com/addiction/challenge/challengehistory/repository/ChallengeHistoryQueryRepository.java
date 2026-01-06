@@ -1,9 +1,6 @@
 package com.addiction.challenge.challengehistory.repository;
 
 import com.addiction.challenge.challange.entity.Challenge;
-import com.addiction.challenge.challange.entity.QChallenge;
-import com.addiction.challenge.challengehistory.entity.QChallengeHistory;
-import com.addiction.common.enums.ChallengeStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

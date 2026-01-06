@@ -22,3 +22,30 @@ include::{snippets}/challenge-history-get-finished-list/query-parameters.adoc[]
 
 include::{snippets}/challenge-history-get-finished-list/http-response.adoc[]
 include::{snippets}/challenge-history-get-finished-list/response-fields.adoc[]
+
+[[challenge-history-join]]
+=== 챌린지 참여
+
+==== HTTP Request
+
+include::{snippets}/challenge-history-join/http-request.adoc[]
+include::{snippets}/challenge-history-join/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/challenge-history-join/http-response.adoc[]
+include::{snippets}/challenge-history-join/response-fields.adoc[]
+
+[[challenge-history-cancel]]
+=== 챌린지 포기
+
+==== HTTP Request
+
+include::{snippets}/challenge-history-cancel/http-request.adoc[]
+include::{snippets}/challenge-history-cancel/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/challenge-history-cancel/http-response.adoc[]
+include::{snippets}/challenge-history-cancel/response-fields.adoc[]
+

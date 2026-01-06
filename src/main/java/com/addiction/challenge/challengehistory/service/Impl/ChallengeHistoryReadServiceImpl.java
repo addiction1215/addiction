@@ -4,6 +4,7 @@ import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
+import com.addiction.global.exception.AddictionException;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.page.response.PageableCustom;
@@ -50,6 +51,13 @@ public class ChallengeHistoryReadServiceImpl implements ChallengeHistoryReadServ
                 .content(challengeResponses)
                 .pageInfo(PageableCustom.of(page))
                 .build();
+    }
+
+    @Override
+    public ChallengeHistory findById(Long challengeHistoryId) {
+        return challengeHistoryRepository
+                .findById(challengeHistoryId)
+                .orElseThrow(() -> new AddictionException("존재하지 않는 챌린지 이력입니다."));
     }
 
 }

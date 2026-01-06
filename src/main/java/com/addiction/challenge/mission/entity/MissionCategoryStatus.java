@@ -1,4 +1,4 @@
-package com.addiction.common.enums;
+package com.addiction.challenge.mission.entity;
 
 public enum MissionCategoryStatus {
     LOCATION, // 위치 인증

@@ -10,10 +10,12 @@ import com.addiction.challenge.challange.controller.ChallengeController;
 import com.addiction.challenge.challange.service.ChallengeReadService;
 import com.addiction.challenge.challengehistory.controller.ChallengeHistoryController;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
+import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.mission.controller.MissionController;
 import com.addiction.challenge.mission.service.MissionReadService;
 import com.addiction.challenge.missionhistory.controller.MissionHistoryController;
 import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
+import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.userCigarette.controller.UserCigaretteController;
@@ -99,9 +101,15 @@ public abstract class ControllerTestSupport {
     protected ChallengeHistoryReadService challengeHistoryReadService;
 
     @MockitoBean
+    protected ChallengeHistoryService challengeHistoryService;
+
+    @MockitoBean
     protected MissionReadService missionReadService;
 
     @MockitoBean
     protected MissionHistoryReadService missionHistoryReadService;
+
+    @MockitoBean
+    protected MissionHistoryService missionHistoryService;
 
 }

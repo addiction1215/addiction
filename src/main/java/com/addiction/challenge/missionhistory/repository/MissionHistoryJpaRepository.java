@@ -1,7 +1,7 @@
 package com.addiction.challenge.missionhistory.repository;
 
-import com.addiction.common.enums.MissionStatus;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

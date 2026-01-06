@@ -150,6 +150,7 @@ public class UserControllerTest extends ControllerTestSupport {
         UserUpdateSurveyRequest userUpdateSurveyRequest = UserUpdateSurveyRequest.builder()
                 .answerId(List.of(1L, 2L))
                 .cigarettePrice(5000)
+                .cigaretteCount(10)
                 .build();
 
         // when // then

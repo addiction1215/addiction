@@ -2,7 +2,7 @@ package com.addiction.challenge.challengehistory.repository;
 
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 public class ChallengeHistoryRepositoryImpl implements ChallengeHistoryRepository {
-    
+
     private final ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
     private final ChallengeHistoryQueryRepository challengeHistoryQueryRepository;
 
@@ -40,5 +40,10 @@ public class ChallengeHistoryRepositoryImpl implements ChallengeHistoryRepositor
     @Override
     public Optional<ChallengeHistory> findByUserIdAndChallengeId(Long userId, Long challengeId) {
         return challengeHistoryJpaRepository.findByUserIdAndChallengeId(userId, challengeId);
+    }
+
+    @Override
+    public Optional<ChallengeHistory> findById(Long challengeHistoryId) {
+        return challengeHistoryJpaRepository.findById(challengeHistoryId);
     }
 }

@@ -1,9 +1,9 @@
 package com.addiction.challenge.mission.controller;
 
 import com.addiction.ControllerTestSupport;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
 import com.addiction.challenge.mission.service.response.MissionListResponse;
 import com.addiction.challenge.mission.service.response.MissionResponse;
-import com.addiction.common.enums.MissionCategoryStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;

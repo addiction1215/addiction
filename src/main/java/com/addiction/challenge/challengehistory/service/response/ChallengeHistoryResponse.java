@@ -2,7 +2,7 @@ package com.addiction.challenge.challengehistory.service.response;
 
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import lombok.Builder;
 import lombok.Getter;
 
