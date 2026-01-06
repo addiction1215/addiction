@@ -1,11 +1,11 @@
 package docs.challenge.mission;
 
-import com.addiction.common.enums.MissionCategoryStatus;
-import com.addiction.common.enums.MissionStatus;
 import com.addiction.challenge.mission.controller.MissionController;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
 import com.addiction.challenge.mission.service.MissionReadService;
 import com.addiction.challenge.mission.service.response.MissionListResponse;
 import com.addiction.challenge.mission.service.response.MissionResponse;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
