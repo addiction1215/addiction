@@ -42,7 +42,7 @@ public class MissionHistoryController {
     public ApiResponse<MissionSubmitResponse> submitMission(
             @Valid @RequestBody MissionSubmitRequest request
     ) {
-        return ApiResponse.ok(missionHistoryService.submitMission(request));
+        return ApiResponse.ok(missionHistoryService.submitMission(request.toServiceRequest()));
     }
 
     /**
