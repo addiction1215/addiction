@@ -4,7 +4,7 @@ import com.addiction.IntegrationTestSupport;
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challange.service.response.ChallengeResponse;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.jwt.dto.LoginUserInfo;
@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 
 class ChallengeReadServiceTest extends IntegrationTestSupport {
@@ -66,7 +67,7 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         assertThat(response).isNotNull();
         assertThat(response.getContent()).hasSize(3); // 5개 중 2개는 이미 시작했으므로 3개만 남음
         assertThat(response.getPageInfo()).isNotNull();
-        
+
         // PageableCustom 모든 필드(3개) 검증
         assertThat(response.getPageInfo().getCurrentPage()).isEqualTo(1);
         assertThat(response.getPageInfo().getTotalPage()).isEqualTo(1);
@@ -238,7 +239,7 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         // then
         assertThat(response).isNotNull();
         assertThat(response.getContent()).hasSize(1);
-        
+
         // ChallengeResponse 모든 필드(5개) 검증
         assertThat(response.getContent())
                 .extracting("challengeId", "title", "content", "badge", "reward")

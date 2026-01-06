@@ -15,6 +15,7 @@ import com.addiction.challenge.mission.controller.MissionController;
 import com.addiction.challenge.mission.service.MissionReadService;
 import com.addiction.challenge.missionhistory.controller.MissionHistoryController;
 import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
+import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.userCigarette.controller.UserCigaretteController;
@@ -107,5 +108,8 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected MissionHistoryReadService missionHistoryReadService;
+
+    @MockitoBean
+    protected MissionHistoryService missionHistoryService;
 
 }
