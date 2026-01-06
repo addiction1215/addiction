@@ -57,4 +57,10 @@ public class MissionHistoryReadServiceImpl implements MissionHistoryReadService 
                 missionHistories.stream().map(MissionHistoryResponse::createResponse).toList()
         );
     }
+
+    @Override
+    public MissionHistory findById(Long missionHistoryId) {
+        return missionHistoryRepository.findById(missionHistoryId)
+                .orElseThrow(() -> new AddictionException("미션 이력을 찾을 수 없습니다."));
+    }
 }
