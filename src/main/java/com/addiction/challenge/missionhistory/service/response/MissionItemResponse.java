@@ -1,4 +1,4 @@
-package com.addiction.challenge.missionhistory.dto.response;
+package com.addiction.challenge.missionhistory.service.response;
 
 import com.addiction.common.enums.MissionCategoryStatus;
 import com.addiction.common.enums.MissionStatus;

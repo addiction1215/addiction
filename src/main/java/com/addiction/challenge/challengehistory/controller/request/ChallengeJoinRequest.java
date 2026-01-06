@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  * 챌린지 참여 요청
  */
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ChallengeJoinRequest {
 
     @NotNull(message = "챌린지 ID는 필수입니다")
