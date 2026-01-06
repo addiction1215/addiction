@@ -1,6 +1,6 @@
 package com.addiction.challenge.challange.repository.response;
 
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import lombok.Builder;
 import lombok.Getter;
 

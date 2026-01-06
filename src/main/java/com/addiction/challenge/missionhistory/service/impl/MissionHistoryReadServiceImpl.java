@@ -2,13 +2,13 @@ package com.addiction.challenge.missionhistory.service.impl;
 
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
-import com.addiction.common.enums.MissionStatus;
-import com.addiction.global.exception.AddictionException;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
 import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
 import com.addiction.challenge.missionhistory.service.response.MissionHistoryResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionProgressResponse;
+import com.addiction.global.exception.AddictionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

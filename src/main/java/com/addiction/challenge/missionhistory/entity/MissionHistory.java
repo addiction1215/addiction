@@ -2,7 +2,6 @@ package com.addiction.challenge.missionhistory.entity;
 
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.mission.entity.Mission;
-import com.addiction.common.enums.MissionStatus;
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.user.users.entity.User;

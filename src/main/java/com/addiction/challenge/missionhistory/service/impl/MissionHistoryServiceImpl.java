@@ -1,6 +1,7 @@
 package com.addiction.challenge.missionhistory.service.impl;
 
 import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
 import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
@@ -8,7 +9,6 @@ import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.challenge.missionhistory.service.request.MissionSubmitServiceRequest;
 import com.addiction.challenge.missionhistory.service.response.MissionDetailResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionSubmitResponse;
-import com.addiction.common.enums.MissionCategoryStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

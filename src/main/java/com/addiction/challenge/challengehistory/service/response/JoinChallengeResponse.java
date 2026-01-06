@@ -1,9 +1,9 @@
 package com.addiction.challenge.challengehistory.service.response;
 
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
-import com.addiction.common.enums.ChallengeStatus;
-import com.addiction.common.enums.MissionStatus;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import lombok.Builder;
 import lombok.Getter;
 

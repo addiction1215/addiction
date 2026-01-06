@@ -1,8 +1,8 @@
 package com.addiction.challenge.mission.service.response;
 
-import com.addiction.common.enums.MissionCategoryStatus;
-import com.addiction.common.enums.MissionStatus;
 import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,8 +16,8 @@ public class MissionResponse {
     private final MissionStatus status;
 
     @Builder
-    public MissionResponse(Long missionId, String title, String content, Integer reward, 
-                          MissionCategoryStatus category, MissionStatus status) {
+    public MissionResponse(Long missionId, String title, String content, Integer reward,
+                           MissionCategoryStatus category, MissionStatus status) {
         this.missionId = missionId;
         this.title = title;
         this.content = content;

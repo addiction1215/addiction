@@ -1,8 +1,6 @@
 package com.addiction.challenge.mission.entity;
 
 import com.addiction.challenge.challange.entity.Challenge;
-import com.addiction.common.enums.MissionCategoryStatus;
-import com.addiction.common.enums.MissionSubmitType;
 import com.addiction.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

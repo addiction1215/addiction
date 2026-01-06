@@ -1,6 +1,6 @@
-package com.addiction.common.enums;
+package com.addiction.challenge.challengehistory.entity;
 
-public enum MissionStatus {
+public enum ChallengeStatus {
     PROGRESSING, // 진행중
     COMPLETED, // 완료
     FAILED, // 실패

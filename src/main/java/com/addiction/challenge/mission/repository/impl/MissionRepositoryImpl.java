@@ -1,6 +1,8 @@
-package com.addiction.challenge.mission.repository;
+package com.addiction.challenge.mission.repository.impl;
 
 import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.repository.MissionJpaRepository;
+import com.addiction.challenge.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

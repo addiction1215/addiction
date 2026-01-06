@@ -1,7 +1,6 @@
 package com.addiction.challenge.challengehistory.entity;
 
 import com.addiction.challenge.challange.entity.Challenge;
-import com.addiction.common.enums.ChallengeStatus;
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.user.users.entity.User;

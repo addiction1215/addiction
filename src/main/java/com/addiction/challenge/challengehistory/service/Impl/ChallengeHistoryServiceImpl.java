@@ -5,6 +5,7 @@ import com.addiction.challenge.challange.service.ChallengeReadService;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeCancelRequest;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
@@ -13,9 +14,8 @@ import com.addiction.challenge.challengehistory.service.response.ChallengeJoinRe
 import com.addiction.challenge.mission.entity.Mission;
 import com.addiction.challenge.mission.service.MissionReadService;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.challenge.missionhistory.service.MissionHistoryService;
-import com.addiction.common.enums.ChallengeStatus;
-import com.addiction.common.enums.MissionStatus;
 import com.addiction.global.security.SecurityService;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.UserReadService;

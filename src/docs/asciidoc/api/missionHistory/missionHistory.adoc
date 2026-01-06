@@ -10,3 +10,69 @@ include::{snippets}/mission-history-get-progress/path-parameters.adoc[]
 
 include::{snippets}/mission-history-get-progress/http-response.adoc[]
 include::{snippets}/mission-history-get-progress/response-fields.adoc[]
+
+[[mission-history-get-detail]]
+=== 미션 상세 조회
+
+==== HTTP Request
+
+include::{snippets}/mission-history-get-detail/http-request.adoc[]
+include::{snippets}/mission-history-get-detail/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-get-detail/http-response.adoc[]
+include::{snippets}/mission-history-get-detail/response-fields.adoc[]
+
+[[mission-history-submit-gps]]
+=== 미션 중간 제출 - GPS
+
+==== HTTP Request
+
+include::{snippets}/mission-history-submit-gps/http-request.adoc[]
+include::{snippets}/mission-history-submit-gps/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-submit-gps/http-response.adoc[]
+include::{snippets}/mission-history-submit-gps/response-fields.adoc[]
+
+[[mission-history-submit-photo]]
+=== 미션 중간 제출 - 사진
+
+==== HTTP Request
+
+include::{snippets}/mission-history-submit-photo/http-request.adoc[]
+include::{snippets}/mission-history-submit-photo/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-submit-photo/http-response.adoc[]
+include::{snippets}/mission-history-submit-photo/response-fields.adoc[]
+
+[[mission-history-submit-abstinence]]
+=== 미션 중간 제출 - 흡연 참기
+
+==== HTTP Request
+
+include::{snippets}/mission-history-submit-abstinence/http-request.adoc[]
+include::{snippets}/mission-history-submit-abstinence/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-submit-abstinence/http-response.adoc[]
+include::{snippets}/mission-history-submit-abstinence/response-fields.adoc[]
+
+[[mission-history-complete]]
+=== 미션 최종 제출
+
+==== HTTP Request
+
+include::{snippets}/mission-history-complete/http-request.adoc[]
+include::{snippets}/mission-history-complete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-complete/http-response.adoc[]
+include::{snippets}/mission-history-complete/response-fields.adoc[]
+

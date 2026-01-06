@@ -1,8 +1,7 @@
 package com.addiction.challenge.challange.repository;
 
-import com.addiction.challenge.challange.entity.QChallenge;
 import com.addiction.challenge.challange.repository.response.ChallengeDto;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

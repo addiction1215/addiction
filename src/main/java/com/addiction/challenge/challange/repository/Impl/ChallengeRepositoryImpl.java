@@ -5,7 +5,7 @@ import com.addiction.challenge.challange.repository.ChallengeJpaRepository;
 import com.addiction.challenge.challange.repository.ChallengeQueryRepository;
 import com.addiction.challenge.challange.repository.ChallengeRepository;
 import com.addiction.challenge.challange.repository.response.ChallengeDto;
-import com.addiction.common.enums.ChallengeStatus;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

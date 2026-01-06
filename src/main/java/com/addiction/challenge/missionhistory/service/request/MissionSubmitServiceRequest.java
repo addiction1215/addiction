@@ -3,9 +3,6 @@ package com.addiction.challenge.missionhistory.service.request;
 import lombok.Builder;
 import lombok.Getter;
 
-/**
- * 미션 중간 제출 서비스 요청
- */
 @Getter
 public class MissionSubmitServiceRequest {
     private final Long missionHistoryId;
