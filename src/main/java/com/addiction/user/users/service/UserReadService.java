@@ -9,6 +9,8 @@ public interface UserReadService {
 
     List<User> findAll();
 
+    List<User> findAllWithPushes();
+
 	User findByEmail(String email);
 
 	User findByEmailAndNickName(String email, String nickName);
