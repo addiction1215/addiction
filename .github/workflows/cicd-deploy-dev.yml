@@ -8,9 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       MYSQL_DB_ENDPOINT: ${{ secrets.MYSQL_DB_ENDPOINT }}
       MYSQL_DB_USERNAME: ${{ secrets.MYSQL_DB_USERNAME }}
       MYSQL_DB_PASSWORD: ${{ secrets.MYSQL_DB_PASSWORD }}
