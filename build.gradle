@@ -164,9 +164,10 @@ tasks.processResources {
         // build.gradle에 설정된 환경변수들을 주입
         expand(
                 MONGO_DB_URL: System.getenv('MONGO_DB_URL'),
-                DB_ENDPOINT: System.getenv('DB_ENDPOINT'),
-                DB_USERNAME: System.getenv('DB_USERNAME'),
-                DB_PASSWORD: System.getenv('DB_PASSWORD'),
+                PRD_MONGO_DB_URL: System.getenv('PRD_MONGO_DB_URL'),
+                PRD_DB_HOST: System.getenv('PRD_DB_HOST'),
+                PRD_DB_USERNAME: System.getenv('PRD_DB_USERNAME'),
+                PRD_DB_PASSWORD: System.getenv('PRD_DB_PASSWORD'),
                 MYSQL_DB_ENDPOINT: System.getenv('MYSQL_DB_ENDPOINT'),
                 MYSQL_DB_USERNAME: System.getenv('MYSQL_DB_USERNAME'),
                 MYSQL_DB_PASSWORD: System.getenv('MYSQL_DB_PASSWORD'),
