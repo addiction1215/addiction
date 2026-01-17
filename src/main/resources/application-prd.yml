@@ -13,22 +13,26 @@ spring:
     open-in-view: false
     properties:
       hibernate:
+        show_sql: true
+        format_sql: true
         default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        #        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           exception-handling: ignore
-        dialect: org.hibernate.dialect.MySQL8Dialect
   data:
     mongodb:
       uri: ${PRD_MONGO_DB_URL}
       database: addiction
-
     logging:
       level:
         p6spy: info
+
       decorator:
         datasource:
           p6spy:
             enable-logging: true
+
   mail:
     host: smtp.gmail.com
     port: 587
