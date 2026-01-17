@@ -7,13 +7,20 @@ import com.addiction.alertHistory.repository.AlertHistoryRepository;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingRepository;
-import com.addiction.challenge.challenge.entity.Challenge;
-import com.addiction.challenge.challenge.repository.ChallengeJpaRepository;
-import com.addiction.challenge.challenge.repository.ChallengeRepository;
+import com.addiction.challenge.challange.entity.Challenge;
+import com.addiction.challenge.challange.repository.ChallengeJpaRepository;
+import com.addiction.challenge.challange.repository.ChallengeRepository;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
-import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
-import com.addiction.common.enums.YnStatus;
+import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
+import com.addiction.challenge.mission.repository.MissionJpaRepository;
+import com.addiction.challenge.mission.repository.MissionRepository;
+import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
+import com.addiction.challenge.missionhistory.repository.MissionHistoryJpaRepository;
+import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.storage.service.OracleStorageService;
@@ -93,12 +100,20 @@ public abstract class IntegrationTestSupport {
     @Autowired
     protected ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
     @Autowired
-    protected ChallengeHistoryRepository challengeHistoryRepository;
+    protected MissionRepository missionRepository;
+    @Autowired
+    protected MissionJpaRepository missionJpaRepository;
+    @Autowired
+    protected MissionHistoryRepository missionHistoryRepository;
+    @Autowired
+    protected MissionHistoryJpaRepository missionHistoryJpaRepository;
 
     @AfterEach
     public void tearDown() {
-        challengeHistoryRepository.deleteAllInBatch();
-        challengeRepository.deleteAllInBatch();
+        missionHistoryJpaRepository.deleteAllInBatch();
+        challengeHistoryJpaRepository.deleteAllInBatch();
+        missionJpaRepository.deleteAllInBatch();
+        cChallengeJpaRepository.deleteAllInBatch();
         alertHistoryRepository.deleteAllInBatch();
         alertSettingRepository.deleteAllInBatch();
         surveyResultDescriptionRepository.deleteAllInBatch();
@@ -189,23 +204,6 @@ public abstract class IntegrationTestSupport {
                 .build();
     }
 
-    protected Challenge createChallenge(User user) {
-        return Challenge.builder()
-                .content("testcontent")
-                .title("testtitle")
-                .badge("testbadge")
-                .user(user)
-                .build();
-    }
-
-    protected ChallengeHistory createChallengeHistory(User user, Challenge challenge, YnStatus ynStatus) {
-        return ChallengeHistory.builder()
-                .user(user)
-                .challenge(challenge)
-                .finishYn(ynStatus)
-                .build();
-    }
-
     protected AlertSetting createAlertSetting(User user, AlertType all, AlertType smokingWarning,
                                               AlertType leaderboardRank, AlertType challenge, AlertType report) {
         return AlertSetting.builder()
@@ -215,6 +213,44 @@ public abstract class IntegrationTestSupport {
                 .leaderboardRank(leaderboardRank)
                 .challenge(challenge)
                 .report(report)
+                .build();
+    }
+
+    protected Challenge createChallenge(String title, String content, String badge, Integer reward) {
+        return Challenge.builder()
+                .title(title)
+                .content(content)
+                .badge(badge)
+                .reward(reward)
+                .build();
+    }
+
+    protected Mission createMission(Challenge challenge, MissionCategoryStatus category, String title, String content, Integer reward) {
+        return Mission.builder()
+                .challenge(challenge)
+                .category(category)
+                .title(title)
+                .content(content)
+                .reward(reward)
+                .build();
+    }
+
+    protected ChallengeHistory createChallengeHistory(Challenge challenge, User user, ChallengeStatus status) {
+        return ChallengeHistory.builder()
+                .challenge(challenge)
+                .user(user)
+                .status(status)
+                .build();
+    }
+
+    protected MissionHistory createMissionHistory(ChallengeHistory challengeHistory, Mission mission, User user, MissionStatus status, String address) {
+        return MissionHistory.builder()
+                .challengeHistory(challengeHistory)
+                .mission(mission)
+                .user(user)
+                .status(status)
+                .address(address)
+                .completeAt(status == MissionStatus.COMPLETED ? java.time.LocalDateTime.now() : null)
                 .build();
     }
 }

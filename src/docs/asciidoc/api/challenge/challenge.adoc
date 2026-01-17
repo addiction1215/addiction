@@ -1,12 +1,13 @@
-[[challenge-detail]]
-=== 챌린지 상세 조회
+[[challenge-get-left-list]]
+=== 남은 챌린지 리스트 조회
 
 ==== HTTP Request
 
-include::{snippets}/challenge-detail/http-request.adoc[]
-include::{snippets}/challenge-detail/path-parameters.adoc[]
+include::{snippets}/challenge-get-left-list/http-request.adoc[]
+include::{snippets}/challenge-get-left-list/query-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/challenge-detail/http-response.adoc[]
-include::{snippets}/challenge-detail/response-fields.adoc[]
+include::{snippets}/challenge-get-left-list/http-response.adoc[]
+include::{snippets}/challenge-get-left-list/response-fields.adoc[]
+

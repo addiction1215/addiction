@@ -15,10 +15,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import com.addiction.survey.surveyAnswer.dto.service.response.SurveyAnswerFindServiceResponse;
+import com.addiction.survey.surveyAnswer.service.response.SurveyAnswerFindServiceResponse;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
-import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindListServiceResponse;
-import com.addiction.survey.surveyQuestion.dto.service.response.SurveyQuestionFindServiceResponse;
+import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindListServiceResponse;
+import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindServiceResponse;
 import com.addiction.survey.surveyQuestion.enums.SurveyType;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 

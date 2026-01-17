@@ -1,0 +1,12 @@
+[[mission-get-list-by-challenge]]
+=== 챌린지 미션 리스트 조회
+
+==== HTTP Request
+
+include::{snippets}/mission-get-list-by-challenge/http-request.adoc[]
+include::{snippets}/mission-get-list-by-challenge/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-get-list-by-challenge/http-response.adoc[]
+include::{snippets}/mission-get-list-by-challenge/response-fields.adoc[]

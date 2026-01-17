@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum SurveyType {
 
 	RADIO,
-	CHECKBOX
+	CHECKBOX,
+    TEXT
 
 }

@@ -97,6 +97,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .answerId(List.of(1L, 2L))
                 .purpose("금연 화이팅")
                 .cigarettePrice(5000)
+                .cigaretteCount(10)
                 .build();
 
         given(userService.updateSurvey(any(UserUpdateSurveyServiceRequest.class)))
@@ -126,7 +127,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("purpose").type(JsonFieldType.STRING)
                                         .description("금연목표"),
                                 fieldWithPath("cigarettePrice").type(JsonFieldType.NUMBER)
-                                        .description("담배가격")
+                                        .description("담배가격"),
+                                fieldWithPath("cigaretteCount").type(JsonFieldType.NUMBER)
+                                        .description("담배 개피 수")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
