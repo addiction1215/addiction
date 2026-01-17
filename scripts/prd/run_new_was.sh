@@ -34,7 +34,7 @@ touch $LOG_FILE
 echo "> $JAR_NAME 실행"
 nohup java -jar \
           -Dserver.port=${TARGET_PORT} \
-          -Dspring.profiles.active=dev \
+          -Dspring.profiles.active=prd \
           -Duser.timezone=Asia/Seoul \
           $JAR_NAME > $LOG_FILE 2>&1 &
 
