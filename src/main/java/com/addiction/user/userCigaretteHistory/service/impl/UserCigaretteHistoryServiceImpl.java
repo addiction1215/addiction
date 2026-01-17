@@ -461,8 +461,9 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         CigaretteHistoryDocument dayBeforeDoc = userCigaretteHistoryRepository.findByDateAndUserId(
                 dayBeforeYesterday.format(BASIC_ISO_DATE), userId);
 
-        int yesterdaySmokeCount = yesterdayDoc.getSmokeCount();
-        int dayBeforeSmokeCount = dayBeforeDoc.getSmokeCount();
+        // null 체크 후 0으로 처리
+        int yesterdaySmokeCount = yesterdayDoc != null ? yesterdayDoc.getSmokeCount() : 0;
+        int dayBeforeSmokeCount = dayBeforeDoc != null ? dayBeforeDoc.getSmokeCount() : 0;
 
         // 평소 흡연량 조회 (User의 totalScore)
         User user = userReadService.findById(userId);
