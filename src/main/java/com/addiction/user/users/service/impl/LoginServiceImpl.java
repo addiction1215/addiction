@@ -90,19 +90,16 @@ public class LoginServiceImpl implements LoginService {
 
         String email = client.getEmail(oAuthLoginServiceRequest.getToken());
 
-        User user;
-        try {
-            user = userReadService.findByEmail(email);
-        } catch (AddictionException e) {
-            user = userRepository.save(
-                    User.builder()
-                            .email(email)
-                            .snsType(snsType)
-                            .role(Role.USER)
-                            .settingStatus(SettingStatus.INCOMPLETE)
-                            .build()
-            );
-        }
+        // Optional을 사용하여 트랜잭션 문제 해결
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> userRepository.save(
+                        User.builder()
+                                .email(email)
+                                .snsType(snsType)
+                                .role(Role.USER)
+                                .settingStatus(SettingStatus.INCOMPLETE)
+                                .build()
+                ));
 
         user.checkSnsType(snsType);              //SNS가입여부확인
 
