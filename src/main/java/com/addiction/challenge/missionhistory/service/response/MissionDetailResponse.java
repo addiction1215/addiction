@@ -47,7 +47,7 @@ public class MissionDetailResponse {
         this.abstinenceTime = abstinenceTime;
     }
 
-    public static MissionDetailResponse createResponse(MissionHistory missionHistory) {
+    public static MissionDetailResponse createResponse(MissionHistory missionHistory, String photoUrl1, String photoUrl2, String photoUrl3) {
         Mission mission = missionHistory.getMission();
         return MissionDetailResponse.builder()
                 .missionId(mission.getId())
@@ -60,9 +60,9 @@ public class MissionDetailResponse {
                 .completeAt(missionHistory.getCompleteAt())
                 .address(missionHistory.getAddress())
                 .gpsVerifyCount(missionHistory.getGpsVerifyCount())
-                .photoUrl1(missionHistory.getPhotoUrl1())
-                .photoUrl2(missionHistory.getPhotoUrl2())
-                .photoUrl3(missionHistory.getPhotoUrl3())
+                .photoUrl1(photoUrl1)
+                .photoUrl2(photoUrl2)
+                .photoUrl3(photoUrl3)
                 .abstinenceTime(missionHistory.getAbstinenceTime())
                 .build();
     }

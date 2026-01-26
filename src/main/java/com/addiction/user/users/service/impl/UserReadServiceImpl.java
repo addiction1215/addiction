@@ -1,5 +1,7 @@
 package com.addiction.user.users.service.impl;
 
+import com.addiction.storage.enums.BucketKind;
+import com.addiction.storage.service.S3StorageService;
 import com.addiction.user.users.service.response.UserInfoResponse;
 import com.addiction.user.users.service.response.UserProfileResponse;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class UserReadServiceImpl implements UserReadService {
 	private static final String UNKNOWN_USER = "해당 회원은 존재하지 않습니다.";
 
 	private final SecurityService securityService;
+    private final S3StorageService s3StorageService;
 
 	private final UserRepository userRepository;
 
@@ -69,8 +72,10 @@ public class UserReadServiceImpl implements UserReadService {
 
 	@Override
 	public UserProfileResponse findProfile() {
+        User user = findById(securityService.getCurrentLoginUserInfo().getUserId());
 		return UserProfileResponse.createResponse(
-				findById(securityService.getCurrentLoginUserInfo().getUserId())
+                user,
+                s3StorageService.createPresignedUrl(user.getProfileUrl(), BucketKind.USER)
 		);
 	}
 
@@ -83,8 +88,10 @@ public class UserReadServiceImpl implements UserReadService {
 
 	@Override
 	public UserSimpleProfileResponse findSimpleProfile() {
+        User user = findById(securityService.getCurrentLoginUserInfo().getUserId());
 		return UserSimpleProfileResponse.createResponse(
-			findById(securityService.getCurrentLoginUserInfo().getUserId())
+                user,
+                s3StorageService.createPresignedUrl(user.getProfileUrl(), BucketKind.USER)
 		);
 	}
 }

@@ -9,6 +9,8 @@ import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.challenge.missionhistory.service.request.MissionSubmitServiceRequest;
 import com.addiction.challenge.missionhistory.service.response.MissionDetailResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionSubmitResponse;
+import com.addiction.storage.enums.BucketKind;
+import com.addiction.storage.service.S3StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.List;
 public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     private final MissionHistoryReadService missionHistoryReadService;
+    private final S3StorageService s3StorageService;
 
     private final MissionHistoryRepository missionHistoryRepository;
 
@@ -31,7 +34,13 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     public MissionDetailResponse getMissionDetail(Long missionHistoryId) {
-        return MissionDetailResponse.createResponse(missionHistoryReadService.findById(missionHistoryId));
+        MissionHistory missionHistory = missionHistoryReadService.findById(missionHistoryId);
+        return MissionDetailResponse.createResponse(
+                missionHistory,
+                s3StorageService.createPresignedUrl(missionHistory.getPhotoUrl1(), BucketKind.CHALLENGE),
+                s3StorageService.createPresignedUrl(missionHistory.getPhotoUrl2(), BucketKind.CHALLENGE),
+                s3StorageService.createPresignedUrl(missionHistory.getPhotoUrl3(), BucketKind.CHALLENGE)
+        );
     }
 
     @Override

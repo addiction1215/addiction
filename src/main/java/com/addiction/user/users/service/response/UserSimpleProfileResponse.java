@@ -18,9 +18,9 @@ public class UserSimpleProfileResponse {
         this.nickName = nickName;
     }
 
-    public static UserSimpleProfileResponse createResponse(User user) {
+    public static UserSimpleProfileResponse createResponse(User user, String profileUrl) {
         return UserSimpleProfileResponse.builder()
-                .profileUrl(user.getProfileUrl())
+                .profileUrl(profileUrl)
                 .email(user.getEmail())
                 .nickName(user.getNickName())
                 .build();
