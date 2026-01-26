@@ -168,39 +168,33 @@ tasks.processResources {
         // build.gradle에 설정된 환경변수들을 주입
         expand(
                 MONGO_DB_URL: System.getenv('MONGO_DB_URL'),
-                MYSQL_DB_ENDPOINT: System.getenv('MYSQL_DB_ENDPOINT'),
-                MYSQL_DB_USERNAME: System.getenv('MYSQL_DB_USERNAME'),
-                MYSQL_DB_PASSWORD: System.getenv('MYSQL_DB_PASSWORD'),
+                DB_HOST: System.getenv('DB_HOST'),
+                DB_USERNAME: System.getenv('DB_USERNAME'),
+                DB_PASSWORD: System.getenv('DB_PASSWORD'),
                 JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
-                AES_KEY: System.getenv('AES_KEY'),
-                NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
-                USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
-                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV'),
                 EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD'),
                 AWS_ACCESS_KEY: System.getenv('AWS_ACCESS_KEY'),
                 AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
-                USER_BUCKET: System.getenv('USER_BUCKET_DEV'),
-                CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET_DEV')
+                USER_BUCKET: System.getenv('USER_BUCKET'),
+                CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET'),
+                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET')
         )
     }
 
     filesMatching('application-prd.yml') {
         // PRD 환경변수들을 주입
         expand(
-                PRD_DB_HOST: System.getenv('PRD_DB_HOST'),
-                PRD_DB_USERNAME: System.getenv('PRD_DB_USERNAME'),
-                PRD_DB_PASSWORD: System.getenv('PRD_DB_PASSWORD'),
-                PRD_MONGO_DB_URL: System.getenv('PRD_MONGO_DB_URL'),
+                MONGO_DB_URL: System.getenv('MONGO_DB_URL'),
+                DB_HOST: System.getenv('DB_HOST'),
+                DB_USERNAME: System.getenv('DB_USERNAME'),
+                DB_PASSWORD: System.getenv('DB_PASSWORD'),
                 JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
-                AES_KEY: System.getenv('AES_KEY'),
-                NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
-                USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
-                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV'),
                 EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD'),
                 AWS_ACCESS_KEY: System.getenv('AWS_ACCESS_KEY'),
                 AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
-                USER_BUCKET: System.getenv('USER_BUCKET_PRD'),
-                CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET_PRD')
+                USER_BUCKET: System.getenv('USER_BUCKET'),
+                CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET'),
+                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET')
         )
     }
 }
