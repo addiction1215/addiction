@@ -6,6 +6,6 @@ import lombok.Getter;
 public enum BucketKind {
 
     USER,
-    CHALLENGE;
+    CHALLENGE
 
 }

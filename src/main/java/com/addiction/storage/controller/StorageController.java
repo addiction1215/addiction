@@ -2,21 +2,27 @@ package com.addiction.storage.controller;
 
 import com.addiction.global.ApiResponse;
 import com.addiction.storage.enums.BucketKind;
-import com.addiction.storage.service.OracleStorageService;
+import com.addiction.storage.service.S3StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/storage")
+@RequestMapping("/api/v1/storage")
 public class StorageController {
 
-    private final OracleStorageService oracleStorageService;
+    private final S3StorageService s3StorageService;
 
+    /**
+     * S3에 파일 업로드 (영구 URL 반환)
+     */
     @PostMapping("/{bucketKind}")
-    public ApiResponse<String> upload(@RequestParam("file") MultipartFile file, @PathVariable("bucketKind") BucketKind bucketKind) {
-        return ApiResponse.ok(oracleStorageService.upload(file, bucketKind));
+    public ApiResponse<String> upload(
+            @RequestParam("file") MultipartFile file, @PathVariable("bucketKind") BucketKind bucketKind) {
+        return ApiResponse.ok(s3StorageService.upload(file, bucketKind));
     }
 
 }
