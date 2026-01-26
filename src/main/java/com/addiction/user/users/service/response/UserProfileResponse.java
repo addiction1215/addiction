@@ -23,13 +23,13 @@ public class UserProfileResponse {
         this.profileUrl = profileUrl;
     }
 
-    public static UserProfileResponse createResponse(User user) {
+    public static UserProfileResponse createResponse(User user, String profileUrl) {
         return UserProfileResponse.builder()
                 .birthDay(user.getBirthDay())
                 .nickName(user.getNickName())
                 .introduction(user.getIntroduction())
                 .sex(user.getSex())
-                .profileUrl(user.getProfileUrl())
+                .profileUrl(profileUrl)
                 .build();
     }
 }

@@ -7,17 +7,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: prd  # dev 환경 secrets 사용
     env:
-      PRD_DB_HOST: ${{ secrets.PRD_DB_HOST }}
-      PRD_DB_USERNAME: ${{ secrets.PRD_DB_USERNAME }}
-      PRD_DB_PASSWORD: ${{ secrets.PRD_DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      AES_KEY: ${{ secrets.AES_KEY }}
-      PRD_MONGO_DB_URL: ${{ secrets.PRD_MONGO_DB_URL }}
-      NAMESPACE_NAME: ${{ secrets.NAMESPACE_NAME }}
-      USER_BUCKET_NAME_DEV: ${{ secrets.USER_BUCKET_NAME_DEV }}
-      CHALLENGE_BUCKET_NAME_DEV: ${{ secrets.CHALLENGE_BUCKET_NAME_DEV }}
+      MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
       EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      USER_BUCKET: ${{ secrets.USER_BUCKET }}
+      CHALLENGE_BUCKET: ${{ secrets.CHALLENGE_BUCKET }}
+      CHALLENGE_BADGE_BUCKET: ${{ secrets.CHALLENGE_BADGE_BUCKET }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

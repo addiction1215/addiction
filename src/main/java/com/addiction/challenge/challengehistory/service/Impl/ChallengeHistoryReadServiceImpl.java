@@ -9,6 +9,8 @@ import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.page.response.PageableCustom;
 import com.addiction.global.security.SecurityService;
+import com.addiction.storage.enums.BucketKind;
+import com.addiction.storage.service.S3StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ChallengeHistoryReadServiceImpl implements ChallengeHistoryReadService {
     private final SecurityService securityService;
+    private final S3StorageService s3StorageService;
+
     private final ChallengeHistoryRepository challengeHistoryRepository;
 
     @Override
@@ -31,7 +35,7 @@ public class ChallengeHistoryReadServiceImpl implements ChallengeHistoryReadServ
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
         return challengeHistoryRepository.findProgressingChallenge(userId)
-                .map(ChallengeHistoryResponse::createResponse)
+                .map(challengeHistory -> ChallengeHistoryResponse.createResponse(challengeHistory, s3StorageService.createPresignedUrl(challengeHistory.getChallenge().getBadge(), BucketKind.CHALLENGE_BADGE)))
                 .orElse(null);
     }
 
@@ -44,7 +48,7 @@ public class ChallengeHistoryReadServiceImpl implements ChallengeHistoryReadServ
         Page<ChallengeHistory> page = challengeHistoryRepository.findCompletedChallenges(userId, pageRequest);
 
         List<ChallengeHistoryResponse> challengeResponses = page.getContent().stream()
-                .map(ChallengeHistoryResponse::createResponse)
+                .map(challengeHistory -> ChallengeHistoryResponse.createResponse(challengeHistory, s3StorageService.createPresignedUrl(challengeHistory.getChallenge().getBadge(), BucketKind.CHALLENGE_BADGE)))
                 .toList();
 
         return PageCustom.<ChallengeHistoryResponse>builder()

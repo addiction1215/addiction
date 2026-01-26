@@ -23,7 +23,7 @@ import com.addiction.challenge.missionhistory.repository.MissionHistoryJpaReposi
 import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
-import com.addiction.storage.service.OracleStorageService;
+import com.addiction.storage.service.S3StorageService;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyAnswer.repository.SurveyAnswerRepository;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
@@ -60,11 +60,11 @@ public abstract class IntegrationTestSupport {
     @MockitoBean
     protected SecurityService securityService;
     @MockitoBean
+    protected S3StorageService s3StorageService;
+    @MockitoBean
     protected KakaoApiFeignCall kakaoApiFeignCall;
     @MockitoBean
     protected GoogleApiFeignCall googleApiFeignCall;
-    @MockitoBean
-    protected OracleStorageService oracleStorageService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired

@@ -78,7 +78,7 @@ dependencies {
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
     //MongoDB
-    implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
+    implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
     //fcm
     implementation 'com.google.firebase:firebase-admin:9.1.1'
 
@@ -96,14 +96,18 @@ dependencies {
     implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.5'
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.1.5'
     implementation 'org.glassfish.jersey.connectors:jersey-apache-connector:3.1.5'
-    
+
+    // AWS SDK for S3
+    implementation platform('software.amazon.awssdk:bom:2.20.56')
+    implementation 'software.amazon.awssdk:s3'
+
     //mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
-    
+
     // 테스트 실패 시 로그 출력
     testLogging {
         events "passed", "skipped", "failed"
@@ -164,31 +168,33 @@ tasks.processResources {
         // build.gradle에 설정된 환경변수들을 주입
         expand(
                 MONGO_DB_URL: System.getenv('MONGO_DB_URL'),
-                MYSQL_DB_ENDPOINT: System.getenv('MYSQL_DB_ENDPOINT'),
-                MYSQL_DB_USERNAME: System.getenv('MYSQL_DB_USERNAME'),
-                MYSQL_DB_PASSWORD: System.getenv('MYSQL_DB_PASSWORD'),
+                DB_HOST: System.getenv('DB_HOST'),
+                DB_USERNAME: System.getenv('DB_USERNAME'),
+                DB_PASSWORD: System.getenv('DB_PASSWORD'),
                 JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
-                AES_KEY: System.getenv('AES_KEY'),
-                NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
-                USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
-                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV'),
-                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD')
+                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD'),
+                AWS_ACCESS_KEY: System.getenv('AWS_ACCESS_KEY'),
+                AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
+                USER_BUCKET: System.getenv('USER_BUCKET'),
+                CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET'),
+                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET')
         )
     }
-    
+
     filesMatching('application-prd.yml') {
         // PRD 환경변수들을 주입
         expand(
-                PRD_DB_HOST: System.getenv('PRD_DB_HOST'),
-                PRD_DB_USERNAME: System.getenv('PRD_DB_USERNAME'),
-                PRD_DB_PASSWORD: System.getenv('PRD_DB_PASSWORD'),
-                PRD_MONGO_DB_URL: System.getenv('PRD_MONGO_DB_URL'),
+                MONGO_DB_URL: System.getenv('MONGO_DB_URL'),
+                DB_HOST: System.getenv('DB_HOST'),
+                DB_USERNAME: System.getenv('DB_USERNAME'),
+                DB_PASSWORD: System.getenv('DB_PASSWORD'),
                 JWT_SECRET_KEY: System.getenv('JWT_SECRET_KEY'),
-                AES_KEY: System.getenv('AES_KEY'),
-                NAMESPACE_NAME: System.getenv('NAMESPACE_NAME'),
-                USER_BUCKET_NAME_DEV: System.getenv('USER_BUCKET_NAME_DEV'),
-                CHALLENGE_BUCKET_NAME_DEV: System.getenv('CHALLENGE_BUCKET_NAME_DEV'),
-                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD')
+                EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD'),
+                AWS_ACCESS_KEY: System.getenv('AWS_ACCESS_KEY'),
+                AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
+                USER_BUCKET: System.getenv('USER_BUCKET'),
+                CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET'),
+                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET')
         )
     }
 }

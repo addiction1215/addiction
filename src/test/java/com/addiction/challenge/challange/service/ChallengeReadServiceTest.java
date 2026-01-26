@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class ChallengeReadServiceTest extends IntegrationTestSupport {
@@ -36,6 +37,9 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         // SecurityService Mock 설정
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
 
         Challenge challenge1 = createChallenge("챌린지1", "내용1", "badge1.png", 100);
         Challenge challenge2 = createChallenge("챌린지2", "내용2", "badge2.png", 200);
@@ -77,9 +81,9 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent())
                 .extracting("challengeId", "title", "content", "badge", "reward")
                 .containsExactlyInAnyOrder(
-                        tuple(savedChallenge3.getId(), "챌린지3", "내용3", "badge3.png", 300),
-                        tuple(savedChallenge4.getId(), "챌린지4", "내용4", "badge4.png", 400),
-                        tuple(savedChallenge5.getId(), "챌린지5", "내용5", "badge5.png", 500)
+                        tuple(savedChallenge3.getId(), "챌린지3", "내용3", "test-presigned-url", 300),
+                        tuple(savedChallenge4.getId(), "챌린지4", "내용4", "test-presigned-url", 400),
+                        tuple(savedChallenge5.getId(), "챌린지5", "내용5", "test-presigned-url", 500)
                 );
     }
 
@@ -94,8 +98,8 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
 
-        Challenge challenge1 = createChallenge("챌린지1", "내용1", "badge1.png", 100);
-        Challenge challenge2 = createChallenge("챌린지2", "내용2", "badge2.png", 200);
+        Challenge challenge1 = createChallenge("챌린지1", "내용1", "test-presigned-url", 100);
+        Challenge challenge2 = createChallenge("챌린지2", "내용2", "test-presigned-url", 200);
 
         Challenge savedChallenge1 = cChallengeJpaRepository.save(challenge1);
         Challenge savedChallenge2 = cChallengeJpaRepository.save(challenge2);
@@ -225,6 +229,9 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
 
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
+
         Challenge challenge = createChallenge("테스트 챌린지", "테스트 챌린지 상세 내용", "test_badge.png", 999);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
@@ -244,7 +251,7 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent())
                 .extracting("challengeId", "title", "content", "badge", "reward")
                 .containsExactly(
-                        tuple(savedChallenge.getId(), "테스트 챌린지", "테스트 챌린지 상세 내용", "test_badge.png", 999)
+                        tuple(savedChallenge.getId(), "테스트 챌린지", "테스트 챌린지 상세 내용", "test-presigned-url", 999)
                 );
     }
 
@@ -258,6 +265,9 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         // SecurityService Mock 설정
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
 
         Challenge challenge1 = createChallenge("진행중 챌린지", "내용1", "badge1.png", 100);
         Challenge challenge2 = createChallenge("완료 챌린지", "내용2", "badge2.png", 200);
@@ -297,8 +307,8 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent())
                 .extracting("challengeId", "title", "content", "badge", "reward")
                 .containsExactlyInAnyOrder(
-                        tuple(savedChallenge5.getId(), "남은 챌린지1", "내용5", "badge5.png", 500),
-                        tuple(savedChallenge6.getId(), "남은 챌린지2", "내용6", "badge6.png", 600)
+                        tuple(savedChallenge5.getId(), "남은 챌린지1", "내용5", "test-presigned-url", 500),
+                        tuple(savedChallenge6.getId(), "남은 챌린지2", "내용6", "test-presigned-url", 600)
                 );
     }
 }

@@ -10,6 +10,8 @@ import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.page.response.PageableCustom;
 import com.addiction.global.security.SecurityService;
+import com.addiction.storage.enums.BucketKind;
+import com.addiction.storage.service.S3StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ChallengeReadServiceImpl implements ChallengeReadService {
     private final SecurityService securityService;
+    private final S3StorageService s3StorageService;
+
     private final ChallengeHistoryRepository challengeHistoryRepository;
 
     private final ChallengeRepository challengeRepository;
@@ -33,7 +37,7 @@ public class ChallengeReadServiceImpl implements ChallengeReadService {
         Page<Challenge> page = challengeHistoryRepository.findLeftChallenges(userId, request.toPageable());
 
         List<ChallengeResponse> challengeResponses = page.getContent().stream()
-                .map(ChallengeResponse::createResponse)
+                .map(challenge -> ChallengeResponse.createResponse(challenge, s3StorageService.createPresignedUrl(challenge.getBadge(), BucketKind.CHALLENGE_BADGE)))
                 .toList();
 
         return PageCustom.<ChallengeResponse>builder()

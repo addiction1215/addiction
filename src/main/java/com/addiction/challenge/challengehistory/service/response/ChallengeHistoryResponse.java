@@ -25,13 +25,13 @@ public class ChallengeHistoryResponse {
         this.reward = reward;
     }
 
-    public static ChallengeHistoryResponse createResponse(ChallengeHistory challengeHistory) {
+    public static ChallengeHistoryResponse createResponse(ChallengeHistory challengeHistory, String badge) {
         Challenge challenge = challengeHistory.getChallenge();
         return ChallengeHistoryResponse.builder()
                 .challengeHistoryId(challengeHistory.getId())
                 .title(challenge.getTitle())
                 .content(challenge.getContent())
-                .badge(challenge.getBadge())
+                .badge(badge)
                 .reward(challenge.getReward())
                 .status(challengeHistory.getStatus())
                 .build();
