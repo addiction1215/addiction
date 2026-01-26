@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: prd  # dev 환경 secrets 사용
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
