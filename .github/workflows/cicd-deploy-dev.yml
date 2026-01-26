@@ -18,6 +18,10 @@ jobs:
       USER_BUCKET_NAME_DEV: ${{ secrets.USER_BUCKET_NAME_DEV }}
       CHALLENGE_BUCKET_NAME_DEV: ${{ secrets.CHALLENGE_BUCKET_NAME_DEV }}
       EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      USER_BUCKET: ${{ secrets.USER_BUCKET_DEV }}
+      CHALLENGE_BUCKET: ${{ secrets.CHALLENGE_BUCKET_DEV }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

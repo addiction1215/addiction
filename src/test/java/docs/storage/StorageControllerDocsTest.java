@@ -1,9 +1,8 @@
 package docs.storage;
 
-import com.addiction.inquiry.inquryQuestion.enums.InquiryStatus;
 import com.addiction.storage.controller.StorageController;
 import com.addiction.storage.enums.BucketKind;
-import com.addiction.storage.service.OracleStorageService;
+import com.addiction.storage.service.S3StorageService;
 import docs.RestDocsSupport;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.DisplayName;
@@ -19,21 +18,20 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class StorageControllerDocsTest extends RestDocsSupport {
 
 
-    private final OracleStorageService oracleStorageService = mock(OracleStorageService.class);
+    private final S3StorageService s3StorageService = mock(S3StorageService.class);
 
     @Override
     protected Object initController() {
-        return new StorageController(oracleStorageService);
+        return new StorageController(s3StorageService);
     }
 
     @Test
@@ -48,10 +46,10 @@ public class StorageControllerDocsTest extends RestDocsSupport {
         );
 
         String uploadedUrl = "https://objectstorage.ap-seoul-1.oraclecloud.com/n/namespace/b/addiction-profile/o/uuid-profile.jpg";
-        given(oracleStorageService.upload(any(), any())).willReturn(uploadedUrl);
+        given(s3StorageService.upload(any(), any())).willReturn(uploadedUrl);
 
         // when & then
-        mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/storage/{bucketKind}", "USER")
+        mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/storage/{bucketKind}", "USER")
                         .file(file)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(print())
@@ -73,7 +71,7 @@ public class StorageControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("message").type(JsonFieldType.STRING)
                                         .description("메세지"),
                                 fieldWithPath("data").type(JsonFieldType.STRING)
-                                        .description("파일 URL")
+                                        .description("파일키")
                         )
                 ));
     }

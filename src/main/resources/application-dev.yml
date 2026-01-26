@@ -76,3 +76,12 @@ oracle:
     bucket-name: ${USER_BUCKET_NAME_DEV}
   challenge:
     bucket-name: ${CHALLENGE_BUCKET_NAME_DEV}
+
+aws:
+  access-key: ${AWS_ACCESS_KEY}  # AWS IAM Access Key
+  secret-key: ${AWS_SECRET_KEY}  # AWS IAM Secret Key
+  s3:
+    region: ap-northeast-2  # Seoul Region
+    bucket:
+      user: ${USER_BUCKET}  # 사용자 관련 파일 버킷
+      challenge: ${CHALLENGE_BUCKET}  # 챌린지 관련 파일 버킷

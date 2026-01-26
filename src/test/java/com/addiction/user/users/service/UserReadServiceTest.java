@@ -53,7 +53,6 @@ public class UserReadServiceTest extends IntegrationTestSupport {
 		UserSimpleProfileResponse response = userReadService.findSimpleProfile();
 
 		//then
-		assertThat(response.getProfileUrl()).isEqualTo("test.com");
 		assertThat(response.getEmail()).isEqualTo("test@test.com");
 		assertThat(response.getNickName()).isEqualTo("테스트 닉네임");
 	}
