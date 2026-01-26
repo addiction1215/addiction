@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ChallengeResponse{
+public class ChallengeResponse {
     private final Long challengeId;
     private final String title;
     private final String content;
@@ -21,12 +21,12 @@ public class ChallengeResponse{
         this.reward = reward;
     }
 
-    public static ChallengeResponse createResponse(Challenge challenge) {
+    public static ChallengeResponse createResponse(Challenge challenge, String badge) {
         return ChallengeResponse.builder()
                 .challengeId(challenge.getId())
                 .title(challenge.getTitle())
                 .content(challenge.getContent())
-                .badge(challenge.getBadge())
+                .badge(badge)
                 .reward(challenge.getReward())
                 .build();
     }

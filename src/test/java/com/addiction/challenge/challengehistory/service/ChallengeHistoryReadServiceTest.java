@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
@@ -35,6 +36,9 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
 
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
+
         Challenge challenge = createChallenge("금연 챌린지", "30일 금연 도전", "badge1.png", 500);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
@@ -50,7 +54,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getChallengeHistoryId()).isEqualTo(savedChallengeHistory.getId());
         assertThat(response.getTitle()).isEqualTo("금연 챌린지");
         assertThat(response.getContent()).isEqualTo("30일 금연 도전");
-        assertThat(response.getBadge()).isEqualTo("badge1.png");
+        assertThat(response.getBadge()).isEqualTo("test-presigned-url");
         assertThat(response.getReward()).isEqualTo(500);
         assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
     }
@@ -91,6 +95,9 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
 
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
+
         Challenge challenge = createChallenge("테스트 챌린지", "테스트 챌린지 상세 내용", "test_badge.png", 999);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
@@ -106,7 +113,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getChallengeHistoryId()).isEqualTo(savedChallengeHistory.getId());
         assertThat(response.getTitle()).isEqualTo("테스트 챌린지");
         assertThat(response.getContent()).isEqualTo("테스트 챌린지 상세 내용");
-        assertThat(response.getBadge()).isEqualTo("test_badge.png");
+        assertThat(response.getBadge()).isEqualTo("test-presigned-url");
         assertThat(response.getReward()).isEqualTo(999);
         assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
     }
@@ -121,6 +128,9 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         // SecurityService Mock 설정
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
 
         Challenge challenge1 = createChallenge("챌린지1", "내용1", "badge1.png", 100);
         Challenge challenge2 = createChallenge("챌린지2", "내용2", "badge2.png", 200);
@@ -166,9 +176,9 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent())
                 .extracting("challengeHistoryId", "title", "content", "badge", "reward", "status")
                 .containsExactlyInAnyOrder(
-                        tuple(savedHistory1.getId(), "챌린지1", "내용1", "badge1.png", 100, ChallengeStatus.COMPLETED),
-                        tuple(savedHistory2.getId(), "챌린지2", "내용2", "badge2.png", 200, ChallengeStatus.COMPLETED),
-                        tuple(savedHistory3.getId(), "챌린지3", "내용3", "badge3.png", 300, ChallengeStatus.COMPLETED)
+                        tuple(savedHistory1.getId(), "챌린지1", "내용1", "test-presigned-url", 100, ChallengeStatus.COMPLETED),
+                        tuple(savedHistory2.getId(), "챌린지2", "내용2", "test-presigned-url", 200, ChallengeStatus.COMPLETED),
+                        tuple(savedHistory3.getId(), "챌린지3", "내용3", "test-presigned-url", 300, ChallengeStatus.COMPLETED)
                 );
     }
 
@@ -287,6 +297,9 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
 
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
+
         Challenge challenge = createChallenge("테스트 완료 챌린지", "테스트 완료 챌린지 상세", "complete_badge.png", 777);
         Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
 
@@ -309,7 +322,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent())
                 .extracting("challengeHistoryId", "title", "content", "badge", "reward", "status")
                 .containsExactly(
-                        tuple(savedHistory.getId(), "테스트 완료 챌린지", "테스트 완료 챌린지 상세", "complete_badge.png", 777, ChallengeStatus.COMPLETED)
+                        tuple(savedHistory.getId(), "테스트 완료 챌린지", "테스트 완료 챌린지 상세", "test-presigned-url", 777, ChallengeStatus.COMPLETED)
                 );
     }
 
@@ -323,6 +336,9 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         // SecurityService Mock 설정
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
 
         Challenge challenge1 = createChallenge("완료 챌린지1", "내용1", "badge1.png", 100);
         Challenge challenge2 = createChallenge("진행중 챌린지", "내용2", "badge2.png", 200);
@@ -366,8 +382,8 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent())
                 .extracting("challengeHistoryId", "title", "content", "badge", "reward", "status")
                 .containsExactlyInAnyOrder(
-                        tuple(savedHistory1.getId(), "완료 챌린지1", "내용1", "badge1.png", 100, ChallengeStatus.COMPLETED),
-                        tuple(savedHistory3.getId(), "완료 챌린지2", "내용3", "badge3.png", 300, ChallengeStatus.COMPLETED)
+                        tuple(savedHistory1.getId(), "완료 챌린지1", "내용1", "test-presigned-url", 100, ChallengeStatus.COMPLETED),
+                        tuple(savedHistory3.getId(), "완료 챌린지2", "내용3", "test-presigned-url", 300, ChallengeStatus.COMPLETED)
                 );
     }
 }
