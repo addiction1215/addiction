@@ -90,7 +90,7 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
         );
 
         if (cigaretteHistoryDocument == null) {
-            cigaretteHistoryDocument = createEmptyDocument(LocalDate.parse(date), userId);
+            cigaretteHistoryDocument = createEmptyDocument(LocalDate.parse(date, DateTimeFormatter.BASIC_ISO_DATE), userId);
         }
 
         return cigaretteHistoryDocument;

@@ -169,9 +169,12 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                         doc.getHistory().get(doc.getHistory().size() - 1).getAddress()
                 );
             }
+            return UserCigaretteHistoryLastestResponse.createResponse(
+                    null,
+                    null
+            );
         }
 
-        assert cigarette != null;
         return UserCigaretteHistoryLastestResponse.createResponse(cigarette.getSmokeTime(), cigarette.getAddress());
     }
 
