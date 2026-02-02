@@ -38,7 +38,7 @@ public class FCMConfig {
 	 }
 
 	 private FirebaseApp initializeFirebaseApp() throws IOException {
-	 	ClassPathResource resource = new ClassPathResource("/home/ubuntu/fcm/addiction-firebase.json");
+	 	ClassPathResource resource = new ClassPathResource("addiction-firebase.json");
 
 	 	try (InputStream inputStream = resource.getInputStream()) {
 	 		FirebaseOptions options = FirebaseOptions.builder()
