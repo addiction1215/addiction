@@ -21,6 +21,8 @@ import com.addiction.challenge.missionhistory.entity.MissionHistory;
 import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryJpaRepository;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
+import com.addiction.firebase.FirebaseService;
+import com.addiction.global.config.FCMConfig;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.storage.service.S3StorageService;
@@ -37,6 +39,7 @@ import com.addiction.user.push.repository.PushRepository;
 import com.addiction.user.refreshToken.repository.RefreshTokenRepository;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.repository.UserCigaretteRepository;
+import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
 import com.addiction.user.users.entity.enums.SettingStatus;
@@ -49,6 +52,7 @@ import com.addiction.user.users.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -65,6 +69,10 @@ public abstract class IntegrationTestSupport {
     protected KakaoApiFeignCall kakaoApiFeignCall;
     @MockitoBean
     protected GoogleApiFeignCall googleApiFeignCall;
+    @MockitoBean
+    protected FirebaseService firebaseService;
+    @MockitoBean
+    protected FCMConfig fcmConfig;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
@@ -86,9 +94,9 @@ public abstract class IntegrationTestSupport {
     @Autowired
     protected UserCigaretteRepository userCigaretteRepository;
     @MockitoBean
-    protected com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository userCigaretteHistoryRepository;
+    protected UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     @MockitoBean
-    protected org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+    protected MongoTemplate mongoTemplate;
     @Autowired
     protected AlertHistoryRepository alertHistoryRepository;
     @Autowired
