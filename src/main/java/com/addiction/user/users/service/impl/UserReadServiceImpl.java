@@ -39,6 +39,11 @@ public class UserReadServiceImpl implements UserReadService {
     }
 
     @Override
+    public List<User> findAllWithPushes() {
+        return userRepository.findAllWithPushes();
+    }
+
+    @Override
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new AddictionException(UNKNOWN_USER));

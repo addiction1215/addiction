@@ -23,6 +23,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<User> findAllWithPushes() {
+        return userJpaRepository.findAllWithPushes();
+    }
+
+    @Override
 	public User save(User user) {
 		return userJpaRepository.save(user);
 	}

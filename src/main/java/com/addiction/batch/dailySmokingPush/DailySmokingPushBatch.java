@@ -4,6 +4,7 @@ import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingJpaRepository;
+import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.common.enums.DailySmokingPushMessage;
 import com.addiction.firebase.FirebaseService;
 import com.addiction.firebase.enums.PushMessage;
@@ -36,7 +37,7 @@ public class DailySmokingPushBatch {
 
     private final UserReadService userReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
-    private final AlertSettingJpaRepository alertSettingJpaRepository;
+    private final AlertSettingReadService alertSettingReadService;
     private final FirebaseService firebaseService;
 
     /**
@@ -51,10 +52,10 @@ public class DailySmokingPushBatch {
         try {
             // 전날 날짜 계산
             LocalDate yesterday = LocalDate.now().minusDays(1);
-            String yesterdayStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
+            String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM_dd"));
 
-            // 모든 활성 사용자 조회
-            List<User> users = userReadService.findAll();
+            // 모든 활성 사용자 조회 (pushes fetch join)
+            List<User> users = userReadService.findAllWithPushes();
             log.info("총 {}명의 사용자에게 피드백 전송 시도", users.size());
 
             for (User user : users) {
@@ -66,9 +67,14 @@ public class DailySmokingPushBatch {
                     }
 
                     // Push 토큰 확인
-                    for (Push push : Objects.requireNonNull(getPushToken(user))) {
+                    List<Push> pushes = getPushToken(user);
+                    if (pushes.isEmpty()) {
+                        log.debug("사용자 {}는 Push 토큰이 없어 skip", user.getId());
+                        continue;
+                    }
+
+                    for (Push push : pushes) {
                         if (push == null) {
-                            log.debug("사용자 {}는 Push 토큰이 없어 skip", user.getId());
                             continue;
                         }
 
@@ -76,15 +82,17 @@ public class DailySmokingPushBatch {
                         CigaretteHistoryDocument yesterdayData = userCigaretteHistoryRepository
                                 .findByDateAndUserId(yesterdayStr, user.getId());
 
-                        if (yesterdayData == null) {
-                            log.debug("사용자 {}의 전날 흡연 데이터가 없어 skip", user.getId());
-                            continue;
-                        }
-
                         // 흡연 횟수 및 평균 금연 유지 시간 추출
-                        int smokeCount = yesterdayData.getSmokeCount() != null ? yesterdayData.getSmokeCount() : 0;
-                        long avgPatienceTimeRaw = yesterdayData.getAvgPatienceTime() != null ? yesterdayData.getAvgPatienceTime() : 0L;
-
+                        int smokeCount;
+                        long avgPatienceTimeRaw;
+                        if (yesterdayData == null) {
+                            smokeCount = 0;
+                            avgPatienceTimeRaw = 0L;
+                            log.debug("사용자 {}의 전날 흡연 데이터가 없어 기본값으로 처리", user.getId());
+                        } else {
+                            smokeCount = yesterdayData.getSmokeCount() != null ? yesterdayData.getSmokeCount() : 0;
+                            avgPatienceTimeRaw = yesterdayData.getAvgPatienceTime() != null ? yesterdayData.getAvgPatienceTime() : 0L;
+                        }
                         // avgPatienceTime을 시간 단위로 변환
                         // MongoDB에 저장된 값이 시간 단위가 아닐 경우 아래 주석 해제하여 변환
 //                        long avgPatienceTime = avgPatienceTimeRaw;
@@ -121,7 +129,7 @@ public class DailySmokingPushBatch {
      * - 리포트 알림 설정 확인
      */
     private boolean shouldSendPush(User user) {
-        AlertSetting alertSetting = alertSettingJpaRepository.findByUser(user).orElse(null);
+        AlertSetting alertSetting = alertSettingReadService.findByUserOrCreateDefault(user);
 
         if (alertSetting == null) {
             return false;
@@ -140,29 +148,23 @@ public class DailySmokingPushBatch {
      * 사용자의 Push 토큰 조회
      */
     private List<Push> getPushToken(User user) {
-        List<Push> pushes = user.getPushes();
-
-        if (pushes == null || pushes.isEmpty()) {
-            return null;
-        }
-
-        return pushes;
+        return user.getPushes() != null ? user.getPushes() : List.of();
     }
 
     /**
      * Firebase Push 알림 전송
      */
     private void sendPushNotification(String message, Push push) {
-//        SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
-//                .alert_destination_type(AlertDestinationType.DAILY_REPORT)
-//                .alert_destination_info()
-//                .build();
+        SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
+                .alert_destination_type(AlertDestinationType.DAILY_REPORT)
+                .alert_destination_info("데일리 리포트")
+                .build();
 
         SendFirebaseServiceRequest serviceRequest = SendFirebaseServiceRequest.builder()
                 .push(push)
                 .body(message)
                 .sound("default")
-                .sendFirebaseDataDto(null)
+                .sendFirebaseDataDto(dataDto)
                 .build();
 
         firebaseService.sendPushNotification(serviceRequest);
