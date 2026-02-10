@@ -56,7 +56,9 @@ oracle:
   challenge:
     bucket-name: testchallengebucket
 
-
+slack:
+  webhook:
+    url: www.test.com/test/webhook/url
 
 aws:
   access-key: testaccesskey  # AWS IAM Access Key

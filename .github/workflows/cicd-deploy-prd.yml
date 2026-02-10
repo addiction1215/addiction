@@ -20,6 +20,7 @@ jobs:
       USER_BUCKET: ${{ secrets.USER_BUCKET }}
       CHALLENGE_BUCKET: ${{ secrets.CHALLENGE_BUCKET }}
       CHALLENGE_BADGE_BUCKET: ${{ secrets.CHALLENGE_BADGE_BUCKET }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

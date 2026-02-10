@@ -177,7 +177,8 @@ tasks.processResources {
                 AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
                 USER_BUCKET: System.getenv('USER_BUCKET'),
                 CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET'),
-                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET')
+                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET'),
+                SLACK_WEBHOOK: System.getenv('SLACK_WEBHOOK')
         )
     }
 
@@ -194,7 +195,8 @@ tasks.processResources {
                 AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
                 USER_BUCKET: System.getenv('USER_BUCKET'),
                 CHALLENGE_BUCKET: System.getenv('CHALLENGE_BUCKET'),
-                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET')
+                CHALLENGE_BADGE_BUCKET: System.getenv('CHALLENGE_BADGE_BUCKET'),
+                SLACK_WEBHOOK: System.getenv('SLACK_WEBHOOK')
         )
     }
 }
