@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
+import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 
@@ -22,15 +24,19 @@ public class userCigaretteHistoryBatch {
 
 	private final UserCigaretteHistoryService userCigaretteHistoryService;
 	private final UserCigaretteReadService userCigaretteReadService;
+	private final UserCigaretteService userCigaretteService;
 
 	@Scheduled(cron = "0 0 0 * * *")
+	@Transactional
 	public void userCigaretteHistory() {
 		LocalDate yesterday = LocalDate.now().minusDays(1);
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
 		String monthStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMM")); // yyyyMM
 
-		Map<Long, List<UserCigarette>> grouped = userCigaretteReadService.findAllByCreatedDateBetween(
-				yesterday.atStartOfDay(), yesterday.plusDays(1).atStartOfDay()).stream()
+		List<UserCigarette> allCigarettes = userCigaretteReadService.findAllByCreatedDateBetween(
+			yesterday.atStartOfDay(), yesterday.plusDays(1).atStartOfDay());
+
+		Map<Long, List<UserCigarette>> grouped = allCigarettes.stream()
 			.collect(Collectors.groupingBy(c -> c.getUser().getId()));
 
 		for (Map.Entry<Long, List<UserCigarette>> entry : grouped.entrySet()) {
@@ -54,5 +60,7 @@ public class userCigaretteHistoryBatch {
 
 			userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
 		}
+
+		userCigaretteService.deleteAll(allCigarettes);
 	}
 }

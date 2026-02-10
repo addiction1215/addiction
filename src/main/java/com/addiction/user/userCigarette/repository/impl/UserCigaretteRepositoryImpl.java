@@ -39,6 +39,11 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	}
 
 	@Override
+	public void deleteAllInBatch(List<UserCigarette> entities) {
+		userCigaretteJpaRepository.deleteAllInBatch(entities);
+	}
+
+	@Override
 	public List<UserCigarette> findAll() {
 		return userCigaretteJpaRepository.findAll();
 	}

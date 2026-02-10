@@ -17,6 +17,7 @@ import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +52,10 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
 		}
 		userCigaretteRepository.deleteLastest(user.getId());
 		return user.getId();
+	}
+
+	@Override
+	public void deleteAll(List<UserCigarette> userCigarettes) {
+		userCigaretteRepository.deleteAllInBatch(userCigarettes);
 	}
 }
