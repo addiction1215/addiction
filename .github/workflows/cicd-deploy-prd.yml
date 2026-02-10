@@ -1,8 +1,7 @@
 name: 🚀 운영 배포
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   deploy:
