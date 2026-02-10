@@ -3,6 +3,7 @@ package com.addiction.global.exception;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -13,10 +14,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.addiction.global.ApiResponse;
+import com.addiction.global.slack.SlackService;
 import com.addiction.jwt.exception.JwtTokenException;
 
 import feign.FeignException;
-import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,13 +26,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ApiControllerAdvice {
 
+	private final SlackService slackService;
+
 	/**
 	 * 예상치 못한 서버로직에러 발생시 처리
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public ApiResponse<Object> exception(Exception e) throws IOException {
+	public ApiResponse<Object> exception(Exception e, HttpServletRequest request) throws IOException {
 		log.error(e.getMessage(), e);
+		slackService.sendErrorNotification(e, request);
 		return ApiResponse.of(
 			HttpStatus.INTERNAL_SERVER_ERROR,
 			"서버 로직 에러",

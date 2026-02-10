@@ -16,6 +16,8 @@ public interface UserCigaretteRepository {
 
 	void deleteAllInBatch();
 
+	void deleteAllInBatch(List<UserCigarette> entities);
+
 	List<UserCigarette> findAll();
 
 	void deleteLastest(Long userId);

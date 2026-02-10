@@ -27,6 +27,7 @@ import com.addiction.user.users.controller.LoginController;
 import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserReadService;
+import com.addiction.global.slack.SlackService;
 import com.addiction.user.users.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -111,5 +112,8 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected MissionHistoryService missionHistoryService;
+
+    @MockitoBean
+    protected SlackService slackService;
 
 }
