@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 			LocalDateTime.now()
 		);
 
-		return UserUpdateSurveyResponse.of(surveyResultReadService.findClosestScore(totalScore));
+		return UserUpdateSurveyResponse.of(surveyResultReadService.findClosestScore(totalScore), totalScore);
 	}
 
 	@Override

@@ -103,6 +103,8 @@ public class UserControllerDocsTest extends RestDocsSupport {
         given(userService.updateSurvey(any(UserUpdateSurveyServiceRequest.class)))
                 .willReturn(UserUpdateSurveyResponse.builder()
                         .resultTitle("라이트 스모커")
+                        .resultStatus("GOOD")
+                        .score(10)
                         .result(List.of(
                                 "지금이 좋은 기회입니다.",
                                 "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."
@@ -142,6 +144,10 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.resultTitle").type(JsonFieldType.STRING)
                                         .description("설문조사 결과 타이틀"),
+                                fieldWithPath("data.resultStatus").type(JsonFieldType.STRING)
+                                        .description("설문조사 결과 상태"),
+                                fieldWithPath("data.score").type(JsonFieldType.NUMBER)
+                                        .description("설문조사 결과 점수"),
                                 fieldWithPath("data.result[]").type(JsonFieldType.ARRAY)
                                         .description("설문조사 결과 설명")
                         )
