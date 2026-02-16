@@ -124,6 +124,9 @@ public class S3StorageService {
      * @return Presigned URL
      */
     public String createPresignedUrl(String objectKey, BucketKind bucketKind) {
+        if(objectKey == null || objectKey.isEmpty()) {
+            return objectKey;
+        }
         String bucketName = getBucketName(bucketKind);
         return createPresignedUrl(objectKey, bucketName, Duration.ofHours(1));
     }
