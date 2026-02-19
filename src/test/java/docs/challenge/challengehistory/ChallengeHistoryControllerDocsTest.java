@@ -9,6 +9,7 @@ import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeJoinResponse;
+import com.addiction.challenge.challengehistory.service.response.FinishedChallengeHistoryResponse;
 import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.global.page.response.PageableCustom;
@@ -57,6 +58,7 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                 .badge("https://example.com/badge/7days.png")
                 .status(ChallengeStatus.PROGRESSING)
                 .reward(100)
+                .progress(60)
                 .build();
 
         given(challengeHistoryReadService.getProgressingChallenge())
@@ -91,6 +93,8 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("배지 이미지 URL"),
                                 fieldWithPath("data.reward").type(JsonFieldType.NUMBER)
                                         .description("리워드 점수"),
+                                fieldWithPath("data.progress").type(JsonFieldType.NUMBER)
+                                        .description("미션 진행률 (0~100)"),
                                 fieldWithPath("data.status").type(JsonFieldType.STRING)
                                         .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values()))
                         )
@@ -101,8 +105,8 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
     @Test
     void 완료된_챌린지_리스트_조회_API() throws Exception {
         // given
-        List<ChallengeHistoryResponse> challengeList = List.of(
-                ChallengeHistoryResponse.builder()
+        List<FinishedChallengeHistoryResponse> challengeList = List.of(
+                FinishedChallengeHistoryResponse.builder()
                         .challengeHistoryId(3L)
                         .title("첫 금연일 달성")
                         .content("첫날 금연 성공하기")
@@ -110,7 +114,7 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                         .status(ChallengeStatus.COMPLETED)
                         .reward(100)
                         .build(),
-                ChallengeHistoryResponse.builder()
+                FinishedChallengeHistoryResponse.builder()
                         .challengeHistoryId(4L)
                         .title("3일 연속 금연")
                         .content("3일 동안 연속으로 금연하기")
@@ -126,7 +130,7 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                 .totalElement(30L)
                 .build();
 
-        PageCustom<ChallengeHistoryResponse> pageResponse = PageCustom.<ChallengeHistoryResponse>builder()
+        PageCustom<FinishedChallengeHistoryResponse> pageResponse = PageCustom.<FinishedChallengeHistoryResponse>builder()
                 .content(challengeList)
                 .pageInfo(pageableCustom)
                 .build();
@@ -169,10 +173,10 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("챌린지 내용"),
                                 fieldWithPath("data.content[].badge").type(JsonFieldType.STRING)
                                         .description("배지 이미지 URL"),
-                                fieldWithPath("data.content[].status").type(JsonFieldType.STRING)
-                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values())),
                                 fieldWithPath("data.content[].reward").type(JsonFieldType.NUMBER)
                                         .description("리워드 점수"),
+                                fieldWithPath("data.content[].status").type(JsonFieldType.STRING)
+                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values())),
                                 fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
                                         .description("페이지 정보"),
                                 fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)

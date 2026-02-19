@@ -5,6 +5,7 @@ import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
+import com.addiction.challenge.challengehistory.service.response.FinishedChallengeHistoryResponse;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.jwt.dto.LoginUserInfo;
@@ -49,13 +50,14 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         ChallengeHistoryResponse response = challengeHistoryReadService.getProgressingChallenge();
 
         // then
-        // ChallengeHistoryResponse 모든 필드(6개) 검증
+        // ChallengeHistoryResponse 모든 필드(7개) 검증
         assertThat(response).isNotNull();
         assertThat(response.getChallengeHistoryId()).isEqualTo(savedChallengeHistory.getId());
         assertThat(response.getTitle()).isEqualTo("금연 챌린지");
         assertThat(response.getContent()).isEqualTo("30일 금연 도전");
         assertThat(response.getBadge()).isEqualTo("test-presigned-url");
         assertThat(response.getReward()).isEqualTo(500);
+        assertThat(response.getProgress()).isEqualTo(0);
         assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
     }
 
@@ -108,13 +110,14 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         ChallengeHistoryResponse response = challengeHistoryReadService.getProgressingChallenge();
 
         // then
-        // ChallengeHistoryResponse 모든 필드(6개) 검증
+        // ChallengeHistoryResponse 모든 필드(7개) 검증
         assertThat(response).isNotNull();
         assertThat(response.getChallengeHistoryId()).isEqualTo(savedChallengeHistory.getId());
         assertThat(response.getTitle()).isEqualTo("테스트 챌린지");
         assertThat(response.getContent()).isEqualTo("테스트 챌린지 상세 내용");
         assertThat(response.getBadge()).isEqualTo("test-presigned-url");
         assertThat(response.getReward()).isEqualTo(999);
+        assertThat(response.getProgress()).isEqualTo(0);
         assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
     }
 
@@ -159,7 +162,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PageCustom<ChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
+        PageCustom<FinishedChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
 
         // then
         // PageCustom 검증
@@ -172,7 +175,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getPageInfo().getTotalPage()).isEqualTo(1);
         assertThat(response.getPageInfo().getTotalElement()).isEqualTo(3);
 
-        // ChallengeHistoryResponse 모든 필드(6개) 검증
+        // FinishedChallengeHistoryResponse 모든 필드(5개) 검증
         assertThat(response.getContent())
                 .extracting("challengeHistoryId", "title", "content", "badge", "reward", "status")
                 .containsExactlyInAnyOrder(
@@ -206,7 +209,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PageCustom<ChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
+        PageCustom<FinishedChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
 
         // then
         assertThat(response).isNotNull();
@@ -241,7 +244,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PageCustom<ChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
+        PageCustom<FinishedChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
 
         // then
         assertThat(response).isNotNull();
@@ -276,7 +279,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PageCustom<ChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
+        PageCustom<FinishedChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
 
         // then
         assertThat(response).isNotNull();
@@ -312,13 +315,13 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PageCustom<ChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
+        PageCustom<FinishedChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
 
         // then
         assertThat(response).isNotNull();
         assertThat(response.getContent()).hasSize(1);
 
-        // ChallengeHistoryResponse 모든 필드(6개) 검증
+        // FinishedChallengeHistoryResponse 모든 필드(5개) 검증
         assertThat(response.getContent())
                 .extracting("challengeHistoryId", "title", "content", "badge", "reward", "status")
                 .containsExactly(
@@ -371,14 +374,14 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PageCustom<ChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
+        PageCustom<FinishedChallengeHistoryResponse> response = challengeHistoryReadService.getFinishedChallengeList(pageRequest);
 
         // then
         assertThat(response).isNotNull();
         assertThat(response.getContent()).hasSize(2); // COMPLETED 상태만 2개
         assertThat(response.getPageInfo().getTotalElement()).isEqualTo(2);
 
-        // ChallengeHistoryResponse 모든 필드(6개) 검증 - 완료된 챌린지만
+        // FinishedChallengeHistoryResponse 모든 필드(5개) 검증 - 완료된 챌린지만
         assertThat(response.getContent())
                 .extracting("challengeHistoryId", "title", "content", "badge", "reward", "status")
                 .containsExactlyInAnyOrder(
