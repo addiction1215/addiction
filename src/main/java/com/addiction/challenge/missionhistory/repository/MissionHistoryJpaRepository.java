@@ -19,4 +19,11 @@ public interface MissionHistoryJpaRepository extends JpaRepository<MissionHistor
 
     @Query("SELECT mh FROM MissionHistory mh WHERE mh.challengeHistory.id = :challengeHistoryId")
     List<MissionHistory> findByChallengeHistoryId(@Param("challengeHistoryId") Long challengeHistoryId);
+
+    @Query("SELECT COUNT(mh) FROM MissionHistory mh WHERE mh.challengeHistory.id = :challengeHistoryId")
+    long countByChallengeHistoryId(@Param("challengeHistoryId") Long challengeHistoryId);
+
+    @Query("SELECT COUNT(mh) FROM MissionHistory mh WHERE mh.challengeHistory.id = :challengeHistoryId AND mh.status = :status")
+    long countByChallengeHistoryIdAndStatus(@Param("challengeHistoryId") Long challengeHistoryId,
+                                            @Param("status") MissionStatus status);
 }

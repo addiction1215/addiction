@@ -7,6 +7,7 @@ import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeJoinResponse;
+import com.addiction.challenge.challengehistory.service.response.FinishedChallengeHistoryResponse;
 import com.addiction.global.ApiResponse;
 import com.addiction.global.page.request.PageInfoRequest;
 import com.addiction.global.page.response.PageCustom;
@@ -27,7 +28,7 @@ public class ChallengeHistoryController {
     }
 
     @GetMapping("/finished")
-    public ApiResponse<PageCustom<ChallengeHistoryResponse>> getFinishedChallengeList(@ModelAttribute PageInfoRequest request) {
+    public ApiResponse<PageCustom<FinishedChallengeHistoryResponse>> getFinishedChallengeList(@ModelAttribute PageInfoRequest request) {
         return ApiResponse.ok(challengeHistoryReadService.getFinishedChallengeList(request.toServiceRequest()));
     }
 

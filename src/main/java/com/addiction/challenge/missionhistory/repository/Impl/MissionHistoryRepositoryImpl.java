@@ -1,6 +1,7 @@
 package com.addiction.challenge.missionhistory.repository.Impl;
 
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryJpaRepository;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,15 @@ public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
     @Override
     public Optional<MissionHistory> findById(Long id) {
         return missionHistoryJpaRepository.findById(id);
+    }
+
+    @Override
+    public long countByChallengeHistoryId(Long challengeHistoryId) {
+        return missionHistoryJpaRepository.countByChallengeHistoryId(challengeHistoryId);
+    }
+
+    @Override
+    public long countByChallengeHistoryIdAndStatus(Long challengeHistoryId, MissionStatus status) {
+        return missionHistoryJpaRepository.countByChallengeHistoryIdAndStatus(challengeHistoryId, status);
     }
 }
