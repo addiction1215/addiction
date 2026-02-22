@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.alertHistory.entity.AlertHistoryStatus;
+import com.addiction.alertHistory.entity.AlertHistoryTabType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -24,19 +25,25 @@ public class AlertHistoryQueryRepository {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	public Page<AlertHistory> findByUserId(Long userId, Pageable pageable) {
+	public Page<AlertHistory> findByUserId(Long userId, AlertHistoryTabType tabType, Pageable pageable) {
+		BooleanExpression tabCondition = tabType == AlertHistoryTabType.NOTICE
+				? isAlertDestinationTypeEqualsTo(AlertDestinationType.NOTICE)
+				: alertHistory.alertDestinationType.isNull()
+						.or(alertHistory.alertDestinationType.ne(AlertDestinationType.NOTICE));
+
 		List<AlertHistory> content = jpaQueryFactory
 			.select(alertHistory)
 			.from(alertHistory)
 			.where(
-				isUserIdEqualsTo(userId)
+				isUserIdEqualsTo(userId),
+				tabCondition
 			)
 			.orderBy(alertHistory.createdDate.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		long total = getTotalAlertHistoriesCount(userId);
+		long total = getTotalAlertHistoriesCount(userId, tabCondition);
 
 		return new PageImpl<>(content, pageable, total);
 	}
@@ -55,13 +62,14 @@ public class AlertHistoryQueryRepository {
 		return count > 0;
 	}
 
-	private long getTotalAlertHistoriesCount(Long userId) {
+	private long getTotalAlertHistoriesCount(Long userId, BooleanExpression tabCondition) {
 		return ofNullable(
 			jpaQueryFactory
 				.select(alertHistory.count())
 				.from(alertHistory)
 				.where(
-					isUserIdEqualsTo(userId)
+					isUserIdEqualsTo(userId),
+					tabCondition
 				)
 				.fetchOne()
 		).orElse(0L);

@@ -2,6 +2,7 @@ package com.addiction.alertHistory.controller.alertHistory;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.addiction.alertHistory.entity.AlertHistoryTabType;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryService;
 import com.addiction.alertHistory.service.alertHistory.response.AlertHistoryResponse;
@@ -21,8 +22,10 @@ public class AlertHistoryController {
 	private final AlertHistoryReadService alertHistoryReadService;
 
 	@GetMapping
-	public ApiResponse<PageCustom<AlertHistoryResponse>> getAlertHistory(@ModelAttribute PageInfoRequest request) {
-		return ApiResponse.ok(alertHistoryReadService.getAlertHistory(request.toServiceRequest()));
+	public ApiResponse<PageCustom<AlertHistoryResponse>> getAlertHistory(
+			@ModelAttribute PageInfoRequest request,
+			@RequestParam AlertHistoryTabType tabType) {
+		return ApiResponse.ok(alertHistoryReadService.getAlertHistory(request.toServiceRequest(), tabType));
 	}
 
 	@PatchMapping("/{id}")
