@@ -21,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import com.addiction.alertHistory.controller.alertHistory.AlertHistoryController;
 import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistoryStatus;
+import com.addiction.alertHistory.entity.AlertHistoryTabType;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryService;
 import com.addiction.alertHistory.service.alertHistory.response.AlertHistoryResponse;
@@ -69,7 +70,7 @@ public class AlertHistoryControllerDocsTest extends RestDocsSupport {
 			List.of(response1, response2, response3), 1, 1, 2
 		);
 
-		given(alertHistoryReadService.getAlertHistory(any(PageInfoServiceRequest.class)))
+		given(alertHistoryReadService.getAlertHistory(any(PageInfoServiceRequest.class), any(AlertHistoryTabType.class)))
 			.willReturn(pageResponse);
 
 		// when // then
@@ -77,6 +78,7 @@ public class AlertHistoryControllerDocsTest extends RestDocsSupport {
 				get("/api/v1/alertHistories")
 					.param("page", String.valueOf(request.getPage()))
 					.param("size", String.valueOf(request.getSize()))
+					.param("tabType", "ACTIVE")
 			)
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -89,7 +91,9 @@ public class AlertHistoryControllerDocsTest extends RestDocsSupport {
 						.optional(),
 					parameterWithName("size")
 						.description("페이지 사이즈. 기본값: 12")
-						.optional()
+						.optional(),
+					parameterWithName("tabType")
+						.description("알림 탭 타입 (ACTIVE: 활동 알림, NOTICE: 공지사항)")
 				),
 				responseFields(
 					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)

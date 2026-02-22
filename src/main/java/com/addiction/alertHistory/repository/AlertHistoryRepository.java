@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.addiction.alertHistory.entity.AlertHistory;
+import com.addiction.alertHistory.entity.AlertHistoryTabType;
 
 public interface AlertHistoryRepository {
 
@@ -15,7 +16,7 @@ public interface AlertHistoryRepository {
 
 	List<AlertHistory> findByUserId(Long userId);
 
-	Page<AlertHistory> findByUserId(Long userId, Pageable pageable);
+	Page<AlertHistory> findByUserId(Long userId, AlertHistoryTabType tabType, Pageable pageable);
 
 	Optional<AlertHistory> findById(Long id);
 

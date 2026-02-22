@@ -14,10 +14,10 @@ import com.addiction.global.page.request.PageInfoRequest;
 
 class AlertHistoryControllerTest extends ControllerTestSupport {
 
-	@DisplayName("알림 내역을 가져온다.")
+	@DisplayName("ACTIVE 탭 알림 내역을 가져온다.")
 	@Test
 	@WithMockUser("USER")
-	void getAlertHistory() throws Exception {
+	void getAlertHistory_ACTIVE() throws Exception {
 		// given
 		PageInfoRequest request = PageInfoRequest.builder()
 			.build();
@@ -27,6 +27,30 @@ class AlertHistoryControllerTest extends ControllerTestSupport {
 				get("/api/v1/alertHistories")
 					.param("page", String.valueOf(request.getPage()))
 					.param("size", String.valueOf(request.getSize()))
+					.param("tabType", "ACTIVE")
+					.with(csrf())
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.statusCode").value("200"))
+			.andExpect(jsonPath("$.httpStatus").value("OK"))
+			.andExpect(jsonPath("$.message").value("OK"));
+	}
+
+	@DisplayName("NOTICE 탭 알림 내역을 가져온다.")
+	@Test
+	@WithMockUser("USER")
+	void getAlertHistory_NOTICE() throws Exception {
+		// given
+		PageInfoRequest request = PageInfoRequest.builder()
+			.build();
+
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/alertHistories")
+					.param("page", String.valueOf(request.getPage()))
+					.param("size", String.valueOf(request.getSize()))
+					.param("tabType", "NOTICE")
 					.with(csrf())
 			)
 			.andDo(print())

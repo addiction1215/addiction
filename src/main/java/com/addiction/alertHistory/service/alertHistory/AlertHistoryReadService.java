@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.alertHistory.entity.AlertHistory;
+import com.addiction.alertHistory.entity.AlertHistoryTabType;
 import com.addiction.alertHistory.repository.AlertHistoryRepository;
 import com.addiction.alertHistory.service.alertHistory.response.AlertHistoryResponse;
 import com.addiction.global.page.request.PageInfoServiceRequest;
@@ -29,11 +30,12 @@ public class AlertHistoryReadService {
 			.orElseThrow(() -> new IllegalArgumentException("해당 알림 내역은 없습니다. id = " + id));
 	}
 
-	public PageCustom<AlertHistoryResponse> getAlertHistory(PageInfoServiceRequest request) {
+	public PageCustom<AlertHistoryResponse> getAlertHistory(PageInfoServiceRequest request, AlertHistoryTabType tabType) {
 		long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
 		Page<AlertHistory> alertHistoryPage = alertHistoryRepository.findByUserId(
 			userId,
+			tabType,
 			request.toPageable()
 		);
 
