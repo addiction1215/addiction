@@ -1,6 +1,7 @@
 package com.addiction.batch.userCigaretteHistory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
+import com.addiction.user.users.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,7 @@ public class userCigaretteHistoryBatch {
 	private final UserCigaretteHistoryService userCigaretteHistoryService;
 	private final UserCigaretteReadService userCigaretteReadService;
 	private final UserCigaretteService userCigaretteService;
+	private final UserService userService;
 
 	@Scheduled(cron = "0 0 0 * * *")
 	@Transactional
@@ -59,6 +62,12 @@ public class userCigaretteHistoryBatch {
 				.collect(Collectors.toList());
 
 			userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
+
+			// 마지막 흡연 시간으로 startDate 업데이트
+			cigarettes.stream()
+				.map(UserCigarette::getSmokeTime)
+				.max(LocalDateTime::compareTo)
+				.ifPresent(lastSmokeTime -> userService.updateStartDate(userId, lastSmokeTime));
 		}
 
 		userCigaretteService.deleteAll(allCigarettes);

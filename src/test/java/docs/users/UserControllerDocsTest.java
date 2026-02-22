@@ -3,6 +3,7 @@ package docs.users;
 import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.controller.request.*;
 import com.addiction.user.users.entity.enums.Sex;
+import com.addiction.user.users.service.BenefitService;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
 import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
@@ -33,10 +34,11 @@ public class UserControllerDocsTest extends RestDocsSupport {
 
     private final UserService userService = mock(UserService.class);
     private final UserReadService userReadService = mock(UserReadService.class);
+    private final BenefitService benefitService = mock(BenefitService.class);
 
     @Override
     protected Object initController() {
-        return new UserController(userService, userReadService);
+        return new UserController(userService, userReadService, benefitService);
     }
 
     @DisplayName("사용자 초기정보 수정 API")
@@ -512,6 +514,40 @@ public class UserControllerDocsTest extends RestDocsSupport {
                         )
                 ));
     }
+    @DisplayName("나의 혜택 조회 API")
+    @Test
+    void 나의_혜택_조회_API() throws Exception {
+        // given
+        given(benefitService.findMyBenefit())
+                .willReturn(BenefitResponse.createResponse(30L, 150000L, 5000L));
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/benefit")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-find-benefit",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.nonSmokingDays").type(JsonFieldType.NUMBER)
+                                        .description("금연 일수"),
+                                fieldWithPath("data.savedMoney").type(JsonFieldType.NUMBER)
+                                        .description("총 절약액 (원)"),
+                                fieldWithPath("data.dailySavedMoney").type(JsonFieldType.NUMBER)
+                                        .description("하루 절약액 (원)")
+                        )
+                ));
+    }
+
     @DisplayName("회원 탈퇴 API")
     @Test
     void 회원_탈퇴_API() throws Exception {

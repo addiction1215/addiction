@@ -102,6 +102,12 @@ public class UserServiceImpl implements UserService {
 		return UserUpdateInfoResponse.createResponse(user);
 	}
 
+    @Override
+    public void updateStartDate(Long userId, LocalDateTime lastSmokeTime) {
+        User user = userReadService.findById(userId);
+        user.updateStartDate(lastSmokeTime);
+    }
+
     private void validateDuplicateEmail(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new AddictionException("이미 존재하는 이메일입니다.");

@@ -5,6 +5,9 @@ import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
 import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.entity.enums.Sex;
+import com.addiction.user.users.service.response.BenefitResponse;
+
+import static org.mockito.BDDMockito.given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -279,6 +282,26 @@ public class UserControllerTest extends ControllerTestSupport {
         // when // then
         mockMvc.perform(
                         get("/api/v1/user/simple-profile")
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("나의 혜택(절약액)을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 나의_혜택을_조회한다() throws Exception {
+        // given
+        given(benefitService.findMyBenefit())
+                .willReturn(BenefitResponse.createResponse(30L, 150000L, 5000L));
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/benefit")
                                 .with(csrf())
                 )
                 .andDo(print())

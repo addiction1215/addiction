@@ -1,5 +1,7 @@
 package com.addiction.user.users.controller;
 
+import com.addiction.user.users.service.BenefitService;
+import com.addiction.user.users.service.response.BenefitResponse;
 import com.addiction.global.ApiResponse;
 import com.addiction.user.users.controller.request.*;
 import com.addiction.user.users.service.UserReadService;
@@ -16,6 +18,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserReadService userReadService;
+    private final BenefitService benefitService;
 
     @PatchMapping
     public ApiResponse<UserUpdateResponse> update(@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
@@ -71,6 +74,11 @@ public class UserController {
     @DeleteMapping
     public ApiResponse<Boolean> withdraw() {
         return ApiResponse.ok(userService.withdraw());
+    }
+
+    @GetMapping("/benefit")
+    public ApiResponse<BenefitResponse> findMyBenefit() {
+        return ApiResponse.ok(benefitService.findMyBenefit());
     }
 
 }
