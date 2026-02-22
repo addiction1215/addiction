@@ -10,8 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.addiction.IntegrationTestSupport;
+import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.alertHistory.entity.AlertHistoryStatus;
+import com.addiction.alertHistory.entity.AlertHistoryTabType;
 import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
 import com.addiction.alertHistory.service.alertHistory.response.AlertHistoryResponse;
 import com.addiction.global.page.request.PageInfoServiceRequest;
@@ -59,9 +61,9 @@ class AlertHistoryReadServiceTest extends IntegrationTestSupport {
 			.hasMessage("해당 알림 내역은 없습니다. id = " + id);
 	}
 
-	@DisplayName("알림 내역들을 가져온다.")
+	@DisplayName("ACTIVE 탭 알림 내역을 가져온다.")
 	@Test
-	void getAlertHistory() {
+	void getAlertHistory_ACTIVE() {
 		// given
 		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
 		userRepository.save(user);
@@ -83,7 +85,7 @@ class AlertHistoryReadServiceTest extends IntegrationTestSupport {
 		AlertHistoryResponse response = AlertHistoryResponse.of(savedAlertHistory);
 
 		// when
-		PageCustom<AlertHistoryResponse> result = alertHistoryReadService.getAlertHistory(request);
+		PageCustom<AlertHistoryResponse> result = alertHistoryReadService.getAlertHistory(request, AlertHistoryTabType.ACTIVE);
 
 		// then
 		assertThat(result.getContent()).extracting("id", "alertDescription", "alertHistoryStatus")
@@ -93,6 +95,41 @@ class AlertHistoryReadServiceTest extends IntegrationTestSupport {
 
 		assertThat(result.getPageInfo()).extracting("currentPage", "totalPage", "totalElement")
 			.contains(1, 1, 1);
+	}
+
+	@DisplayName("NOTICE 탭은 alertDestinationType이 NOTICE인 것만 가져온다.")
+	@Test
+	void getAlertHistory_NOTICE() {
+		// given
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		userRepository.save(user);
+
+		Push push = createPush(user);
+		pushRepository.save(push);
+
+		AlertHistory noticeAlert = AlertHistory.builder()
+				.user(user)
+				.alertDescription("공지사항")
+				.alertHistoryStatus(AlertHistoryStatus.UNCHECKED)
+				.alertDestinationType(AlertDestinationType.NOTICE)
+				.build();
+		AlertHistory activeAlert = createAlertHistory(user, "활동 알림", AlertHistoryStatus.UNCHECKED);
+		alertHistoryRepository.saveAll(List.of(noticeAlert, activeAlert));
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(user.getId()));
+
+		PageInfoServiceRequest request = PageInfoServiceRequest.builder()
+			.page(1)
+			.size(10)
+			.build();
+
+		// when
+		PageCustom<AlertHistoryResponse> result = alertHistoryReadService.getAlertHistory(request, AlertHistoryTabType.NOTICE);
+
+		// then
+		assertThat(result.getContent()).hasSize(1);
+		assertThat(result.getContent().get(0).getAlertDescription()).isEqualTo("공지사항");
 	}
 
 	@DisplayName("유저가 읽지 않은 알림이 하나 이상인지 확인한다.")
