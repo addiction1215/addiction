@@ -161,3 +161,15 @@ include::{snippets}/user-withdraw/http-request.adoc[]
 
 include::{snippets}/user-withdraw/http-response.adoc[]
 include::{snippets}/user-withdraw/response-fields.adoc[]
+
+[[user-find-benefit]]
+=== 나의 혜택
+
+==== HTTP Request
+
+include::{snippets}/user-find-benefit/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-benefit/http-response.adoc[]
+include::{snippets}/user-find-benefit/response-fields.adoc[]
