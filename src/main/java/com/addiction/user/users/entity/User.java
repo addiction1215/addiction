@@ -219,7 +219,7 @@ public class User extends BaseTimeEntity {
 		this.settingStatus = SettingStatus.COMPLETE;
 	}
 
-	private void updateStartDate(LocalDateTime startDate) {
+	public void updateStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 
