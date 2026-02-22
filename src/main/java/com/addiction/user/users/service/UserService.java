@@ -4,6 +4,8 @@ import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.request.*;
 import com.addiction.user.users.service.response.*;
 
+import java.time.LocalDateTime;
+
 public interface UserService {
 
 	User save(User user);
@@ -21,4 +23,6 @@ public interface UserService {
 	UserUpdateInfoResponse updateInfo(UserUpdateInfoServiceRequest userUpdateInfoServiceRequest); // 테스트코드X
 
     Boolean withdraw();
+
+    void updateStartDate(Long userId, LocalDateTime lastSmokeTime);
 }
