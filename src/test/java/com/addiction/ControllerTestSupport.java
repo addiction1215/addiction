@@ -25,6 +25,7 @@ import com.addiction.user.userCigaretteHistory.controller.UserCigaretteHistoryCo
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.users.controller.LoginController;
 import com.addiction.user.users.controller.UserController;
+import com.addiction.user.users.service.BenefitService;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.global.slack.SlackService;
@@ -67,6 +68,9 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected UserService userService;
+
+    @MockitoBean
+    protected BenefitService benefitService;
 
     @MockitoBean
     protected SurveyQuestionReadService surveyQuestionReadService;
