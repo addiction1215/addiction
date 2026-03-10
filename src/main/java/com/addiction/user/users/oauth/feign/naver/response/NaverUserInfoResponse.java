@@ -13,7 +13,7 @@ public class NaverUserInfoResponse {
     @JsonProperty("resultcode")
     private String resultcode;
 
-    @JsonProperty("reponse")
+    @JsonProperty("response")
     private Response response;
 
     public static class Response {
