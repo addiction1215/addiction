@@ -56,7 +56,7 @@ oauth:
       name: googleApi
   naver:
     api:
-      url: https://openai.naver.com
+      url: https://openapi.naver.com
       name: naverApi
 
 jwt:
