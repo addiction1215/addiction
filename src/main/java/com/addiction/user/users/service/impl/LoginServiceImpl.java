@@ -112,6 +112,11 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public SendAuthCodeResponse sendMail(SendAuthCodeServiceRequest sendAuthCodeServiceRequest) {
         String email = sendAuthCodeServiceRequest.getEmail();
+
+        userRepository.findByEmail(email).ifPresent(u -> {
+            throw new AddictionException("이미 가입된 이메일입니다.");
+        });
+
         String authKey = generateRandomKey();
 
         SendMailRequest sendMailRequest = SendMailRequest.builder()
