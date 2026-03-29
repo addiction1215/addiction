@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class InquiryQuestionSaveRequest {
@@ -14,17 +16,20 @@ public class InquiryQuestionSaveRequest {
     private String title;
     @NotNull(message = "질문 내용은 필수입니다.")
     private String question;
+    private List<String> imageKeys;
 
     @Builder
-    public InquiryQuestionSaveRequest(String question, String title) {
+    public InquiryQuestionSaveRequest(String question, String title, List<String> imageKeys) {
         this.question = question;
         this.title = title;
+        this.imageKeys = imageKeys;
     }
 
     public InquiryQuestionSaveServiceRequest toServiceRequest() {
         return InquiryQuestionSaveServiceRequest.builder()
                 .title(title)
                 .question(question)
+                .imageKeys(imageKeys)
                 .build();
     }
 }
