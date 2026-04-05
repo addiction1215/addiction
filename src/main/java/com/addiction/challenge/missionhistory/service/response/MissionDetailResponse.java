@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class MissionDetailResponse {
@@ -19,7 +20,7 @@ public class MissionDetailResponse {
     private final Long missionHistoryId;
     private final MissionStatus status;
     private final LocalDateTime completeAt;
-    private final String address;
+    private final List<String> addresses;
     private final Integer gpsVerifyCount;
     private final String photoUrl1;
     private final String photoUrl2;
@@ -29,7 +30,7 @@ public class MissionDetailResponse {
     @Builder
     public MissionDetailResponse(Long missionId, String title, String content, Integer reward,
                                  MissionCategoryStatus category,
-                                 Long missionHistoryId, MissionStatus status, LocalDateTime completeAt, String address,
+                                 Long missionHistoryId, MissionStatus status, LocalDateTime completeAt, List<String> addresses,
                                  Integer gpsVerifyCount, String photoUrl1, String photoUrl2, String photoUrl3, Integer abstinenceTime) {
         this.missionId = missionId;
         this.title = title;
@@ -39,7 +40,7 @@ public class MissionDetailResponse {
         this.missionHistoryId = missionHistoryId;
         this.status = status;
         this.completeAt = completeAt;
-        this.address = address;
+        this.addresses = addresses;
         this.gpsVerifyCount = gpsVerifyCount;
         this.photoUrl1 = photoUrl1;
         this.photoUrl2 = photoUrl2;
@@ -58,7 +59,7 @@ public class MissionDetailResponse {
                 .missionHistoryId(missionHistory.getId())
                 .status(missionHistory.getStatus())
                 .completeAt(missionHistory.getCompleteAt())
-                .address(missionHistory.getAddress())
+                .addresses(missionHistory.getAddresses())
                 .gpsVerifyCount(missionHistory.getGpsVerifyCount())
                 .photoUrl1(photoUrl1)
                 .photoUrl2(photoUrl2)

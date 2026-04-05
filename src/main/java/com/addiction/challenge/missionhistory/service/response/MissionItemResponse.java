@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -17,6 +18,6 @@ public class MissionItemResponse {
     private MissionCategoryStatus category;
     private Integer reward;
     private MissionStatus status;
-    private String address;
+    private List<String> addresses;
     private LocalDateTime completeAt;
 }
