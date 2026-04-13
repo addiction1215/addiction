@@ -6,6 +6,7 @@ import com.addiction.user.users.controller.request.LoginOauthRequest;
 import com.addiction.user.users.controller.request.LoginRequest;
 import com.addiction.user.users.controller.request.SendAuthCodeRequest;
 import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.controller.request.VerifyAuthCodeRequest;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserService;
 import com.addiction.user.users.service.response.FindPasswordResponse;
@@ -13,6 +14,7 @@ import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
 import com.addiction.user.users.service.response.UserSaveResponse;
+import com.addiction.user.users.service.response.VerifyAuthCodeResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,11 @@ public class LoginController {
     @PostMapping("/mail")
     public ApiResponse<SendAuthCodeResponse> sendMail(@Valid @RequestBody SendAuthCodeRequest sendAuthCodeRequest) {
         return ApiResponse.ok(loginService.sendMail(sendAuthCodeRequest.toServiceRequest()));
+    }
+
+    @PostMapping("/mail/verify")
+    public ApiResponse<VerifyAuthCodeResponse> verifyAuthCode(@Valid @RequestBody VerifyAuthCodeRequest verifyAuthCodeRequest) {
+        return ApiResponse.ok(loginService.verifyAuthCode(verifyAuthCodeRequest.toServiceRequest()));
     }
 
     @PostMapping("/find-password")

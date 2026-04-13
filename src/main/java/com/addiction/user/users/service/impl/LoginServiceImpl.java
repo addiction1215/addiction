@@ -4,11 +4,13 @@ import com.addiction.global.exception.AddictionException;
 import com.addiction.jwt.JwtTokenGenerator;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
+import com.addiction.user.users.entity.EmailAuth;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.oauth.client.OAuthApiClient;
+import com.addiction.user.users.repository.EmailAuthJpaRepository;
 import com.addiction.user.users.repository.UserRepository;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserReadService;
@@ -17,10 +19,12 @@ import com.addiction.user.users.service.request.OAuthLoginServiceRequest;
 import com.addiction.user.users.service.request.FindPasswordServiceRequest;
 import com.addiction.user.users.service.request.SendAuthCodeServiceRequest;
 import com.addiction.user.users.service.request.SendMailRequest;
+import com.addiction.user.users.service.request.VerifyAuthCodeServiceRequest;
 import com.addiction.user.users.service.response.FindPasswordResponse;
 import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
+import com.addiction.user.users.service.response.VerifyAuthCodeResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -52,14 +56,17 @@ public class LoginServiceImpl implements LoginService {
     private final UserReadService userReadService;
 
     private final UserRepository userRepository;
+    private final EmailAuthJpaRepository emailAuthJpaRepository;
 
     public LoginServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenGenerator jwtTokenGenerator,
-                            List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository, JavaMailSender javaMailSender) {
+                            List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository,
+                            JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository) {
         this.javaMailSender = javaMailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.userReadService = userReadService;
+        this.emailAuthJpaRepository = emailAuthJpaRepository;
         this.clients = clients.stream().collect(
                 Collectors.toUnmodifiableMap(OAuthApiClient::oAuthSnsType, Function.identity())
         );
@@ -112,15 +119,18 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public SendAuthCodeResponse sendMail(SendAuthCodeServiceRequest sendAuthCodeServiceRequest) {
         String email = sendAuthCodeServiceRequest.getEmail();
-        String authKey = generateRandomKey();
+        String authCode = generateRandomKey();
+
+        EmailAuth emailAuth = emailAuthJpaRepository.save(EmailAuth.create(email, authCode));
 
         SendMailRequest sendMailRequest = SendMailRequest.builder()
                 .email(email)
                 .subject("[Addiction] 이메일 인증 안내 드립니다.")
                 .text(
                         "안녕하세요, Addiction입니다.\n" +
-                                "아래 링크를 클릭하여 인증을 완료해주세요!\n" +
-                                "인증번호: " + authKey + "\n" +
+                                "인증을 완료해주세요!\n" +
+                                "인증번호: " + authCode + "\n" +
+                                "유효시간: 3분\n" +
                                 "감사합니다.\n" +
                                 "Addiction 드림\n\n"
                 )
@@ -128,7 +138,23 @@ public class LoginServiceImpl implements LoginService {
 
         sendMail(sendMailRequest);
 
-        return SendAuthCodeResponse.createResponse(authKey);
+        return SendAuthCodeResponse.createResponse(emailAuth.getId());
+    }
+
+    @Override
+    public VerifyAuthCodeResponse verifyAuthCode(VerifyAuthCodeServiceRequest verifyAuthCodeServiceRequest) {
+        EmailAuth emailAuth = emailAuthJpaRepository.findById(verifyAuthCodeServiceRequest.getId())
+                .orElseThrow(() -> new AddictionException("유효하지 않은 인증 정보입니다."));
+
+        if (emailAuth.isExpired()) {
+            throw new AddictionException("인증번호가 만료되었습니다.");
+        }
+
+        if (!emailAuth.getAuthCode().equals(verifyAuthCodeServiceRequest.getAuthCode())) {
+            throw new AddictionException("인증번호가 일치하지 않습니다.");
+        }
+
+        return VerifyAuthCodeResponse.success();
     }
 
     private void sendMail(SendMailRequest sendMailRequest) {

@@ -6,17 +6,17 @@ import lombok.Getter;
 @Getter
 public class SendAuthCodeResponse {
 
-    private final String authCode;
+    private final Long id;
 
     @Builder
-    private SendAuthCodeResponse(String authCode) {
-        this.authCode = authCode;
+    private SendAuthCodeResponse(Long id) {
+        this.id = id;
     }
 
-    public static SendAuthCodeResponse createResponse(String authCode){
+    public static SendAuthCodeResponse createResponse(Long id) {
         return SendAuthCodeResponse.builder()
-            .authCode(authCode)
-            .build();
+                .id(id)
+                .build();
     }
 
 }

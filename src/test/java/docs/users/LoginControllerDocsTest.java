@@ -14,11 +14,14 @@ import java.util.Arrays;
 
 import com.addiction.user.users.controller.request.FindPasswordRequest;
 import com.addiction.user.users.controller.request.SendAuthCodeRequest;
+import com.addiction.user.users.controller.request.VerifyAuthCodeRequest;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.service.request.FindPasswordServiceRequest;
 import com.addiction.user.users.service.request.SendAuthCodeServiceRequest;
+import com.addiction.user.users.service.request.VerifyAuthCodeServiceRequest;
 import com.addiction.user.users.service.response.FindPasswordResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
+import com.addiction.user.users.service.response.VerifyAuthCodeResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -248,17 +251,14 @@ public class LoginControllerDocsTest extends RestDocsSupport {
     @DisplayName("이메일 인증코드 전송 API")
     @Test
     @WithMockUser(roles = "USER")
-    void sendAuthCOde() throws Exception {
+    void sendAuthCode() throws Exception {
         // given
         SendAuthCodeRequest request = SendAuthCodeRequest.builder()
                 .email("tkdrl8908@naver.com")
                 .build();
 
         given(loginService.sendMail(any(SendAuthCodeServiceRequest.class)))
-                .willReturn(SendAuthCodeResponse.builder()
-                        .authCode("123456")
-                        .build()
-                );
+                .willReturn(SendAuthCodeResponse.createResponse(1L));
 
         // when // then
         mockMvc.perform(
@@ -284,8 +284,53 @@ public class LoginControllerDocsTest extends RestDocsSupport {
                                         .description("메세지"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
-                                fieldWithPath("data.authCode").type(JsonFieldType.STRING)
-                                        .description("인증키")
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                        .description("인증 ID (검증 시 사용)")
+                        )
+                ));
+    }
+
+    @DisplayName("이메일 인증번호 검증 API")
+    @Test
+    @WithMockUser(roles = "USER")
+    void verifyAuthCode() throws Exception {
+        // given
+        VerifyAuthCodeRequest request = VerifyAuthCodeRequest.builder()
+                .id(1L)
+                .authCode("123456")
+                .build();
+
+        given(loginService.verifyAuthCode(any(VerifyAuthCodeServiceRequest.class)))
+                .willReturn(VerifyAuthCodeResponse.success());
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail/verify")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("verify-mail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER)
+                                        .description("인증 ID (이메일 발송 API 응답값)"),
+                                fieldWithPath("authCode").type(JsonFieldType.STRING)
+                                        .description("이메일로 수신한 인증번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.message").type(JsonFieldType.STRING)
+                                        .description("인증 완료 메시지")
                         )
                 ));
     }

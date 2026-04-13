@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.addiction.user.users.controller.request.SendAuthCodeRequest;
+import com.addiction.user.users.controller.request.VerifyAuthCodeRequest;
 import com.addiction.user.users.entity.enums.Sex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -468,5 +469,75 @@ public class LoginControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("올바른 이메일 형식이 아닙니다."));
+    }
+
+    @DisplayName("인증번호 검증 테스트")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 인증번호_검증_테스트() throws Exception {
+        // given
+        VerifyAuthCodeRequest request = VerifyAuthCodeRequest.builder()
+                .id(1L)
+                .authCode("123456")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail/verify")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("인증번호 검증 시 ID는 필수이다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 인증번호_검증_시_ID는_필수이다() throws Exception {
+        // given
+        VerifyAuthCodeRequest request = VerifyAuthCodeRequest.builder()
+                .authCode("123456")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail/verify")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("인증 ID는 필수입니다."));
+    }
+
+    @DisplayName("인증번호 검증 시 인증번호는 필수이다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 인증번호_검증_시_인증번호는_필수이다() throws Exception {
+        // given
+        VerifyAuthCodeRequest request = VerifyAuthCodeRequest.builder()
+                .id(1L)
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/auth/mail/verify")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("인증번호는 필수입니다."));
     }
 }
