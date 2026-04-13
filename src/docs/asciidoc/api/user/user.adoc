@@ -137,6 +137,19 @@ include::{snippets}/send-mail/request-fields.adoc[]
 include::{snippets}/send-mail/http-response.adoc[]
 include::{snippets}/send-mail/response-fields.adoc[]
 
+[[verify-mail]]
+=== 이메일 인증번호 검증
+
+==== HTTP Request
+
+include::{snippets}/verify-mail/http-request.adoc[]
+include::{snippets}/verify-mail/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/verify-mail/http-response.adoc[]
+include::{snippets}/verify-mail/response-fields.adoc[]
+
 [[find-password]]
 === 비밀번호 찾기
 
