@@ -159,7 +159,7 @@ public class MissionHistoryControllerDocsTest extends RestDocsSupport {
                 .missionHistoryId(101L)
                 .status(MissionStatus.PROGRESSING)
                 .completeAt(null)
-                .address("서울시 강남구")
+                .addresses(List.of("서울시 강남구"))
                 .gpsVerifyCount(2)
                 .photoUrl1(null)
                 .photoUrl2(null)
@@ -208,8 +208,8 @@ public class MissionHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("미션 상태: " + Arrays.toString(MissionStatus.values())),
                                 fieldWithPath("data.completeAt").type(JsonFieldType.NULL)
                                         .description("미션 완료 시간").optional(),
-                                fieldWithPath("data.address").type(JsonFieldType.STRING)
-                                        .description("GPS 주소").optional(),
+                                fieldWithPath("data.addresses").type(JsonFieldType.ARRAY)
+                                        .description("GPS 주소 목록").optional(),
                                 fieldWithPath("data.gpsVerifyCount").type(JsonFieldType.NUMBER)
                                         .description("GPS 검증 횟수").optional(),
                                 fieldWithPath("data.photoUrl1").type(JsonFieldType.NULL)

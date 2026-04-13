@@ -123,6 +123,12 @@ public class LoginServiceImpl implements LoginService {
 
         EmailAuth emailAuth = emailAuthJpaRepository.save(EmailAuth.create(email, authCode));
 
+        userRepository.findByEmail(email).ifPresent(u -> {
+            throw new AddictionException("이미 가입된 이메일입니다.");
+        });
+
+        String authKey = generateRandomKey();
+
         SendMailRequest sendMailRequest = SendMailRequest.builder()
                 .email(email)
                 .subject("[Addiction] 이메일 인증 안내 드립니다.")

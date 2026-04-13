@@ -46,6 +46,7 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
         InquiryQuestionSaveRequest request = InquiryQuestionSaveRequest.builder()
                 .title("문의 제목입니다")
                 .question("문의 내용입니다")
+                .imageKeys(List.of("image-key-1", "image-key-2"))
                 .build();
 
         given(inquiryQuestionService.save(any()))
@@ -53,6 +54,7 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                         .userId(1L)
                         .title("문의 제목입니다")
                         .question("문의 내용입니다")
+                        .imageKeys(List.of("image-key-1", "image-key-2"))
                         .build()
                 );
 
@@ -71,7 +73,9 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("title").type(JsonFieldType.STRING)
                                         .description("문의 제목"),
                                 fieldWithPath("question").type(JsonFieldType.STRING)
-                                        .description("문의 내용")
+                                        .description("문의 내용"),
+                                fieldWithPath("imageKeys").type(JsonFieldType.ARRAY).optional()
+                                        .description("이미지 키 목록")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
@@ -87,7 +91,9 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.title").type(JsonFieldType.STRING)
                                         .description("문의 제목"),
                                 fieldWithPath("data.question").type(JsonFieldType.STRING)
-                                        .description("문의 내용")
+                                        .description("문의 내용"),
+                                fieldWithPath("data.imageKeys").type(JsonFieldType.ARRAY).optional()
+                                        .description("이미지 키 목록")
                         )
                 ));
     }

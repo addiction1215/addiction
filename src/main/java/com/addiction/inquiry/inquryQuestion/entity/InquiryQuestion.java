@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,13 +30,19 @@ public class InquiryQuestion extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private InquiryStatus inquiryStatus;
 
+    @ElementCollection
+    @CollectionTable(name = "inquiry_question_image_keys", joinColumns = @JoinColumn(name = "inquiry_question_id"))
+    @Column(name = "image_key")
+    private List<String> imageKeys;
+
     @Builder
-    public InquiryQuestion(Long id, String question, String title, User user, InquiryStatus inquiryStatus) {
+    public InquiryQuestion(Long id, String question, String title, User user, InquiryStatus inquiryStatus, List<String> imageKeys) {
         this.id = id;
         this.question = question;
         this.title = title;
         this.user = user;
         this.inquiryStatus = inquiryStatus;
+        this.imageKeys = imageKeys;
     }
 
 }

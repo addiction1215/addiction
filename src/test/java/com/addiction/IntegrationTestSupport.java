@@ -252,13 +252,16 @@ public abstract class IntegrationTestSupport {
     }
 
     protected MissionHistory createMissionHistory(ChallengeHistory challengeHistory, Mission mission, User user, MissionStatus status, String address) {
-        return MissionHistory.builder()
+        MissionHistory missionHistory = MissionHistory.builder()
                 .challengeHistory(challengeHistory)
                 .mission(mission)
                 .user(user)
                 .status(status)
-                .address(address)
                 .completeAt(status == MissionStatus.COMPLETED ? java.time.LocalDateTime.now() : null)
                 .build();
+        if (address != null) {
+            missionHistory.submitGps(address);
+        }
+        return missionHistory;
     }
 }
