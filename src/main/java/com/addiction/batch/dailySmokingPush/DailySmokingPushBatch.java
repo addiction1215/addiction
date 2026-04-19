@@ -6,8 +6,7 @@ import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingJpaRepository;
 import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.common.enums.DailySmokingPushMessage;
-import com.addiction.firebase.FirebaseService;
-import com.addiction.firebase.enums.PushMessage;
+import com.addiction.expo.ExpoNotiService;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
 import com.addiction.user.push.entity.Push;
@@ -38,7 +37,7 @@ public class DailySmokingPushBatch {
     private final UserReadService userReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final AlertSettingReadService alertSettingReadService;
-    private final FirebaseService firebaseService;
+    private final ExpoNotiService expoNotiService;
 
     /**
      * 매일 아침 7시에 실행
@@ -167,6 +166,6 @@ public class DailySmokingPushBatch {
                 .sendFirebaseDataDto(dataDto)
                 .build();
 
-        firebaseService.sendPushNotification(serviceRequest);
+        expoNotiService.sendPushNotification(serviceRequest);
     }
 }

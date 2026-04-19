@@ -4,7 +4,7 @@ import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.service.AlertSettingReadService;
-import com.addiction.firebase.FirebaseService;
+import com.addiction.expo.ExpoNotiService;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
 import com.addiction.friend.entity.Friend;
@@ -31,7 +31,7 @@ import java.util.Optional;
 public class FriendServiceImpl implements FriendService {
 
     private final FriendJpaRepository friendJpaRepository;
-    private final FirebaseService firebaseService;
+    private final ExpoNotiService expoNotiService;
     private final SecurityService securityService;
     private final UserReadService userReadService;
     private final AlertSettingReadService alertSettingReadService;
@@ -106,7 +106,7 @@ public class FriendServiceImpl implements FriendService {
                             .sendFirebaseDataDto(dataDto)
                             .build();
 
-                    firebaseService.sendPushNotification(firebaseRequest);
+                    expoNotiService.sendPushNotification(firebaseRequest);
                 }
         );
     }
@@ -169,7 +169,7 @@ public class FriendServiceImpl implements FriendService {
                     .sendFirebaseDataDto(dataDto)
                     .build();
 
-            firebaseService.sendPushNotification(firebaseRequest);
+            expoNotiService.sendPushNotification(firebaseRequest);
         });
     }
 }

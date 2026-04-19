@@ -21,8 +21,7 @@ import com.addiction.challenge.missionhistory.entity.MissionHistory;
 import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryJpaRepository;
 import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
-import com.addiction.firebase.FirebaseService;
-import com.addiction.global.config.FCMConfig;
+import com.addiction.expo.ExpoNotiService;
 import com.addiction.global.security.SecurityService;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.storage.service.S3StorageService;
@@ -70,9 +69,7 @@ public abstract class IntegrationTestSupport {
     @MockitoBean
     protected GoogleApiFeignCall googleApiFeignCall;
     @MockitoBean
-    protected FirebaseService firebaseService;
-    @MockitoBean
-    protected FCMConfig fcmConfig;
+    protected ExpoNotiService expoNotiService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
