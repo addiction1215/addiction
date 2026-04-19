@@ -1,10 +1,10 @@
 package com.addiction.user.push.repository.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.addiction.global.exception.AddictionException;
 import com.addiction.user.push.entity.Push;
 import com.addiction.user.push.repository.PushJpaRepository;
 import com.addiction.user.push.repository.PushRepository;
@@ -30,5 +30,10 @@ public class PushRepositoryImpl implements PushRepository {
 	@Override
 	public void saveAll(List<Push> pushes) {
 		pushJpaRepository.saveAll(pushes);
+	}
+
+	@Override
+	public Optional<Push> findByDeviceId(String deviceId) {
+		return pushJpaRepository.findByDeviceId(deviceId);
 	}
 }

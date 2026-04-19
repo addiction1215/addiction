@@ -4,6 +4,8 @@ import com.addiction.global.exception.AddictionException;
 import com.addiction.jwt.JwtTokenGenerator;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
+import com.addiction.user.push.entity.Push;
+import com.addiction.user.push.repository.PushRepository;
 import com.addiction.user.users.entity.EmailAuth;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
@@ -57,16 +59,19 @@ public class LoginServiceImpl implements LoginService {
 
     private final UserRepository userRepository;
     private final EmailAuthJpaRepository emailAuthJpaRepository;
+    private final PushRepository pushRepository;
 
     public LoginServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenGenerator jwtTokenGenerator,
                             List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository,
-                            JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository) {
+                            JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository,
+                            PushRepository pushRepository) {
         this.javaMailSender = javaMailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.userReadService = userReadService;
         this.emailAuthJpaRepository = emailAuthJpaRepository;
+        this.pushRepository = pushRepository;
         this.clients = clients.stream().collect(
                 Collectors.toUnmodifiableMap(OAuthApiClient::oAuthSnsType, Function.identity())
         );
@@ -181,8 +186,20 @@ public class LoginServiceImpl implements LoginService {
         LoginUserInfo userInfo = LoginUserInfo.of(user.getId());
         JwtToken jwtToken = jwtTokenGenerator.generate(userInfo);
         user.checkRefreshToken(jwtToken, deviceId);
-        user.checkPushKey(pushKey, deviceId);
+        upsertPushByDeviceId(user, deviceId, pushKey);
         return jwtToken;
+    }
+
+    private void upsertPushByDeviceId(User user, String deviceId, String pushKey) {
+        pushRepository.findByDeviceId(deviceId).ifPresentOrElse(
+                existPush -> {
+                    existPush.updatePushToken(pushKey);
+                    if (!existPush.getUser().getId().equals(user.getId())) {
+                        existPush.updateUser(user);
+                    }
+                },
+                () -> pushRepository.save(Push.of(deviceId, user, pushKey))
+        );
     }
 
 
