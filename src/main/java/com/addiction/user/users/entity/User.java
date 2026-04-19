@@ -105,6 +105,10 @@ public class User extends BaseTimeEntity {
 		this.useYn = "Y";
 	}
 
+	public void updateRole(Role role) {
+		this.role = role;
+	}
+
 	public void withdraw() {
 		this.useYn = "N";
 	}
