@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +31,27 @@ public class ExpoNotiService {
     private final AlertHistoryService alertHistoryService;
     private final ObjectMapper objectMapper;
 
-    public void sendPushNotification(SendFirebaseServiceRequest request) {
-        if (request.getPush() == null || request.getPush().getPushToken() == null) {
-            alertHistoryService.createAlertHistory(AlertHistoryServiceRequest.of(request));
-            return;
+    public void sendBatchPushNotification(List<SendFirebaseServiceRequest> requests) {
+        if (requests.isEmpty()) return;
+
+        List<Map<String, Object>> bodies = requests.stream()
+                .filter(r -> r.getPush() != null && r.getPush().getPushToken() != null)
+                .map(this::toPushBody)
+                .toList();
+
+        if (!bodies.isEmpty()) {
+            callExpoApi(bodies);
         }
 
-        Map<String, Object> body = toPushBody(request);
-        callExpoApi(List.of(body));
-        alertHistoryService.createAlertHistory(AlertHistoryServiceRequest.of(request));
+        requests.stream()
+                .filter(r -> r.getPush() != null)
+                .collect(Collectors.toMap(
+                        r -> r.getPush().getUser().getId(),
+                        r -> r,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .forEach(r -> alertHistoryService.createAlertHistory(AlertHistoryServiceRequest.of(r)));
     }
 
     private Map<String, Object> toPushBody(SendFirebaseServiceRequest request) {

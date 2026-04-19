@@ -4,7 +4,7 @@ import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.service.AlertSettingReadService;
-import com.addiction.expo.ExpoNotiService;
+import com.addiction.expo.event.PushNotificationEvent;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
 import com.addiction.friend.entity.Friend;
@@ -19,9 +19,11 @@ import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +33,7 @@ import java.util.Optional;
 public class FriendServiceImpl implements FriendService {
 
     private final FriendJpaRepository friendJpaRepository;
-    private final ExpoNotiService expoNotiService;
+    private final ApplicationEventPublisher eventPublisher;
     private final SecurityService securityService;
     private final UserReadService userReadService;
     private final AlertSettingReadService alertSettingReadService;
@@ -62,7 +64,7 @@ public class FriendServiceImpl implements FriendService {
         Friend friendRequest = Friend.createRequest(requester, receiver);
         friendJpaRepository.save(friendRequest);
 
-        sendFriendRequestNotification(receiver, requester);
+        publishFriendRequestPush(receiver, requester);
     }
 
     @Override
@@ -81,34 +83,30 @@ public class FriendServiceImpl implements FriendService {
         }
 
         friendRequest.accept();
-        sendFriendAcceptNotification(friendRequest.getRequester(), friendRequest.getReceiver());
+        publishFriendAcceptPush(friendRequest.getRequester(), friendRequest.getReceiver());
     }
 
-    private void sendFriendRequestNotification(User receiver, User requester) {
-        // AlertSetting 조회 및 체크
+    private void publishFriendRequestPush(User receiver, User requester) {
         AlertSetting alertSetting = alertSettingReadService.findByUserOrCreateDefault(receiver);
-        
-        // all_alerts가 OFF인 경우 푸시 발송 건너뛰기
-        if (alertSetting.getAll() == AlertType.OFF) {
-            return;
+        if (alertSetting.getAll() == AlertType.OFF) return;
+
+        SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
+                .alert_destination_type(AlertDestinationType.FRIEND_CODE)
+                .alert_destination_info(String.valueOf(requester.getId()))
+                .build();
+
+        List<SendFirebaseServiceRequest> pushRequests = receiver.getPushes().stream()
+                .map(push -> SendFirebaseServiceRequest.builder()
+                        .push(push)
+                        .sound("default")
+                        .body(requester.getNickName() + "님이 친구 요청을 보냈습니다.")
+                        .sendFirebaseDataDto(dataDto)
+                        .build())
+                .toList();
+
+        if (!pushRequests.isEmpty()) {
+            eventPublisher.publishEvent(new PushNotificationEvent(pushRequests));
         }
-        
-        receiver.getPushes().forEach(push -> {
-                    SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
-                            .alert_destination_type(AlertDestinationType.FRIEND_CODE)
-                            .alert_destination_info(String.valueOf(requester.getId()))
-                            .build();
-
-                    SendFirebaseServiceRequest firebaseRequest = SendFirebaseServiceRequest.builder()
-                            .push(push)
-                            .sound("default")
-                            .body(requester.getNickName() + "님이 친구 요청을 보냈습니다.")
-                            .sendFirebaseDataDto(dataDto)
-                            .build();
-
-                    expoNotiService.sendPushNotification(firebaseRequest);
-                }
-        );
     }
 
     @Override
@@ -143,33 +141,29 @@ public class FriendServiceImpl implements FriendService {
         }
 
         friendship.block();
-
         friendJpaRepository.save(friendship);
     }
 
-    private void sendFriendAcceptNotification(User requester, User accepter) {
-        // AlertSetting 조회 및 체크
+    private void publishFriendAcceptPush(User requester, User accepter) {
         AlertSetting alertSetting = alertSettingReadService.findByUserOrCreateDefault(requester);
-        
-        // all_alerts가 OFF인 경우 푸시 발송 건너뛰기
-        if (alertSetting.getAll() == AlertType.OFF) {
-            return;
+        if (alertSetting.getAll() == AlertType.OFF) return;
+
+        SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
+                .alert_destination_type(AlertDestinationType.FRIEND_CODE)
+                .alert_destination_info(String.valueOf(accepter.getId()))
+                .build();
+
+        List<SendFirebaseServiceRequest> pushRequests = requester.getPushes().stream()
+                .map(push -> SendFirebaseServiceRequest.builder()
+                        .push(push)
+                        .sound("default")
+                        .body(accepter.getNickName() + "님이 친구 요청을 수락했습니다.")
+                        .sendFirebaseDataDto(dataDto)
+                        .build())
+                .toList();
+
+        if (!pushRequests.isEmpty()) {
+            eventPublisher.publishEvent(new PushNotificationEvent(pushRequests));
         }
-        
-        requester.getPushes().forEach(push -> {
-            SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
-                    .alert_destination_type(AlertDestinationType.FRIEND_CODE)
-                    .alert_destination_info(String.valueOf(accepter.getId()))
-                    .build();
-
-            SendFirebaseServiceRequest firebaseRequest = SendFirebaseServiceRequest.builder()
-                    .push(push)
-                    .sound("default")
-                    .body(accepter.getNickName() + "님이 친구 요청을 수락했습니다.")
-                    .sendFirebaseDataDto(dataDto)
-                    .build();
-
-            expoNotiService.sendPushNotification(firebaseRequest);
-        });
     }
 }
