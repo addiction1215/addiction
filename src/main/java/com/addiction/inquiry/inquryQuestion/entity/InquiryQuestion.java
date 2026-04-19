@@ -45,4 +45,8 @@ public class InquiryQuestion extends BaseTimeEntity {
         this.imageKeys = imageKeys;
     }
 
+    public void updateQuestion(String question) {
+        this.question = question;
+    }
+
 }

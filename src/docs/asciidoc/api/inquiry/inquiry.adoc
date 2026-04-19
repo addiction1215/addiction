@@ -12,7 +12,7 @@ include::{snippets}/inquiry-question-save/http-response.adoc[]
 include::{snippets}/inquiry-question-save/response-fields.adoc[]
 
 [[inquiry-question-find]]
-=== 문의 조회
+=== 문의 목록 조회
 
 ==== HTTP Request
 
@@ -23,3 +23,43 @@ include::{snippets}/inquiry-question-find/path-parameters.adoc[]
 
 include::{snippets}/inquiry-question-find/http-response.adoc[]
 include::{snippets}/inquiry-question-find/response-fields.adoc[]
+
+[[inquiry-question-detail]]
+=== 문의 상세 조회
+
+==== HTTP Request
+
+include::{snippets}/inquiry-question-detail/http-request.adoc[]
+include::{snippets}/inquiry-question-detail/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/inquiry-question-detail/http-response.adoc[]
+include::{snippets}/inquiry-question-detail/response-fields.adoc[]
+
+[[inquiry-question-update]]
+=== 문의 수정
+
+==== HTTP Request
+
+include::{snippets}/inquiry-question-update/http-request.adoc[]
+include::{snippets}/inquiry-question-update/path-parameters.adoc[]
+include::{snippets}/inquiry-question-update/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/inquiry-question-update/http-response.adoc[]
+include::{snippets}/inquiry-question-update/response-fields.adoc[]
+
+[[inquiry-question-delete]]
+=== 문의 삭제
+
+==== HTTP Request
+
+include::{snippets}/inquiry-question-delete/http-request.adoc[]
+include::{snippets}/inquiry-question-delete/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/inquiry-question-delete/http-response.adoc[]
+include::{snippets}/inquiry-question-delete/response-fields.adoc[]

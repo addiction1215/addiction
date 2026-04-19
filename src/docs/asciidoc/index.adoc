@@ -78,3 +78,8 @@ include::api/mission/mission.adoc[]
 == Mission-History API
 
 include::api/missionHistory/missionHistory.adoc[]
+
+[[FAQ-API]]
+== FAQ API
+
+include::api/faq/faq.adoc[]

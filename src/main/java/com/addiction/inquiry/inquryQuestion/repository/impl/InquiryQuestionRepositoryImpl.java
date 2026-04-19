@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,5 +24,15 @@ public class InquiryQuestionRepositoryImpl implements InquiryQuestionRepository 
     @Override
     public List<InquiryQuestion> findAllByUserIdAndInquiryStatus(Long userId, InquiryStatus inquiryStatus) {
         return inquiryQuestionJpaRepository.findAllByUserIdAndInquiryStatus(userId, inquiryStatus);
+    }
+
+    @Override
+    public Optional<InquiryQuestion> findById(Long id) {
+        return inquiryQuestionJpaRepository.findById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        inquiryQuestionJpaRepository.deleteById(id);
     }
 }
