@@ -79,7 +79,8 @@ public class FriendQueryRepository {
                 .select(Projections.constructor(FriendProfileDto.class,
                         Expressions.constant(0L),
                         user.id,
-                        user.nickName
+                        user.nickName,
+                        user.email
                 ))
                 .from(user)
                 .where(

@@ -54,8 +54,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                 .build();
 
         List<FriendProfileDto> searchResults = List.of(
-                new FriendProfileDto(0L, 2L, "사용자1"),
-                new FriendProfileDto(0L, 3L, "사용자2")
+                new FriendProfileDto(0L, 2L, "사용자1", "user1@example.com"),
+                new FriendProfileDto(0L, 3L, "사용자2", "user2@example.com")
         );
 
         PageableCustom pageInfo = PageableCustom.builder()
@@ -111,6 +111,8 @@ public class FriendControllerDocsTest extends RestDocsSupport {
                                         .description("사용자 ID"),
                                 fieldWithPath("data.content[].nickname").type(JsonFieldType.STRING)
                                         .description("사용자 닉네임"),
+                                fieldWithPath("data.content[].email").type(JsonFieldType.STRING)
+                                        .description("사용자 이메일"),
                                 fieldWithPath("data.pageInfo").type(JsonFieldType.OBJECT)
                                         .description("페이징 정보"),
                                 fieldWithPath("data.pageInfo.currentPage").type(JsonFieldType.NUMBER)
