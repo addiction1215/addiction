@@ -9,6 +9,7 @@ import com.addiction.challenge.mission.entity.MissionCategoryStatus;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
 import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.challenge.missionhistory.service.response.MissionProgressResponse;
+import com.addiction.challenge.missionhistory.service.response.MissionProgressingTitleResponse;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
 class MissionHistoryReadServiceTest extends IntegrationTestSupport {
 
@@ -200,6 +202,121 @@ class MissionHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getTotalEarnedReward()).isEqualTo(0);
         assertThat(response.getTotalPossibleReward()).isEqualTo(0);
         assertThat(response.getMissions()).isNotNull().isEmpty();
+    }
+
+    @DisplayName("진행중인 미션이 2개인 경우 2개를 최신순으로 반환한다.")
+    @Test
+    void getProgressingMissions_two() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
+        User savedUser = userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(savedUser.getId()));
+
+        Challenge challenge = createChallenge("테스트 챌린지", "설명", "badge_url", 300);
+        Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
+
+        ChallengeHistory challengeHistory = createChallengeHistory(savedChallenge, savedUser, ChallengeStatus.PROGRESSING);
+        ChallengeHistory savedChallengeHistory = challengeHistoryJpaRepository.save(challengeHistory);
+
+        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, "미션1", "내용1", 50);
+        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.HOLD, "미션2", "내용2", 70);
+        missionJpaRepository.save(mission1);
+        missionJpaRepository.save(mission2);
+
+        MissionHistory mh1 = createMissionHistory(savedChallengeHistory, mission1, savedUser, MissionStatus.PROGRESSING, null);
+        MissionHistory mh2 = createMissionHistory(savedChallengeHistory, mission2, savedUser, MissionStatus.PROGRESSING, null);
+        missionHistoryJpaRepository.save(mh1);
+        missionHistoryJpaRepository.save(mh2);
+
+        // when
+        MissionProgressingTitleResponse response = missionHistoryReadService.getProgressingMissions();
+
+        // then
+        assertThat(response.getTitles()).hasSize(2);
+        assertThat(response.getTitles()).containsExactlyInAnyOrder("미션1", "미션2");
+    }
+
+    @DisplayName("진행중인 미션이 3개 이상이면 최신 2개만 반환한다.")
+    @Test
+    void getProgressingMissions_moreThanTwo() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
+        User savedUser = userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(savedUser.getId()));
+
+        Challenge challenge = createChallenge("테스트 챌린지", "설명", "badge_url", 300);
+        Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
+
+        ChallengeHistory challengeHistory = createChallengeHistory(savedChallenge, savedUser, ChallengeStatus.PROGRESSING);
+        ChallengeHistory savedChallengeHistory = challengeHistoryJpaRepository.save(challengeHistory);
+
+        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, "오래된 미션", "내용1", 50);
+        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.HOLD, "최신 미션1", "내용2", 70);
+        Mission mission3 = createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION, "최신 미션2", "내용3", 30);
+        missionJpaRepository.save(mission1);
+        missionJpaRepository.save(mission2);
+        missionJpaRepository.save(mission3);
+
+        MissionHistory mh1 = createMissionHistory(savedChallengeHistory, mission1, savedUser, MissionStatus.PROGRESSING, null);
+        MissionHistory mh2 = createMissionHistory(savedChallengeHistory, mission2, savedUser, MissionStatus.PROGRESSING, null);
+        MissionHistory mh3 = createMissionHistory(savedChallengeHistory, mission3, savedUser, MissionStatus.PROGRESSING, null);
+        missionHistoryJpaRepository.save(mh1);
+        missionHistoryJpaRepository.save(mh2);
+        missionHistoryJpaRepository.save(mh3);
+
+        // when
+        MissionProgressingTitleResponse response = missionHistoryReadService.getProgressingMissions();
+
+        // then
+        assertThat(response.getTitles()).hasSize(2);
+        assertThat(response.getTitles()).containsExactlyInAnyOrder("최신 미션1", "최신 미션2");
+    }
+
+    @DisplayName("진행중인 미션이 없으면 빈 목록을 반환한다.")
+    @Test
+    void getProgressingMissions_empty() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
+        User savedUser = userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(savedUser.getId()));
+
+        // when
+        MissionProgressingTitleResponse response = missionHistoryReadService.getProgressingMissions();
+
+        // then
+        assertThat(response.getTitles()).isEmpty();
+    }
+
+    @DisplayName("PROGRESSING이 아닌 미션은 조회되지 않는다.")
+    @Test
+    void getProgressingMissions_excludesNonProgressing() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
+        User savedUser = userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(savedUser.getId()));
+
+        Challenge challenge = createChallenge("테스트 챌린지", "설명", "badge_url", 300);
+        Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
+
+        ChallengeHistory challengeHistory = createChallengeHistory(savedChallenge, savedUser, ChallengeStatus.PROGRESSING);
+        ChallengeHistory savedChallengeHistory = challengeHistoryJpaRepository.save(challengeHistory);
+
+        Mission mission1 = createMission(savedChallenge, MissionCategoryStatus.LOCATION, "완료된 미션", "내용1", 50);
+        Mission mission2 = createMission(savedChallenge, MissionCategoryStatus.HOLD, "진행중 미션", "내용2", 70);
+        missionJpaRepository.save(mission1);
+        missionJpaRepository.save(mission2);
+
+        MissionHistory mh1 = createMissionHistory(savedChallengeHistory, mission1, savedUser, MissionStatus.COMPLETED, "주소");
+        MissionHistory mh2 = createMissionHistory(savedChallengeHistory, mission2, savedUser, MissionStatus.PROGRESSING, null);
+        missionHistoryJpaRepository.save(mh1);
+        missionHistoryJpaRepository.save(mh2);
+
+        // when
+        MissionProgressingTitleResponse response = missionHistoryReadService.getProgressingMissions();
+
+        // then
+        assertThat(response.getTitles()).hasSize(1);
+        assertThat(response.getTitles()).containsExactly("진행중 미션");
     }
 
     @DisplayName("존재하지 않는 챌린지 이력 ID로 조회시 예외가 발생한다.")

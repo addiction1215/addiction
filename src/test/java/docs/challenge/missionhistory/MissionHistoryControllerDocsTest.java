@@ -9,6 +9,7 @@ import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.challenge.missionhistory.service.response.MissionDetailResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionHistoryResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionProgressResponse;
+import com.addiction.challenge.missionhistory.service.response.MissionProgressingTitleResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionSubmitResponse;
 import docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +41,42 @@ public class MissionHistoryControllerDocsTest extends RestDocsSupport {
     @Override
     protected Object initController() {
         return new MissionHistoryController(missionHistoryReadService, missionHistoryService);
+    }
+
+    @DisplayName("참여중인 미션 타이틀 조회 API")
+    @Test
+    void 참여중인_미션_타이틀_조회_API() throws Exception {
+        // given
+        MissionProgressingTitleResponse response = MissionProgressingTitleResponse.createResponse(
+                List.of("평소 흡연 루트 피해보기", "5분간 참기")
+        );
+
+        given(missionHistoryReadService.getProgressingMissions())
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/mission-history/progressing")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("mission-history-get-progressing",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.titles").type(JsonFieldType.ARRAY)
+                                        .description("진행중인 미션 제목 목록 (최신순 최대 2개)")
+                        )
+                ));
     }
 
     @DisplayName("미션 진행 상황 조회 API")

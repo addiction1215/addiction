@@ -15,6 +15,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class MissionHistoryControllerTest extends ControllerTestSupport {
 
+    @DisplayName("진행중인 미션 타이틀을 조회한다")
+    @Test
+    @WithMockUser(roles = "USER")
+    void getProgressingMissions() throws Exception {
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/mission-history/progressing")
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
     @DisplayName("미션 진행 상황을 조회한다")
     @Test
     @WithMockUser(roles = "USER")

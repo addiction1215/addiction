@@ -16,4 +16,6 @@ public interface MissionHistoryRepository {
     long countByChallengeHistoryId(Long challengeHistoryId);
 
     long countByChallengeHistoryIdAndStatus(Long challengeHistoryId, MissionStatus status);
+
+    List<MissionHistory> findTop2ProgressingByUserId(Long userId);
 }

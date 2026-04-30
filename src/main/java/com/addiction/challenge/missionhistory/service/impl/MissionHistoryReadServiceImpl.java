@@ -8,7 +8,9 @@ import com.addiction.challenge.missionhistory.repository.MissionHistoryRepositor
 import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
 import com.addiction.challenge.missionhistory.service.response.MissionHistoryResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionProgressResponse;
+import com.addiction.challenge.missionhistory.service.response.MissionProgressingTitleResponse;
 import com.addiction.global.exception.AddictionException;
+import com.addiction.global.security.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.List;
 public class MissionHistoryReadServiceImpl implements MissionHistoryReadService {
     private final MissionHistoryRepository missionHistoryRepository;
     private final ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
+    private final SecurityService securityService;
 
     @Override
     public MissionProgressResponse getMissionProgress(Long challengeHistoryId) {
@@ -62,5 +65,14 @@ public class MissionHistoryReadServiceImpl implements MissionHistoryReadService 
     public MissionHistory findById(Long missionHistoryId) {
         return missionHistoryRepository.findById(missionHistoryId)
                 .orElseThrow(() -> new AddictionException("미션 이력을 찾을 수 없습니다."));
+    }
+
+    @Override
+    public MissionProgressingTitleResponse getProgressingMissions() {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        List<String> titles = missionHistoryRepository.findTop2ProgressingByUserId(userId).stream()
+                .map(mh -> mh.getMission().getTitle())
+                .toList();
+        return MissionProgressingTitleResponse.createResponse(titles);
     }
 }

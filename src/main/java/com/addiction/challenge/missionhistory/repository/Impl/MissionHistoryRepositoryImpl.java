@@ -39,4 +39,9 @@ public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
     public long countByChallengeHistoryIdAndStatus(Long challengeHistoryId, MissionStatus status) {
         return missionHistoryJpaRepository.countByChallengeHistoryIdAndStatus(challengeHistoryId, status);
     }
+
+    @Override
+    public List<MissionHistory> findTop2ProgressingByUserId(Long userId) {
+        return missionHistoryJpaRepository.findTop2ByUser_IdAndStatusOrderByCreatedDateDesc(userId, MissionStatus.PROGRESSING);
+    }
 }

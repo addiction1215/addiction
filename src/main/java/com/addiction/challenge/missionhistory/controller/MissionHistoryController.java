@@ -3,6 +3,7 @@ package com.addiction.challenge.missionhistory.controller;
 import com.addiction.challenge.missionhistory.controller.request.MissionSubmitRequest;
 import com.addiction.challenge.missionhistory.service.response.MissionDetailResponse;
 import com.addiction.challenge.missionhistory.service.response.MissionProgressResponse;
+import com.addiction.challenge.missionhistory.service.response.MissionProgressingTitleResponse;
 import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
 import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.challenge.missionhistory.service.response.MissionSubmitResponse;
@@ -17,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class MissionHistoryController {
     private final MissionHistoryReadService missionHistoryReadService;
     private final MissionHistoryService missionHistoryService;
+
+    @GetMapping("/progressing")
+    public ApiResponse<MissionProgressingTitleResponse> getProgressingMissions() {
+        return ApiResponse.ok(missionHistoryReadService.getProgressingMissions());
+    }
 
     @GetMapping("/progress/{challengeHistoryId}")
     public ApiResponse<MissionProgressResponse> getMissionProgress(

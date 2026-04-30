@@ -490,7 +490,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      */
     private double calculateChangeRate(int current, int previous) {
         if (previous == 0) {
-            return current == 0 ? 0.0 : -100.0;
+            return current == 0 ? 0.0 : 100.0;
         }
 
         double rate = ((double) (current - previous) / previous) * PERCENTAGE_MULTIPLIER;
