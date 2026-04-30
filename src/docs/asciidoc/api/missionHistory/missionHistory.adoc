@@ -1,3 +1,15 @@
+[[mission-history-get-progressing]]
+=== 참여중인 미션 타이틀 조회
+
+==== HTTP Request
+
+include::{snippets}/mission-history-get-progressing/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/mission-history-get-progressing/http-response.adoc[]
+include::{snippets}/mission-history-get-progressing/response-fields.adoc[]
+
 [[mission-history-get-progress]]
 === 미션 진행 상황 조회
 
