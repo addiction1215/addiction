@@ -30,11 +30,13 @@ public class InquiryQuestionDetailResponse {
     }
 
     public static InquiryQuestionDetailResponse createResponse(InquiryQuestion inquiryQuestion) {
+        List<String> imageKeys = inquiryQuestion.getImageKeys();
+
         return InquiryQuestionDetailResponse.builder()
                 .id(inquiryQuestion.getId())
                 .title(inquiryQuestion.getTitle())
                 .question(inquiryQuestion.getQuestion())
-                .imageKeys(inquiryQuestion.getImageKeys())
+                .imageKeys(imageKeys == null ? null : List.copyOf(imageKeys))
                 .inquiryStatus(inquiryQuestion.getInquiryStatus())
                 .createdDate(inquiryQuestion.getCreatedDate())
                 .build();
