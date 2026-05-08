@@ -1,10 +1,10 @@
 package com.addiction.faq.service;
 
+import com.addiction.faq.service.request.FaqListServiceRequest;
 import com.addiction.faq.service.response.FaqListResponse;
-
-import java.util.List;
+import com.addiction.global.page.response.PageCustom;
 
 public interface FaqReadService {
 
-    List<FaqListResponse> findAll();
+    PageCustom<FaqListResponse> findAll(FaqListServiceRequest request);
 }

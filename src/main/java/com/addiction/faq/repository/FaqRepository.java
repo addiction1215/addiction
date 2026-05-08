@@ -1,10 +1,10 @@
 package com.addiction.faq.repository;
 
 import com.addiction.faq.entity.Faq;
-
-import java.util.List;
+import com.addiction.faq.service.request.FaqListServiceRequest;
+import org.springframework.data.domain.Page;
 
 public interface FaqRepository {
 
-    List<Faq> findAll();
+    Page<Faq> findAll(FaqListServiceRequest request);
 }

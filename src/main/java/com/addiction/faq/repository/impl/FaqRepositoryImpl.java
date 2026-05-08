@@ -1,21 +1,21 @@
 package com.addiction.faq.repository.impl;
 
 import com.addiction.faq.entity.Faq;
-import com.addiction.faq.repository.FaqJpaRepository;
+import com.addiction.faq.repository.FaqQueryRepository;
 import com.addiction.faq.repository.FaqRepository;
+import com.addiction.faq.service.request.FaqListServiceRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class FaqRepositoryImpl implements FaqRepository {
 
-    private final FaqJpaRepository faqJpaRepository;
+    private final FaqQueryRepository faqQueryRepository;
 
     @Override
-    public List<Faq> findAll() {
-        return faqJpaRepository.findAll();
+    public Page<Faq> findAll(FaqListServiceRequest request) {
+        return faqQueryRepository.findAll(request);
     }
 }
