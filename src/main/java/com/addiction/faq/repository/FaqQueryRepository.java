@@ -28,6 +28,7 @@ public class FaqQueryRepository {
         List<Faq> content = queryFactory
                 .selectFrom(faq)
                 .where(
+                        useYnY(),
                         categoryEq(request.getCategory()),
                         keywordContains(request.getKeyword())
                 )
@@ -45,6 +46,7 @@ public class FaqQueryRepository {
                         .select(faq.count())
                         .from(faq)
                         .where(
+                                useYnY(),
                                 categoryEq(request.getCategory()),
                                 keywordContains(request.getKeyword())
                         )
@@ -56,6 +58,10 @@ public class FaqQueryRepository {
 
     private BooleanExpression categoryEq(FaqCategory category) {
         return category != null ? faq.category.eq(category) : null;
+    }
+
+    private BooleanExpression useYnY() {
+        return faq.useYn.eq("Y");
     }
 
     private BooleanExpression keywordContains(String keyword) {

@@ -17,6 +17,8 @@ public class Faq extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String useYn;
+
     @Enumerated(EnumType.STRING)
     private FaqCategory category;
 
@@ -30,8 +32,9 @@ public class Faq extends BaseTimeEntity {
     private String description;
 
     @Builder
-    public Faq(Long id, FaqCategory category, boolean pinned, int sortOrder, String title, String description) {
+    public Faq(Long id, String useYn, FaqCategory category, boolean pinned, int sortOrder, String title, String description) {
         this.id = id;
+        this.useYn = useYn == null ? "Y" : useYn;
         this.category = category;
         this.pinned = pinned;
         this.sortOrder = sortOrder;
