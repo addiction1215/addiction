@@ -3,6 +3,7 @@ package com.addiction.user.users.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.addiction.global.BaseTimeEntity;
 import com.addiction.jwt.dto.JwtToken;
@@ -110,7 +111,12 @@ public class User extends BaseTimeEntity {
 	}
 
 	public void withdraw() {
+		this.email = createWithdrawnEmail();
 		this.useYn = "N";
+	}
+
+	private String createWithdrawnEmail() {
+		return "deleted+" + UUID.randomUUID() + "@withdrawn.local";
 	}
 
     public void updateProfileUrl(String profileUrl) {

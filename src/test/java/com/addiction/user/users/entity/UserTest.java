@@ -73,4 +73,18 @@ public class UserTest extends IntegrationTestSupport {
 
         assertThat(user.getProfileUrl()).isEqualTo("test.com");
     }
+
+	@DisplayName("회원 탈퇴 시 이메일을 식별 불가능한 값으로 변경한다.")
+	@Test
+	void 회원_탈퇴시_이메일을_식별_불가능한_값으로_변경한다() {
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+
+		user.withdraw();
+
+		assertThat(user.getUseYn()).isEqualTo("N");
+		assertThat(user.getEmail())
+			.startsWith("deleted+")
+			.endsWith("@withdrawn.local")
+			.isNotEqualTo("test@test.com");
+	}
 }

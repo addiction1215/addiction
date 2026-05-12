@@ -179,4 +179,31 @@ public class UserServiceTest extends IntegrationTestSupport {
         });
     }
 
+    @DisplayName("회원 탈퇴 후에는 같은 이메일로 다시 가입할 수 있다.")
+    @Test
+    void 회원_탈퇴_후에는_같은_이메일로_다시_가입할_수_있다() {
+        //given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        userService.withdraw();
+
+        UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName("testUser")
+                .sex(Sex.FEMALE)
+                .build();
+
+        //when
+        userService.save(userSaveServiceRequest);
+
+        //then
+        assertThat(userRepository.findByEmail("test@test.com")).isPresent();
+    }
+
 }
