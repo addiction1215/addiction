@@ -16,6 +16,8 @@ import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
+import com.addiction.user.users.entity.User;
+import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,10 +26,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class userCigaretteHistoryBatch {
 
+	private static final long SECONDS_PER_DAY = 86400L;
+
 	private final UserCigaretteHistoryService userCigaretteHistoryService;
 	private final UserCigaretteReadService userCigaretteReadService;
 	private final UserCigaretteService userCigaretteService;
 	private final UserService userService;
+	private final UserReadService userReadService;
 
 	@Scheduled(cron = "0 0 0 * * *")
 	@Transactional
@@ -68,6 +73,13 @@ public class userCigaretteHistoryBatch {
 				.map(UserCigarette::getSmokeTime)
 				.max(LocalDateTime::compareTo)
 				.ifPresent(lastSmokeTime -> userService.updateStartDate(userId, lastSmokeTime));
+		}
+
+		// 어제 흡연 기록이 없는 활성 유저는 금연시간 86400초(24시간)로 저장
+		for (User user : userReadService.findAll()) {
+			if (!grouped.containsKey(user.getId())) {
+				userCigaretteHistoryService.save(monthStr, dateStr, user.getId(), 0, SECONDS_PER_DAY, List.of());
+			}
 		}
 
 		userCigaretteService.deleteAll(allCigarettes);
