@@ -10,6 +10,7 @@ import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdateProfileServiceRequest;
 import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
@@ -94,6 +95,31 @@ public class UserServiceTest extends IntegrationTestSupport {
         assertThat(userRepository.findById(savedUser.getId()).get())
                 .extracting("sex", "birthDay")
                 .contains(Sex.MALE, "12341234");
+    }
+
+    @DisplayName("유저의 프로필 수정시 요청에 없는 필드는 유지한다.")
+    @Test
+    void 유저의_프로필_수정시_요청에_없는_필드는_유지한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        user.updateProfile("기존닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg");
+
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdateProfileServiceRequest request = UserUpdateProfileServiceRequest.builder()
+                .nickName("새닉네임")
+                .build();
+
+        // when
+        userService.updateProfile(request);
+
+        // then
+        assertThat(userRepository.findById(savedUser.getId()).get())
+                .extracting("nickName", "introduction", "sex", "birthDay", "profileUrl")
+                .contains("새닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg");
     }
 
     @DisplayName("유저의 설문조사 결과를 저장한다.")

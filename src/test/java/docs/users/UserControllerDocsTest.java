@@ -392,10 +392,13 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .optional()
                                         .description("자기소개"),
                                 fieldWithPath("sex").type(JsonFieldType.STRING)
+                                        .optional()
                                         .description("성별: " + Arrays.toString(Sex.values())),
                                 fieldWithPath("birthDay").type(JsonFieldType.STRING)
+                                        .optional()
                                         .description("생년월일 포맷 (YYYYMMDD)"),
                                 fieldWithPath("profileUrl").type(JsonFieldType.STRING)
+                                        .optional()
                                         .description("프로필 URL")
                         ),
                         responseFields(

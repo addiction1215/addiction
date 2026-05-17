@@ -179,10 +179,18 @@ public class User extends BaseTimeEntity {
 
 	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay, String profileUrl){
 		updateNickName(nickName);
-		updateIntroduction(introduction);
-		updateSex(sex);
-		updateBirthDay(birthDay);
-        updateProfileUrl(profileUrl);
+		if (introduction != null) {
+			updateIntroduction(introduction);
+		}
+		if (sex != null) {
+			updateSex(sex);
+		}
+		if (birthDay != null) {
+			updateBirthDay(birthDay);
+		}
+        if (profileUrl != null) {
+            updateProfileUrl(profileUrl);
+        }
 	}
 
 	public void updateInfo(BCryptPasswordEncoder bCryptPasswordEncoder, String password, String phoneNumber, String email) {

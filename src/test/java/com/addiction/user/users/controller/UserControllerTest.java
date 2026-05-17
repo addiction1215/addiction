@@ -1,13 +1,16 @@
 package com.addiction.user.users.controller;
 
 import com.addiction.ControllerTestSupport;
+import com.addiction.user.users.controller.request.UserUpdateProfileRequest;
 import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
 import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.service.response.BenefitResponse;
+import com.addiction.user.users.service.response.UserUpdateProfileResponse;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -92,6 +95,60 @@ public class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("생년월일은 필수입니다."));
+    }
+
+    @DisplayName("사용자 프로필 수정시 닉네임만 있으면 된다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 사용자_프로필_수정시_닉네임만_있으면_된다() throws Exception {
+        // given
+        UserUpdateProfileRequest request = UserUpdateProfileRequest.builder()
+                .nickName("새닉네임")
+                .build();
+
+        given(userService.updateProfile(any()))
+                .willReturn(UserUpdateProfileResponse.builder()
+                        .nickName("새닉네임")
+                        .introduction("기존 소개")
+                        .sex(Sex.MALE)
+                        .birthDay("19961111")
+                        .profileUrl("https://example.com/profile.jpg")
+                        .build());
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/user/profile")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("사용자 프로필 수정시 닉네임은 필수이다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 사용자_프로필_수정시_닉네임은_필수이다() throws Exception {
+        // given
+        UserUpdateProfileRequest request = UserUpdateProfileRequest.builder()
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/user/profile")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("닉네임은 필수입니다."));
     }
 
     @DisplayName("사용자의 설문결과를 저장한다.")
