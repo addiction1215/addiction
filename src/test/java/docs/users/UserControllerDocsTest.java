@@ -362,6 +362,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .sex(Sex.MALE)
                 .birthDay("19961111")
                 .profileUrl("https://example.com/new-profile.jpg")
+                .resetProfileImage(false)
                 .build();
 
         given(userService.updateProfile(any()))
@@ -399,7 +400,10 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .description("생년월일 포맷 (YYYYMMDD)"),
                                 fieldWithPath("profileUrl").type(JsonFieldType.STRING)
                                         .optional()
-                                        .description("프로필 URL")
+                                        .description("프로필 URL"),
+                                fieldWithPath("resetProfileImage").type(JsonFieldType.BOOLEAN)
+                                        .optional()
+                                        .description("true면 기본 프로필 이미지로 초기화")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)

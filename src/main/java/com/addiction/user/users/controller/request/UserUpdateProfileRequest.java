@@ -17,14 +17,17 @@ public class UserUpdateProfileRequest {
     private Sex sex;
     private String birthDay;
     private String profileUrl;
+    private Boolean resetProfileImage;
 
     @Builder
-    public UserUpdateProfileRequest(String profileUrl, String birthDay, String introduction, String nickName, Sex sex) {
+    public UserUpdateProfileRequest(String profileUrl, String birthDay, String introduction, String nickName, Sex sex,
+                                    Boolean resetProfileImage) {
         this.profileUrl = profileUrl;
         this.birthDay = birthDay;
         this.introduction = introduction;
         this.nickName = nickName;
         this.sex = sex;
+        this.resetProfileImage = resetProfileImage;
     }
 
     public UserUpdateProfileServiceRequest toServiceRequest() {
@@ -34,6 +37,7 @@ public class UserUpdateProfileRequest {
                 .introduction(introduction)
                 .nickName(nickName)
                 .sex(sex)
+                .resetProfileImage(resetProfileImage)
                 .build();
     }
 }

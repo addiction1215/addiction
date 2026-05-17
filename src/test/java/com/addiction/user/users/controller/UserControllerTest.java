@@ -129,6 +129,36 @@ public class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
+    @DisplayName("사용자 프로필 수정시 프로필 이미지를 기본 이미지로 초기화할 수 있다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 사용자_프로필_수정시_프로필_이미지를_기본_이미지로_초기화할_수_있다() throws Exception {
+        // given
+        UserUpdateProfileRequest request = UserUpdateProfileRequest.builder()
+                .nickName("새닉네임")
+                .resetProfileImage(true)
+                .build();
+
+        given(userService.updateProfile(any()))
+                .willReturn(UserUpdateProfileResponse.builder()
+                        .nickName("새닉네임")
+                        .profileUrl(null)
+                        .build());
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/user/profile")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
     @DisplayName("사용자 프로필 수정시 닉네임은 필수이다.")
     @Test
     @WithMockUser(roles = "USER")

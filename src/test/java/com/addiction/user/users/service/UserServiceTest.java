@@ -122,6 +122,52 @@ public class UserServiceTest extends IntegrationTestSupport {
                 .contains("새닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg");
     }
 
+    @DisplayName("유저의 프로필 이미지를 기본 이미지로 초기화한다.")
+    @Test
+    void 유저의_프로필_이미지를_기본_이미지로_초기화한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        user.updateProfile("기존닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg");
+
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdateProfileServiceRequest request = UserUpdateProfileServiceRequest.builder()
+                .nickName("새닉네임")
+                .resetProfileImage(true)
+                .build();
+
+        // when
+        userService.updateProfile(request);
+
+        // then
+        assertThat(userRepository.findById(savedUser.getId()).get().getProfileUrl())
+                .isNull();
+    }
+
+    @DisplayName("유저의 프로필 이미지 변경과 초기화를 동시에 요청하면 예외가 발생한다.")
+    @Test
+    void 유저의_프로필_이미지_변경과_초기화를_동시에_요청하면_예외가_발생한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdateProfileServiceRequest request = UserUpdateProfileServiceRequest.builder()
+                .nickName("새닉네임")
+                .profileUrl("https://example.com/new-profile.jpg")
+                .resetProfileImage(true)
+                .build();
+
+        // when // then
+        assertThrows(AddictionException.class, () -> userService.updateProfile(request));
+    }
+
     @DisplayName("유저의 설문조사 결과를 저장한다.")
     @Test
     void 유저의_설문조사_결과를_저장한다() {

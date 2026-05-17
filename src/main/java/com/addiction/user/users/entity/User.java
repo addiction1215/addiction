@@ -177,7 +177,7 @@ public class User extends BaseTimeEntity {
 		this.purpose = purpose;
 	}
 
-	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay, String profileUrl){
+	public void updateProfile(String nickName, String introduction, Sex sex, String birthDay, String profileUrl, Boolean resetProfileImage){
 		updateNickName(nickName);
 		if (introduction != null) {
 			updateIntroduction(introduction);
@@ -188,7 +188,9 @@ public class User extends BaseTimeEntity {
 		if (birthDay != null) {
 			updateBirthDay(birthDay);
 		}
-        if (profileUrl != null) {
+        if (Boolean.TRUE.equals(resetProfileImage)) {
+            updateProfileUrl(null);
+        } else if (profileUrl != null) {
             updateProfileUrl(profileUrl);
         }
 	}

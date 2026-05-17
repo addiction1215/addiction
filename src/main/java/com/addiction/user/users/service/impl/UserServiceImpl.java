@@ -79,13 +79,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserUpdateProfileResponse updateProfile(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest) {
+        validateProfileImageUpdateRequest(userUpdateProfileServiceRequest);
 		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
 		user.updateProfile(
 				userUpdateProfileServiceRequest.getNickName(),
 				userUpdateProfileServiceRequest.getIntroduction(),
 				userUpdateProfileServiceRequest.getSex(),
                 userUpdateProfileServiceRequest.getBirthDay(),
-                userUpdateProfileServiceRequest.getProfileUrl()
+                resolveProfileUrl(userUpdateProfileServiceRequest),
+                userUpdateProfileServiceRequest.getResetProfileImage()
 		);
 		return UserUpdateProfileResponse.createResponse(user);
 	}
@@ -112,6 +114,17 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(email)) {
             throw new AddictionException("이미 존재하는 이메일입니다.");
         }
+    }
+
+    private void validateProfileImageUpdateRequest(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest) {
+        if (Boolean.TRUE.equals(userUpdateProfileServiceRequest.getResetProfileImage())
+                && userUpdateProfileServiceRequest.getProfileUrl() != null) {
+            throw new AddictionException("프로필 이미지 변경과 초기화는 동시에 요청할 수 없습니다.");
+        }
+    }
+
+    private String resolveProfileUrl(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest) {
+        return userUpdateProfileServiceRequest.getProfileUrl();
     }
 
 	@Override
