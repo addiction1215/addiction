@@ -102,7 +102,7 @@ public class UserServiceTest extends IntegrationTestSupport {
     void 유저의_프로필_수정시_요청에_없는_필드는_유지한다() {
         // given
         User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
-        user.updateProfile("기존닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg");
+        user.updateProfile("기존닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg", false);
 
         User savedUser = userRepository.save(user);
 
@@ -127,7 +127,7 @@ public class UserServiceTest extends IntegrationTestSupport {
     void 유저의_프로필_이미지를_기본_이미지로_초기화한다() {
         // given
         User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
-        user.updateProfile("기존닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg");
+        user.updateProfile("기존닉네임", "기존소개", Sex.MALE, "19961111", "https://example.com/old-profile.jpg", false);
 
         User savedUser = userRepository.save(user);
 
