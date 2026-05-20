@@ -163,7 +163,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         UserCigarette cigarette = userCigaretteReadService.findLatestByUserId(userId);
         if (cigarette == null) {
             CigaretteHistoryDocument doc = userCigaretteHistoryRepository.findLatestByUserId(userId);
-            if (doc != null) {
+            if (doc != null && !doc.getHistory().isEmpty()) {
                 return UserCigaretteHistoryLastestResponse.createResponse(
                         doc.getHistory().get(doc.getHistory().size() - 1).getSmokeTime(),
                         doc.getHistory().get(doc.getHistory().size() - 1).getAddress()
