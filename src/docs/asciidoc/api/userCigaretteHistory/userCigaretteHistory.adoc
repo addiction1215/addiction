@@ -24,18 +24,61 @@ include::{snippets}/user-cigarette-history-history/query-parameters.adoc[]
 include::{snippets}/user-cigarette-history-history/http-response.adoc[]
 include::{snippets}/user-cigarette-history-history/response-fields.adoc[]
 
-[[user-cigarette-history-graph]]
-=== 기간별 흡연기록 그래프 조회
+[[user-cigarette-history-graph-weekly]]
+=== 흡연기록 그래프 조회 - 주간 (WEEKLY)
+이번 주 월~일 요일별 일별 집계 (7개 데이터)
 
 ==== HTTP Request
 
-include::{snippets}/user-cigarette-history-graph/http-request.adoc[]
-include::{snippets}/user-cigarette-history-graph/query-parameters.adoc[]
+include::{snippets}/user-cigarette-history-graph-weekly/http-request.adoc[]
+include::{snippets}/user-cigarette-history-graph-weekly/query-parameters.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/user-cigarette-history-graph/http-response.adoc[]
-include::{snippets}/user-cigarette-history-graph/response-fields.adoc[]
+include::{snippets}/user-cigarette-history-graph-weekly/http-response.adoc[]
+include::{snippets}/user-cigarette-history-graph-weekly/response-fields.adoc[]
+
+[[user-cigarette-history-graph-monthly]]
+=== 흡연기록 그래프 조회 - 월간 (MONTHLY)
+현재 주 포함 최근 5주 주별 집계 (5개 데이터, date = 주 시작일 MM/dd)
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-graph-monthly/http-request.adoc[]
+include::{snippets}/user-cigarette-history-graph-monthly/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-graph-monthly/http-response.adoc[]
+include::{snippets}/user-cigarette-history-graph-monthly/response-fields.adoc[]
+
+[[user-cigarette-history-graph-sixmonthly]]
+=== 흡연기록 그래프 조회 - 6개월 (SIXMONTHLY)
+현재 달 포함 최근 6개월 월별 집계 (6개 데이터, date = yyyyMM)
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-graph-sixmonthly/http-request.adoc[]
+include::{snippets}/user-cigarette-history-graph-sixmonthly/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-graph-sixmonthly/http-response.adoc[]
+include::{snippets}/user-cigarette-history-graph-sixmonthly/response-fields.adoc[]
+
+[[user-cigarette-history-graph-yearly]]
+=== 흡연기록 그래프 조회 - 1년 (YEARLY)
+현재 달 포함 최근 12개월 월별 집계 (12개 데이터, date = yyyyMM)
+
+==== HTTP Request
+
+include::{snippets}/user-cigarette-history-graph-yearly/http-request.adoc[]
+include::{snippets}/user-cigarette-history-graph-yearly/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-cigarette-history-graph-yearly/http-response.adoc[]
+include::{snippets}/user-cigarette-history-graph-yearly/response-fields.adoc[]
 
 [[user-cigarette-history-latest]]
 === 최신 흡연기록 조회

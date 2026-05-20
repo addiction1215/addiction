@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -130,30 +131,131 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public UserCigaretteHistoryGraphResponse findGraphByPeriod(PeriodType periodType) {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = periodType.calculateStartDate(endDate);
+        return switch (periodType) {
+            case WEEKLY -> buildWeeklyGraph(userId);
+            case MONTHLY -> buildMonthlyGraph(userId);
+            case SIXMONTHLY -> buildMonthAggGraph(userId, 6);
+            case YEARLY -> buildMonthAggGraph(userId, 12);
+        };
+    }
 
-        String start = startDate.format(BASIC_ISO_DATE);
-        String end = endDate.format(BASIC_ISO_DATE);
+    private UserCigaretteHistoryGraphResponse buildWeeklyGraph(Long userId) {
+        LocalDate today = LocalDate.now();
+        LocalDate monday = today.with(DayOfWeek.MONDAY);
 
-        // 가변 리스트로 변환 (불변 리스트일 수 있으므로)
-        List<CigaretteHistoryDocument> docs = new ArrayList<>(
-                userCigaretteHistoryRepository.findByUserIdAndDateBetween(userId, start, end)
-        );
-
-        // 당일 데이터 추가 (RDBMS에서 조회)
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().plusDays(ONE_DAY).atStartOfDay();
-        List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
-
-        if (!todayCigarettes.isEmpty()) {
-            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId);
-            docs.add(todayDoc);
+        Map<String, CigaretteHistoryDocument> docMap = new HashMap<>();
+        if (today.isAfter(monday)) {
+            String start = monday.format(BASIC_ISO_DATE);
+            String end = today.minusDays(ONE_DAY).format(BASIC_ISO_DATE);
+            userCigaretteHistoryRepository.findByUserIdAndDateBetween(userId, start, end)
+                    .forEach(d -> docMap.put(d.getDate(), d));
         }
 
+        CigaretteHistoryDocument todayDoc = buildTodayDocument(userId, today);
+        if (todayDoc != null) {
+            docMap.put(today.format(BASIC_ISO_DATE), todayDoc);
+        }
+
+        List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
+        List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
+
+        for (int i = 0; i < DAYS_IN_WEEK; i++) {
+            LocalDate day = monday.plusDays(i);
+            String label = day.getDayOfWeek().toString().substring(0, 3);
+            CigaretteHistoryDocument doc = docMap.get(day.format(BASIC_ISO_DATE));
+            countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, doc != null ? doc.getSmokeCount() : 0));
+            patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, doc != null ? doc.getAvgPatienceTime() : 0));
+        }
+
+        return buildGraphResponse(countList, patientList);
+    }
+
+    private UserCigaretteHistoryGraphResponse buildMonthlyGraph(Long userId) {
+        LocalDate today = LocalDate.now();
+        LocalDate currentMonday = today.with(DayOfWeek.MONDAY);
+
+        List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
+        List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
+
+        for (int w = 4; w >= 0; w--) {
+            LocalDate weekStart = currentMonday.minusWeeks(w);
+            LocalDate weekEnd = weekStart.plusDays(DAYS_FROM_SUNDAY_TO_SATURDAY);
+            String label = weekStart.format(DateTimeFormatter.ofPattern("MM/dd"));
+
+            List<CigaretteHistoryDocument> docs = new ArrayList<>();
+
+            if (weekStart.isBefore(today)) {
+                LocalDate mongoEnd = weekEnd.isBefore(today) ? weekEnd : today.minusDays(ONE_DAY);
+                docs.addAll(userCigaretteHistoryRepository.findByUserIdAndDateBetween(
+                        userId, weekStart.format(BASIC_ISO_DATE), mongoEnd.format(BASIC_ISO_DATE)));
+            }
+
+            if (!today.isBefore(weekStart) && !today.isAfter(weekEnd)) {
+                CigaretteHistoryDocument todayDoc = buildTodayDocument(userId, today);
+                if (todayDoc != null) docs.add(todayDoc);
+            }
+
+            long totalCount = docs.stream().mapToLong(CigaretteHistoryDocument::getSmokeCount).sum();
+            long avgPatience = (long) docs.stream().mapToLong(CigaretteHistoryDocument::getAvgPatienceTime).average().orElse(0);
+
+            countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, totalCount));
+            patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, avgPatience));
+        }
+
+        return buildGraphResponse(countList, patientList);
+    }
+
+    private UserCigaretteHistoryGraphResponse buildMonthAggGraph(Long userId, int months) {
+        LocalDate today = LocalDate.now();
+
+        List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
+        List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
+
+        for (int m = months - 1; m >= 0; m--) {
+            LocalDate monthStart = today.withDayOfMonth(1).minusMonths(m);
+            LocalDate monthEnd = monthStart.withDayOfMonth(monthStart.lengthOfMonth());
+            String label = monthStart.format(MONTH_FORMATTER);
+
+            List<CigaretteHistoryDocument> docs = new ArrayList<>();
+
+            LocalDate mongoEnd = monthEnd.isBefore(today) ? monthEnd : today.minusDays(ONE_DAY);
+            if (!mongoEnd.isBefore(monthStart)) {
+                docs.addAll(userCigaretteHistoryRepository.findByUserIdAndDateBetween(
+                        userId, monthStart.format(BASIC_ISO_DATE), mongoEnd.format(BASIC_ISO_DATE)));
+            }
+
+            if (m == 0) {
+                CigaretteHistoryDocument todayDoc = buildTodayDocument(userId, today);
+                if (todayDoc != null) docs.add(todayDoc);
+            }
+
+            long totalCount = docs.stream().mapToLong(CigaretteHistoryDocument::getSmokeCount).sum();
+            long avgPatience = (long) docs.stream().mapToLong(CigaretteHistoryDocument::getAvgPatienceTime).average().orElse(0);
+
+            countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, totalCount));
+            patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, avgPatience));
+        }
+
+        return buildGraphResponse(countList, patientList);
+    }
+
+    private CigaretteHistoryDocument buildTodayDocument(Long userId, LocalDate today) {
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(ONE_DAY).atStartOfDay();
+        List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
+        return todayCigarettes.isEmpty() ? null : convertToCigaretteHistoryDocument(todayCigarettes, userId);
+    }
+
+    private UserCigaretteHistoryGraphResponse buildGraphResponse(
+            List<UserCigaretteHistoryGraphDateResponse> countList,
+            List<UserCigaretteHistoryGraphDateResponse> patientList) {
+        int avgCount = countList.isEmpty() ? 0 : (int) Math.round(
+                countList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
+        long avgPatience = patientList.isEmpty() ? 0 : Math.round(
+                patientList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
         return UserCigaretteHistoryGraphResponse.createResponse(
-                createGraphCountResponse(docs),
-                createGraphPatientResponse(docs)
+                UserCigaretteHistoryGraphCountResponse.createResponse(avgCount, countList),
+                UserCigaretteHistoryGraphPatientResponse.createResponse(avgPatience, patientList)
         );
     }
 
@@ -419,35 +521,6 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         }
 
         return WeeklyCigaretteResponse.createResponse(weekData);
-    }
-
-    private UserCigaretteHistoryGraphCountResponse createGraphCountResponse(List<CigaretteHistoryDocument> docs) {
-        List<UserCigaretteHistoryGraphDateResponse> dateList = docs.stream()
-                .map(doc -> UserCigaretteHistoryGraphDateResponse.createResponse(doc.getDate(), doc.getSmokeCount()))
-                .toList();
-
-        int avgCigaretteCount = dateList.isEmpty() ? 0 :
-                (int) Math.round(
-                        dateList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
-
-        return UserCigaretteHistoryGraphCountResponse.createResponse(
-                avgCigaretteCount,
-                dateList
-        );
-    }
-
-    private UserCigaretteHistoryGraphPatientResponse createGraphPatientResponse(List<CigaretteHistoryDocument> docs) {
-        List<UserCigaretteHistoryGraphDateResponse> dateList = docs.stream()
-                .map(doc -> UserCigaretteHistoryGraphDateResponse.createResponse(doc.getDate(), doc.getAvgPatienceTime()))
-                .collect(Collectors.toList());
-
-        Long avgSmokePatientTime = dateList.isEmpty() ? 0 :
-                Math.round(dateList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
-
-        return UserCigaretteHistoryGraphPatientResponse.createResponse(
-                avgSmokePatientTime,
-                dateList
-        );
     }
 
     @Override

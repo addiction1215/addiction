@@ -235,21 +235,8 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
 
-        // MongoDB Mock 데이터 설정
-        String pastDate = LocalDate.now().minusDays(3).format(DateTimeFormatter.BASIC_ISO_DATE);
-        CigaretteHistoryDocument mockDoc = CigaretteHistoryDocument.builder()
-                .date(pastDate)
-                .userId(user.getId())
-                .smokeCount(5)
-                .avgPatienceTime(3000L)
-                .build();
-
-        LocalDate startDate = PeriodType.WEEKLY.calculateStartDate(LocalDate.now());
-        String start = startDate.format(DateTimeFormatter.BASIC_ISO_DATE);
-        String end = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-
-        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(user.getId(), start, end))
-                .willReturn(List.of(mockDoc));
+        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(anyLong(), anyString(), anyString()))
+                .willReturn(List.of());
 
         // 당일 데이터 RDBMS에 추가
         UserCigaretteChangeServiceRequest request1 = UserCigaretteChangeServiceRequest.builder()
@@ -272,10 +259,13 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         assertThat(results.getCigarette()).isNotNull();
         assertThat(results.getPatient()).isNotNull();
 
-        // 당일 데이터가 포함되어 있는지 확인
-        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        // WEEKLY는 항상 7개 (월~일)
+        assertThat(results.getCigarette().getDate()).hasSize(7);
+
+        // 오늘 요일 라벨로 당일 데이터 확인
+        String todayLabel = LocalDate.now().getDayOfWeek().toString().substring(0, 3);
         assertThat(results.getCigarette().getDate())
-                .filteredOn(d -> d.getDate().equals(today))
+                .filteredOn(d -> d.getDate().equals(todayLabel))
                 .hasSize(1)
                 .first()
                 .extracting("value")
@@ -292,12 +282,7 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
 
-        // MongoDB에 데이터 없음
-        LocalDate startDate = PeriodType.WEEKLY.calculateStartDate(LocalDate.now());
-        String start = startDate.format(DateTimeFormatter.BASIC_ISO_DATE);
-        String end = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-
-        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(user.getId(), start, end))
+        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(anyLong(), anyString(), anyString()))
                 .willReturn(List.of());
 
         // 당일 데이터만 추가
@@ -314,13 +299,16 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(results).isNotNull();
-        assertThat(results.getCigarette().getAvgCigaretteCount()).isEqualTo(3);
-        assertThat(results.getCigarette().getDate()).hasSize(1);
+        // WEEKLY는 항상 7개 (월~일)
+        assertThat(results.getCigarette().getDate()).hasSize(7);
 
-        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        // 오늘 요일 라벨로 당일 3개 데이터 확인
+        String todayLabel = LocalDate.now().getDayOfWeek().toString().substring(0, 3);
         assertThat(results.getCigarette().getDate())
+                .filteredOn(d -> d.getDate().equals(todayLabel))
+                .hasSize(1)
                 .first()
-                .extracting("date", "value")
-                .containsExactly(today, 3L);
+                .extracting("value")
+                .isEqualTo(3L);
     }
 }

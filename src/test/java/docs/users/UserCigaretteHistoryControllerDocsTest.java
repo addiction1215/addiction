@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -108,38 +107,35 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("기간별 흡연기록 그래프 조회 API")
+    @DisplayName("주간 흡연기록 그래프 조회 API (WEEKLY)")
     @Test
-    void 기간별_흡연기록_그래프_조회_API() throws Exception {
+    void 주간_흡연기록_그래프_조회_API() throws Exception {
         UserCigaretteHistoryGraphResponse response = UserCigaretteHistoryGraphResponse.builder()
                 .cigarette(UserCigaretteHistoryGraphCountResponse.builder()
-                        .avgCigaretteCount(10)
+                        .avgCigaretteCount(5)
                         .date(List.of(
-                                UserCigaretteHistoryGraphDateResponse.builder()
-                                        .date("2024-06-01")
-                                        .value(5)
-                                        .build(),
-                                UserCigaretteHistoryGraphDateResponse.builder()
-                                        .date("2024-06-02")
-                                        .value(5)
-                                        .build()
+                                UserCigaretteHistoryGraphDateResponse.builder().date("MON").value(3).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("TUE").value(5).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("WED").value(4).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("THU").value(7).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("FRI").value(6).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("SAT").value(0).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("SUN").value(0).build()
                         )).build())
                 .patient(UserCigaretteHistoryGraphPatientResponse.builder()
-                        .avgSmokePatientTime(100)
+                        .avgSmokePatientTime(3600)
                         .date(List.of(
-                                UserCigaretteHistoryGraphDateResponse.builder()
-                                        .date("2024-06-01")
-                                        .value(5)
-                                        .build(),
-                                UserCigaretteHistoryGraphDateResponse.builder()
-                                        .date("2024-06-02")
-                                        .value(5)
-                                        .build()
+                                UserCigaretteHistoryGraphDateResponse.builder().date("MON").value(3600).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("TUE").value(3200).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("WED").value(4000).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("THU").value(2800).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("FRI").value(3900).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("SAT").value(0).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("SUN").value(0).build()
                         )).build())
                 .build();
 
-        given(userCigaretteHistoryService.findGraphByPeriod(any()))
-                .willReturn(response);
+        given(userCigaretteHistoryService.findGraphByPeriod(PeriodType.WEEKLY)).willReturn(response);
 
         mockMvc.perform(
                         get("/api/v1/user/cigarette-history/graph")
@@ -148,30 +144,217 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("user-cigarette-history-graph",
+                .andDo(document("user-cigarette-history-graph-weekly",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("periodType").description(
-                                        "기간 타입 ->가능한 값: " + Arrays.toString(PeriodType.values()))
+                                parameterWithName("periodType").description("기간 타입 (WEEKLY: 이번 주 월~일 일별 집계)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
                                 fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("그래프 데이터"),
-                                fieldWithPath("data.cigarette").type(JsonFieldType.OBJECT).description("담배 관련 그래프 데이터"),
-                                fieldWithPath("data.cigarette.avgCigaretteCount").type(JsonFieldType.NUMBER)
-                                        .description("평균 흡연 개수"),
-                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("날짜별 흡연 데이터"),
-                                fieldWithPath("data.cigarette.date[].date").type(JsonFieldType.STRING).description("날짜"),
-                                fieldWithPath("data.cigarette.date[].value").type(JsonFieldType.NUMBER).description("해당 날짜의 흡연 개수"),
-                                fieldWithPath("data.patient").type(JsonFieldType.OBJECT).description("인내 관련 그래프 데이터"),
-                                fieldWithPath("data.patient.avgSmokePatientTime").type(JsonFieldType.NUMBER)
-                                        .description("평균 인내 시간(초)"),
-                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("날짜별 인내 데이터"),
-                                fieldWithPath("data.patient.date[].date").type(JsonFieldType.STRING).description("날짜"),
-                                fieldWithPath("data.patient.date[].value").type(JsonFieldType.NUMBER).description("해당 날짜의 인내 시간(초)")
+                                fieldWithPath("data.cigarette").type(JsonFieldType.OBJECT).description("흡연량 그래프"),
+                                fieldWithPath("data.cigarette.avgCigaretteCount").type(JsonFieldType.NUMBER).description("주 평균 흡연 개수"),
+                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("요일별 흡연 데이터 (MON~SUN)"),
+                                fieldWithPath("data.cigarette.date[].date").type(JsonFieldType.STRING).description("요일 (MON, TUE, WED, THU, FRI, SAT, SUN)"),
+                                fieldWithPath("data.cigarette.date[].value").type(JsonFieldType.NUMBER).description("해당 요일 흡연 개수"),
+                                fieldWithPath("data.patient").type(JsonFieldType.OBJECT).description("참은 시간 그래프"),
+                                fieldWithPath("data.patient.avgSmokePatientTime").type(JsonFieldType.NUMBER).description("주 평균 참은 시간(초)"),
+                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("요일별 참은 시간 데이터"),
+                                fieldWithPath("data.patient.date[].date").type(JsonFieldType.STRING).description("요일 (MON~SUN)"),
+                                fieldWithPath("data.patient.date[].value").type(JsonFieldType.NUMBER).description("해당 요일 평균 참은 시간(초)")
+                        )
+                ));
+    }
+
+    @DisplayName("월간 흡연기록 그래프 조회 API (MONTHLY)")
+    @Test
+    void 월간_흡연기록_그래프_조회_API() throws Exception {
+        UserCigaretteHistoryGraphResponse response = UserCigaretteHistoryGraphResponse.builder()
+                .cigarette(UserCigaretteHistoryGraphCountResponse.builder()
+                        .avgCigaretteCount(22)
+                        .date(List.of(
+                                UserCigaretteHistoryGraphDateResponse.builder().date("04/22").value(20).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("04/29").value(25).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("05/06").value(18).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("05/13").value(30).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("05/20").value(17).build()
+                        )).build())
+                .patient(UserCigaretteHistoryGraphPatientResponse.builder()
+                        .avgSmokePatientTime(3500)
+                        .date(List.of(
+                                UserCigaretteHistoryGraphDateResponse.builder().date("04/22").value(3200).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("04/29").value(3600).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("05/06").value(3800).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("05/13").value(3400).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("05/20").value(3500).build()
+                        )).build())
+                .build();
+
+        given(userCigaretteHistoryService.findGraphByPeriod(PeriodType.MONTHLY)).willReturn(response);
+
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/graph")
+                                .param("periodType", "MONTHLY")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-cigarette-history-graph-monthly",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("periodType").description("기간 타입 (MONTHLY: 현재 주 포함 최근 5주 주별 집계)")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("그래프 데이터"),
+                                fieldWithPath("data.cigarette").type(JsonFieldType.OBJECT).description("흡연량 그래프"),
+                                fieldWithPath("data.cigarette.avgCigaretteCount").type(JsonFieldType.NUMBER).description("5주 평균 주간 흡연 개수"),
+                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("주별 흡연 합계 데이터 (5개)"),
+                                fieldWithPath("data.cigarette.date[].date").type(JsonFieldType.STRING).description("주 시작일 (MM/dd 형식)"),
+                                fieldWithPath("data.cigarette.date[].value").type(JsonFieldType.NUMBER).description("해당 주 흡연 합계"),
+                                fieldWithPath("data.patient").type(JsonFieldType.OBJECT).description("참은 시간 그래프"),
+                                fieldWithPath("data.patient.avgSmokePatientTime").type(JsonFieldType.NUMBER).description("5주 평균 참은 시간(초)"),
+                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("주별 참은 시간 데이터"),
+                                fieldWithPath("data.patient.date[].date").type(JsonFieldType.STRING).description("주 시작일 (MM/dd 형식)"),
+                                fieldWithPath("data.patient.date[].value").type(JsonFieldType.NUMBER).description("해당 주 평균 참은 시간(초)")
+                        )
+                ));
+    }
+
+    @DisplayName("6개월 흡연기록 그래프 조회 API (SIXMONTHLY)")
+    @Test
+    void 육개월_흡연기록_그래프_조회_API() throws Exception {
+        UserCigaretteHistoryGraphResponse response = UserCigaretteHistoryGraphResponse.builder()
+                .cigarette(UserCigaretteHistoryGraphCountResponse.builder()
+                        .avgCigaretteCount(85)
+                        .date(List.of(
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202512").value(90).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202601").value(95).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202602").value(80).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202603").value(75).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202604").value(88).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202605").value(82).build()
+                        )).build())
+                .patient(UserCigaretteHistoryGraphPatientResponse.builder()
+                        .avgSmokePatientTime(3600)
+                        .date(List.of(
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202512").value(3400).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202601").value(3500).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202602").value(3700).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202603").value(3800).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202604").value(3600).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202605").value(3600).build()
+                        )).build())
+                .build();
+
+        given(userCigaretteHistoryService.findGraphByPeriod(PeriodType.SIXMONTHLY)).willReturn(response);
+
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/graph")
+                                .param("periodType", "SIXMONTHLY")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-cigarette-history-graph-sixmonthly",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("periodType").description("기간 타입 (SIXMONTHLY: 현재 달 포함 최근 6개월 월별 집계)")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("그래프 데이터"),
+                                fieldWithPath("data.cigarette").type(JsonFieldType.OBJECT).description("흡연량 그래프"),
+                                fieldWithPath("data.cigarette.avgCigaretteCount").type(JsonFieldType.NUMBER).description("6개월 평균 월간 흡연 개수"),
+                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("월별 흡연 합계 데이터 (6개)"),
+                                fieldWithPath("data.cigarette.date[].date").type(JsonFieldType.STRING).description("월 (yyyyMM 형식)"),
+                                fieldWithPath("data.cigarette.date[].value").type(JsonFieldType.NUMBER).description("해당 월 흡연 합계"),
+                                fieldWithPath("data.patient").type(JsonFieldType.OBJECT).description("참은 시간 그래프"),
+                                fieldWithPath("data.patient.avgSmokePatientTime").type(JsonFieldType.NUMBER).description("6개월 평균 참은 시간(초)"),
+                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("월별 참은 시간 데이터"),
+                                fieldWithPath("data.patient.date[].date").type(JsonFieldType.STRING).description("월 (yyyyMM 형식)"),
+                                fieldWithPath("data.patient.date[].value").type(JsonFieldType.NUMBER).description("해당 월 평균 참은 시간(초)")
+                        )
+                ));
+    }
+
+    @DisplayName("1년 흡연기록 그래프 조회 API (YEARLY)")
+    @Test
+    void 일년_흡연기록_그래프_조회_API() throws Exception {
+        UserCigaretteHistoryGraphResponse response = UserCigaretteHistoryGraphResponse.builder()
+                .cigarette(UserCigaretteHistoryGraphCountResponse.builder()
+                        .avgCigaretteCount(88)
+                        .date(List.of(
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202506").value(90).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202507").value(95).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202508").value(80).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202509").value(75).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202510").value(88).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202511").value(92).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202512").value(85).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202601").value(78).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202602").value(82).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202603").value(91).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202604").value(87).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202605").value(83).build()
+                        )).build())
+                .patient(UserCigaretteHistoryGraphPatientResponse.builder()
+                        .avgSmokePatientTime(3600)
+                        .date(List.of(
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202506").value(3200).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202507").value(3400).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202508").value(3600).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202509").value(3800).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202510").value(3500).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202511").value(3700).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202512").value(3600).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202601").value(3900).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202602").value(3800).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202603").value(3600).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202604").value(3500).build(),
+                                UserCigaretteHistoryGraphDateResponse.builder().date("202605").value(3600).build()
+                        )).build())
+                .build();
+
+        given(userCigaretteHistoryService.findGraphByPeriod(PeriodType.YEARLY)).willReturn(response);
+
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/graph")
+                                .param("periodType", "YEARLY")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-cigarette-history-graph-yearly",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("periodType").description("기간 타입 (YEARLY: 현재 달 포함 최근 12개월 월별 집계)")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("그래프 데이터"),
+                                fieldWithPath("data.cigarette").type(JsonFieldType.OBJECT).description("흡연량 그래프"),
+                                fieldWithPath("data.cigarette.avgCigaretteCount").type(JsonFieldType.NUMBER).description("12개월 평균 월간 흡연 개수"),
+                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("월별 흡연 합계 데이터 (12개)"),
+                                fieldWithPath("data.cigarette.date[].date").type(JsonFieldType.STRING).description("월 (yyyyMM 형식)"),
+                                fieldWithPath("data.cigarette.date[].value").type(JsonFieldType.NUMBER).description("해당 월 흡연 합계"),
+                                fieldWithPath("data.patient").type(JsonFieldType.OBJECT).description("참은 시간 그래프"),
+                                fieldWithPath("data.patient.avgSmokePatientTime").type(JsonFieldType.NUMBER).description("12개월 평균 참은 시간(초)"),
+                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("월별 참은 시간 데이터"),
+                                fieldWithPath("data.patient.date[].date").type(JsonFieldType.STRING).description("월 (yyyyMM 형식)"),
+                                fieldWithPath("data.patient.date[].value").type(JsonFieldType.NUMBER).description("해당 월 평균 참은 시간(초)")
                         )
                 ));
     }
