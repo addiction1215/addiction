@@ -56,7 +56,9 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
                      List<CigaretteHistoryDocument.History> historyList) {
+        LocalDateTime smokeDate = LocalDate.parse(dateStr, BASIC_ISO_DATE).atStartOfDay();
         CigaretteHistoryDocument doc = CigaretteHistoryDocument.builder()
+                .smokeDate(smokeDate)
                 .month(monthStr)
                 .date(dateStr)
                 .userId(userId)
@@ -65,7 +67,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                 .history(historyList)
                 .build();
 
-        userCigaretteHistoryRepository.save(doc, dateStr);
+        userCigaretteHistoryRepository.save(doc);
     }
 
     @Override

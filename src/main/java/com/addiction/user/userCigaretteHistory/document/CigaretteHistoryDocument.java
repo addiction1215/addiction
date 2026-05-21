@@ -17,13 +17,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document  // collection 이름을 동적으로 지정하기 위해 제거
+@Document("cigarette_history")
 public class CigaretteHistoryDocument {
 	@Id
 	private String id;
-	private String month;
-	private String date;
-	private Long userId;
+	private LocalDateTime smokeDate; // timeField: 해당 날짜 자정 (yyyyMMdd 00:00:00)
+	private String month;            // yyyyMM
+	private String date;             // yyyyMMdd
+	private Long userId;             // metaField
 	private Integer smokeCount;
 	private Long avgPatienceTime;
 	private List<History> history;

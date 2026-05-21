@@ -95,7 +95,7 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
 
         // then
-        verify(userCigaretteHistoryRepository, times(1)).save(any(CigaretteHistoryDocument.class), eq(dateStr));
+        verify(userCigaretteHistoryRepository, times(1)).save(any(CigaretteHistoryDocument.class));
     }
 
     @DisplayName("특정 월의 흡연 히스토리를 캘린더 형식으로 조회한다 - 당일 데이터 포함")
