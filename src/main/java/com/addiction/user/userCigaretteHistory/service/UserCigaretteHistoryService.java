@@ -3,7 +3,6 @@ package com.addiction.user.userCigaretteHistory.service;
 import java.util.List;
 
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
-import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryCalenderResponse;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryGraphResponse;
@@ -26,7 +25,7 @@ public interface UserCigaretteHistoryService {
 
     UserCigaretteHistoryLastestResponse findLastestByUserId();
 
-	WeeklyComparisonResponse compareWeekly(ComparisonType comparisonType);
+	WeeklyComparisonResponse compareWeekly();
 
 	WeeklyCigaretteResponse findThisWeekCigarettes();
 

@@ -1,7 +1,6 @@
 package com.addiction.user.userCigaretteHistory.controller;
 
 import com.addiction.ControllerTestSupport;
-import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.response.*;
 
@@ -111,64 +110,38 @@ class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
     }
 
 
-    @DisplayName("주간 흡연 횟수 비교 데이터를 조회한다.")
+    @DisplayName("주간 흡연 비교 데이터를 조회한다.")
     @Test
     @WithMockUser(roles = "USER")
-    void 주간_흡연_횟수_비교_데이터를_조회한다() throws Exception {
+    void 주간_흡연_비교_데이터를_조회한다() throws Exception {
         // given
-        ComparisonType comparisonType = ComparisonType.COUNT;
         WeeklyComparisonResponse response = WeeklyComparisonResponse.builder()
-                .comparisonType(comparisonType)
                 .lastWeekCount(10)
                 .thisWeekCount(5)
-                .difference(-5.0)
-                .changeRate(-50.0)
-                .build();
-
-        given(userCigaretteHistoryService.compareWeekly(comparisonType)).willReturn(response);
-
-        // when // then
-        mockMvc.perform(
-                        get("/api/v1/user/cigarette-history/weekly-comparison")
-                                .param("comparisonType", "COUNT")
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.comparisonType").value("COUNT"))
-                .andExpect(jsonPath("$.data.lastWeekCount").value(10))
-                .andExpect(jsonPath("$.data.thisWeekCount").value(5))
-                .andExpect(jsonPath("$.data.difference").value(-5.0))
-                .andExpect(jsonPath("$.data.changeRate").value(-50.0));
-    }
-
-    @DisplayName("주간 평균 금연 시간 비교 데이터를 조회한다.")
-    @Test
-    @WithMockUser(roles = "USER")
-    void 주간_평균_금연_시간_비교_데이터를_조회한다() throws Exception {
-        // given
-        ComparisonType comparisonType = ComparisonType.TIME;
-        WeeklyComparisonResponse response = WeeklyComparisonResponse.builder()
-                .comparisonType(comparisonType)
+                .countDifference(-5.0)
+                .countChangeRate(-50.0)
                 .lastWeekAvgTime(60.5)
                 .thisWeekAvgTime(70.5)
-                .difference(10.0)
-                .changeRate(16.5)
+                .timeDifference(10.0)
+                .timeChangeRate(16.5)
                 .build();
 
-        given(userCigaretteHistoryService.compareWeekly(comparisonType)).willReturn(response);
+        given(userCigaretteHistoryService.compareWeekly()).willReturn(response);
 
         // when // then
         mockMvc.perform(
                         get("/api/v1/user/cigarette-history/weekly-comparison")
-                                .param("comparisonType", "TIME")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.comparisonType").value("TIME"))
+                .andExpect(jsonPath("$.data.lastWeekCount").value(10))
+                .andExpect(jsonPath("$.data.thisWeekCount").value(5))
+                .andExpect(jsonPath("$.data.countDifference").value(-5.0))
+                .andExpect(jsonPath("$.data.countChangeRate").value(-50.0))
                 .andExpect(jsonPath("$.data.lastWeekAvgTime").value(60.5))
                 .andExpect(jsonPath("$.data.thisWeekAvgTime").value(70.5))
-                .andExpect(jsonPath("$.data.difference").value(10.0))
-                .andExpect(jsonPath("$.data.changeRate").value(16.5));
+                .andExpect(jsonPath("$.data.timeDifference").value(10.0))
+                .andExpect(jsonPath("$.data.timeChangeRate").value(16.5));
     }
 
     @DisplayName("이번 주 흡연량을 조회한다.")

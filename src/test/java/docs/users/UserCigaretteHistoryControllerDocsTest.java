@@ -1,7 +1,6 @@
 package docs.users;
 
 import com.addiction.user.userCigaretteHistory.controller.UserCigaretteHistoryController;
-import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.*;
@@ -393,32 +392,22 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
     @Test
     void 주간_흡연_데이터_비교_API() throws Exception {
         // given
-        WeeklyComparisonResponse countResponse = WeeklyComparisonResponse.builder()
-                .comparisonType(ComparisonType.COUNT)
+        WeeklyComparisonResponse response = WeeklyComparisonResponse.builder()
                 .lastWeekCount(10)
                 .thisWeekCount(5)
-                .difference(-5.0)
-                .changeRate(-50.0)
-                .build();
-
-        given(userCigaretteHistoryService.compareWeekly(ComparisonType.COUNT))
-                .willReturn(countResponse);
-
-        WeeklyComparisonResponse timeResponse = WeeklyComparisonResponse.builder()
-                .comparisonType(ComparisonType.TIME)
+                .countDifference(-5.0)
+                .countChangeRate(-50.0)
                 .lastWeekAvgTime(60.5)
                 .thisWeekAvgTime(70.5)
-                .difference(10.0)
-                .changeRate(16.5)
+                .timeDifference(10.0)
+                .timeChangeRate(16.5)
                 .build();
 
-        given(userCigaretteHistoryService.compareWeekly(ComparisonType.TIME))
-                .willReturn(timeResponse);
+        given(userCigaretteHistoryService.compareWeekly()).willReturn(response);
 
         // when // then
         mockMvc.perform(
                         get("/api/v1/user/cigarette-history/weekly-comparison")
-                                .param("comparisonType", "COUNT")
                                 .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -426,21 +415,19 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                 .andDo(document("user-cigarette-history-weekly-comparison",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        queryParameters(
-                                parameterWithName("comparisonType").description("비교 타입 (COUNT: 흡연 횟수, TIME: 평균 금연 시간)")
-                        ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
                                 fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("주간 비교 데이터"),
-                                fieldWithPath("data.comparisonType").type(JsonFieldType.STRING).description("비교 타입"),
-                                fieldWithPath("data.lastWeekCount").type(JsonFieldType.NUMBER).description("지난주 총 횟수"),
-                                fieldWithPath("data.thisWeekCount").type(JsonFieldType.NUMBER).description("이번주 총 횟수"),
-                                fieldWithPath("data.lastWeekAvgTime").type(JsonFieldType.NULL).description("지난주 평균 금연 시간 (TIME 타입)"),
-                                fieldWithPath("data.thisWeekAvgTime").type(JsonFieldType.NULL).description("이번주 평균 금연 시간 (TIME 타입)"),
-                                fieldWithPath("data.difference").type(JsonFieldType.NUMBER).description("증감 값"),
-                                fieldWithPath("data.changeRate").type(JsonFieldType.NUMBER).description("증감률 (%)")
+                                fieldWithPath("data.lastWeekCount").type(JsonFieldType.NUMBER).description("지난주 총 흡연 횟수"),
+                                fieldWithPath("data.thisWeekCount").type(JsonFieldType.NUMBER).description("이번주 총 흡연 횟수"),
+                                fieldWithPath("data.countDifference").type(JsonFieldType.NUMBER).description("흡연 횟수 증감"),
+                                fieldWithPath("data.countChangeRate").type(JsonFieldType.NUMBER).description("흡연 횟수 증감률 (%)"),
+                                fieldWithPath("data.lastWeekAvgTime").type(JsonFieldType.NUMBER).description("지난주 평균 금연 시간 (시간)"),
+                                fieldWithPath("data.thisWeekAvgTime").type(JsonFieldType.NUMBER).description("이번주 평균 금연 시간 (시간)"),
+                                fieldWithPath("data.timeDifference").type(JsonFieldType.NUMBER).description("금연 시간 증감 (시간)"),
+                                fieldWithPath("data.timeChangeRate").type(JsonFieldType.NUMBER).description("금연 시간 증감률 (%)")
                         )
                 ));
     }

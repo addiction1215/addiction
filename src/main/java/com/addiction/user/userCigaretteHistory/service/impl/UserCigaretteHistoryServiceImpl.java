@@ -4,7 +4,6 @@ import com.addiction.global.security.SecurityService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
-import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.enums.SmokingFeedback;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
@@ -281,21 +280,40 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     @Override
-    public WeeklyComparisonResponse compareWeekly(ComparisonType comparisonType) {
+    public WeeklyComparisonResponse compareWeekly() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
-        // 지난주 데이터 조회 (MongoDB 전체)
         List<CigaretteHistoryDocument> lastWeekDocs = getLastWeekDocuments(userId);
-
-        // 이번주 데이터 조회 (MongoDB + 당일 RDBMS)
         List<CigaretteHistoryDocument> thisWeekDocs = getThisWeekDocuments(userId);
 
-        // 비교 타입에 따라 계산
-        if (comparisonType == ComparisonType.COUNT) {
-            return calculateCountComparison(lastWeekDocs, thisWeekDocs);
-        } else {
-            return calculateTimeComparison(lastWeekDocs, thisWeekDocs);
-        }
+        // 횟수 비교
+        int lastWeekCount = lastWeekDocs.stream().mapToInt(CigaretteHistoryDocument::getSmokeCount).sum();
+        int thisWeekCount = thisWeekDocs.stream().mapToInt(CigaretteHistoryDocument::getSmokeCount).sum();
+        double countDiff = thisWeekCount - lastWeekCount;
+        double countChangeRate = lastWeekCount == 0
+                ? (thisWeekCount > 0 ? PERCENTAGE_MULTIPLIER : 0.0)
+                : (countDiff / lastWeekCount) * PERCENTAGE_MULTIPLIER;
+
+        // 시간 비교 (초 → 시간)
+        double lastWeekAvgTime = lastWeekDocs.stream()
+                .mapToLong(CigaretteHistoryDocument::getAvgPatienceTime).average().orElse(0.0) / SECONDS_PER_HOUR;
+        double thisWeekAvgTime = thisWeekDocs.stream()
+                .mapToLong(CigaretteHistoryDocument::getAvgPatienceTime).average().orElse(0.0) / SECONDS_PER_HOUR;
+        double timeDiff = thisWeekAvgTime - lastWeekAvgTime;
+        double timeChangeRate = lastWeekAvgTime == 0
+                ? (thisWeekAvgTime > 0 ? PERCENTAGE_MULTIPLIER : 0.0)
+                : (timeDiff / lastWeekAvgTime) * PERCENTAGE_MULTIPLIER;
+
+        return WeeklyComparisonResponse.createResponse(
+                lastWeekCount, thisWeekCount,
+                round(countDiff), round(countChangeRate),
+                round(lastWeekAvgTime), round(thisWeekAvgTime),
+                round(timeDiff), round(timeChangeRate)
+        );
+    }
+
+    private double round(double value) {
+        return Math.round(value * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER;
     }
 
     /**
@@ -387,82 +405,6 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                 .smokeCount(cigarettes.size())
                 .avgPatienceTime(avgPatienceTime)
                 .history(historyList)
-                .build();
-    }
-
-    /**
-     * 흡연 횟수 비교 계산
-     */
-    private WeeklyComparisonResponse calculateCountComparison(
-            List<CigaretteHistoryDocument> lastWeekDocs,
-            List<CigaretteHistoryDocument> thisWeekDocs) {
-
-        // 지난주 총 횟수
-        int lastWeekCount = lastWeekDocs.stream()
-                .mapToInt(CigaretteHistoryDocument::getSmokeCount)
-                .sum();
-
-        // 이번주 총 횟수
-        int thisWeekCount = thisWeekDocs.stream()
-                .mapToInt(CigaretteHistoryDocument::getSmokeCount)
-                .sum();
-
-        // 증감 값
-        double difference = thisWeekCount - lastWeekCount;
-
-        // 증감률 계산 (지난주가 0이면 100% 또는 -100%로 표시)
-        double changeRate;
-        if (lastWeekCount == 0) {
-            changeRate = thisWeekCount > 0 ? PERCENTAGE_MULTIPLIER : 0.0;
-        } else {
-            changeRate = (difference / lastWeekCount) * PERCENTAGE_MULTIPLIER;
-        }
-
-        return WeeklyComparisonResponse.builder()
-                .comparisonType(ComparisonType.COUNT)
-                .lastWeekCount(lastWeekCount)
-                .thisWeekCount(thisWeekCount)
-                .difference(difference)
-                .changeRate(Math.round(changeRate * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER) // 소수점 1자리
-                .build();
-    }
-
-    /**
-     * 금연 시간 비교 계산
-     */
-    private WeeklyComparisonResponse calculateTimeComparison(
-            List<CigaretteHistoryDocument> lastWeekDocs,
-            List<CigaretteHistoryDocument> thisWeekDocs) {
-
-        // 지난주 평균 금연 시간 (초 -> 시간)
-        double lastWeekAvgTime = lastWeekDocs.stream()
-                .mapToLong(CigaretteHistoryDocument::getAvgPatienceTime)
-                .average()
-                .orElse(0.0) / SECONDS_PER_HOUR;
-
-        // 이번주 평균 금연 시간 (초 -> 시간)
-        double thisWeekAvgTime = thisWeekDocs.stream()
-                .mapToLong(CigaretteHistoryDocument::getAvgPatienceTime)
-                .average()
-                .orElse(0.0) / SECONDS_PER_HOUR;
-
-        // 증감 값
-        double difference = thisWeekAvgTime - lastWeekAvgTime;
-
-        // 증감률 계산
-        double changeRate;
-        if (lastWeekAvgTime == 0) {
-            changeRate = thisWeekAvgTime > 0 ? PERCENTAGE_MULTIPLIER : 0.0;
-        } else {
-            changeRate = (difference / lastWeekAvgTime) * PERCENTAGE_MULTIPLIER;
-        }
-
-        return WeeklyComparisonResponse.builder()
-                .comparisonType(ComparisonType.TIME)
-                .lastWeekAvgTime(Math.round(lastWeekAvgTime * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER) // 소수점 1자리
-                .thisWeekAvgTime(Math.round(thisWeekAvgTime * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER) // 소수점 1자리
-                .difference(Math.round(difference * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER) // 소수점 1자리
-                .changeRate(Math.round(changeRate * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER) // 소수점 1자리
                 .build();
     }
 

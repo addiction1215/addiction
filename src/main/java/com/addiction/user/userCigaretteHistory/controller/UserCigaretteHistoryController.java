@@ -2,13 +2,11 @@ package com.addiction.user.userCigaretteHistory.controller;
 
 import java.util.List;
 
-import com.addiction.user.userCigaretteHistory.enums.ComparisonType;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryLastestResponse;
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyComparisonResponse;
 import com.addiction.user.userCigaretteHistory.service.response.SmokingFeedbackResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addiction.global.ApiResponse;
@@ -49,9 +47,8 @@ public class UserCigaretteHistoryController {
     }
 
     @GetMapping("/weekly-comparison")
-    public ApiResponse<WeeklyComparisonResponse> getWeeklyComparison(
-            @RequestParam ComparisonType comparisonType) {
-        return ApiResponse.ok(userCigaretteHistoryService.compareWeekly(comparisonType));
+    public ApiResponse<WeeklyComparisonResponse> getWeeklyComparison() {
+        return ApiResponse.ok(userCigaretteHistoryService.compareWeekly());
     }
 
     @GetMapping("/this-week")
