@@ -23,7 +23,7 @@ spring:
   data:
     mongodb:
       uri: ${MONGO_DB_URL}
-      database: addiction
+      database: quitmate
     logging:
       level:
         p6spy: info
