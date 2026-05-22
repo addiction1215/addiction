@@ -470,20 +470,20 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public SmokingFeedbackResponse getSmokingFeedback() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        LocalDate yesterday = LocalDate.now().minusDays(ONE_DAY);
-        LocalDate dayBeforeYesterday = LocalDate.now().minusDays(2);
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(ONE_DAY);
+
+        // 오늘 데이터 조회 (RDBMS)
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(ONE_DAY).atStartOfDay();
+        List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(
+                userId, startOfDay, endOfDay);
+        int todaySmokeCount = todayCigarettes.size();
 
         // 어제 데이터 조회 (MongoDB)
         CigaretteHistoryDocument yesterdayDoc = userCigaretteHistoryRepository.findByDateAndUserId(
                 yesterday.format(BASIC_ISO_DATE), userId);
-
-        // 그제 데이터 조회 (MongoDB)
-        CigaretteHistoryDocument dayBeforeDoc = userCigaretteHistoryRepository.findByDateAndUserId(
-                dayBeforeYesterday.format(BASIC_ISO_DATE), userId);
-
-        // null 체크 후 0으로 처리
         int yesterdaySmokeCount = yesterdayDoc != null ? yesterdayDoc.getSmokeCount() : 0;
-        int dayBeforeSmokeCount = dayBeforeDoc != null ? dayBeforeDoc.getSmokeCount() : 0;
 
         // 평소 흡연량 조회 (User의 totalScore)
         User user = userReadService.findById(userId);
@@ -492,8 +492,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         // 피드백 조건 찾기
         return SmokingFeedbackResponse.createResponse(
                 SmokingFeedback.findFeedback(
-                        calculateChangeRate(yesterdaySmokeCount, usualSmokeCount), // 평소 대비 변화율 계산
-                        calculateChangeRate(yesterdaySmokeCount, dayBeforeSmokeCount) // 그제 대비 변화율 계산
+                        calculateChangeRate(todaySmokeCount, usualSmokeCount), // 평소 대비 변화율 계산
+                        calculateChangeRate(todaySmokeCount, yesterdaySmokeCount) // 어제 대비 변화율 계산
                 )
         );
     }
