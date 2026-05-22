@@ -469,27 +469,25 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(ONE_DAY);
-
-        // 오늘 데이터 조회 (RDBMS)
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(ONE_DAY).atStartOfDay();
-        List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(
-                userId, startOfDay, endOfDay);
-        int todaySmokeCount = todayCigarettes.size();
+        LocalDate dayBeforeYesterday = today.minusDays(ONE_DAY * 2);
 
         // 어제 데이터 조회 (MongoDB)
         CigaretteHistoryDocument yesterdayDoc = userCigaretteHistoryRepository.findByDateAndUserId(
                 yesterday.format(BASIC_ISO_DATE), userId);
         int yesterdaySmokeCount = yesterdayDoc != null ? yesterdayDoc.getSmokeCount() : 0;
 
+        // 그제 데이터 조회 (MongoDB)
+        CigaretteHistoryDocument dayBeforeDoc = userCigaretteHistoryRepository.findByDateAndUserId(
+                dayBeforeYesterday.format(BASIC_ISO_DATE), userId);
+        int dayBeforeSmokeCount = dayBeforeDoc != null ? dayBeforeDoc.getSmokeCount() : 0;
+
         // 평소 흡연량 조회 (MongoDB 전체 평균)
         double usualSmokeCount = userCigaretteHistoryRepository.findAverageSmokeCountByUserId(userId);
 
-        // 피드백 조건 찾기
         return SmokingFeedbackResponse.createResponse(
                 SmokingFeedback.findFeedback(
-                        calculateChangeRate(todaySmokeCount, usualSmokeCount), // 평소 대비 변화율 계산
-                        calculateChangeRate(todaySmokeCount, yesterdaySmokeCount) // 어제 대비 변화율 계산
+                        calculateChangeRate(yesterdaySmokeCount, usualSmokeCount),    // 평소 대비 변화율
+                        calculateChangeRate(yesterdaySmokeCount, dayBeforeSmokeCount) // 그제 대비 변화율
                 )
         );
     }
