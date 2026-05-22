@@ -505,6 +505,41 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
     }
 
 
+    @DisplayName("통계 피드백 조회 API")
+    @Test
+    void 통계_피드백_조회_API() throws Exception {
+        // given
+        StatsFeedbackResponse response = StatsFeedbackResponse.builder()
+                .message("잘하고 있어요! 이제 더 줄여서 아예 끊어보는 건 어떨까요?")
+                .build();
+
+        given(userCigaretteHistoryService.getStatsFeedback())
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/stats-feedback")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("cigarette-history-stats-feedback",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("상태 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.message").type(JsonFieldType.STRING)
+                                        .description("통계 기반 피드백 메시지")
+                        )
+                ));
+    }
+
     @DisplayName("금연 피드백 조회 API")
     @Test
     void 금연_피드백_조회_API() throws Exception {

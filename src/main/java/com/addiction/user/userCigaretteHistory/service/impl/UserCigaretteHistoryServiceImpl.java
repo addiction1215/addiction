@@ -6,6 +6,7 @@ import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.enums.SmokingFeedback;
+import com.addiction.user.userCigaretteHistory.enums.StatsFeedback;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.*;
@@ -490,6 +491,14 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                         calculateChangeRate(yesterdaySmokeCount, dayBeforeSmokeCount) // 그제 대비 변화율
                 )
         );
+    }
+
+    @Override
+    public StatsFeedbackResponse getStatsFeedback() {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        double avgSmokeCount = userCigaretteHistoryRepository.findAverageSmokeCountByUserId(userId);
+        double avgPatienceTime = userCigaretteHistoryRepository.findAverageAvgPatienceTimeByUserId(userId);
+        return StatsFeedbackResponse.createResponse(StatsFeedback.findFeedback(avgSmokeCount, avgPatienceTime));
     }
 
     private double calculateChangeRate(int current, double previous) {

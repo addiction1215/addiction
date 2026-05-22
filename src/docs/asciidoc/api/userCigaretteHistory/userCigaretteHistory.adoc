@@ -129,5 +129,18 @@ include::{snippets}/cigarette-history-feedback/http-request.adoc[]
 include::{snippets}/cigarette-history-feedback/http-response.adoc[]
 include::{snippets}/cigarette-history-feedback/response-fields.adoc[]
 
+[[cigarette-history-stats-feedback]]
+=== 통계 피드백 조회
+평균 흡연 빈도와 평균 금연 유지 시간을 기반으로 통계 피드백 메시지를 반환합니다.
+
+==== HTTP Request
+
+include::{snippets}/cigarette-history-stats-feedback/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/cigarette-history-stats-feedback/http-response.adoc[]
+include::{snippets}/cigarette-history-stats-feedback/response-fields.adoc[]
+
 
 

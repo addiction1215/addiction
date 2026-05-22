@@ -283,4 +283,24 @@ class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.message").value("흡연량이 폭발적으로 늘었어요. 지금은 전문가 도움도 고려해 보세요."));
     }
+
+    @DisplayName("통계 피드백을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 통계_피드백을_조회한다() throws Exception {
+        // given
+        StatsFeedbackResponse response = StatsFeedbackResponse.builder()
+                .message("잘하고 있어요! 이제 더 줄여서 아예 끊어보는 건 어떨까요?")
+                .build();
+
+        given(userCigaretteHistoryService.getStatsFeedback()).willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/stats-feedback")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.message").value("잘하고 있어요! 이제 더 줄여서 아예 끊어보는 건 어떨까요?"));
+    }
 }

@@ -90,15 +90,24 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
 
     @Override
     public double findAverageSmokeCountByUserId(Long userId) {
+        return aggregateSingleAvg(userId, "smokeCount");
+    }
+
+    @Override
+    public double findAverageAvgPatienceTimeByUserId(Long userId) {
+        return aggregateSingleAvg(userId, "avgPatienceTime");
+    }
+
+    private double aggregateSingleAvg(Long userId, String field) {
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.match(Criteria.where("userId").is(userId)),
-                Aggregation.group().avg("smokeCount").as("avgCount")
+                Aggregation.group().avg(field).as("avgValue")
         );
         AggregationResults<Document> results = mongoTemplate.aggregate(
                 aggregation, MongoConfig.COLLECTION_NAME, Document.class);
         Document result = results.getUniqueMappedResult();
         if (result == null) return 0.0;
-        Object avgCount = result.get("avgCount");
-        return avgCount instanceof Number ? ((Number) avgCount).doubleValue() : 0.0;
+        Object avgValue = result.get("avgValue");
+        return avgValue instanceof Number ? ((Number) avgValue).doubleValue() : 0.0;
     }
 }
