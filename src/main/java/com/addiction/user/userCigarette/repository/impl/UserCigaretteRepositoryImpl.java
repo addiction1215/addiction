@@ -69,7 +69,7 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	}
 
 	@Override
-	public Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDesc(Long userId) {
-		return userCigaretteJpaRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
+	public Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDescIdDesc(Long userId) {
+		return userCigaretteJpaRepository.findTopByUserIdOrderByCreatedDateDescIdDesc(userId);
 	}
 }

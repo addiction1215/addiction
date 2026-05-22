@@ -14,4 +14,6 @@ public interface UserCigaretteHistoryRepository {
 	List<CigaretteHistoryDocument> findByUserIdAndDateBetween(Long userId, String startDate, String endDate);
 
     CigaretteHistoryDocument findLatestByUserId(Long userId);
+
+    double findAverageSmokeCountByUserId(Long userId);
 }

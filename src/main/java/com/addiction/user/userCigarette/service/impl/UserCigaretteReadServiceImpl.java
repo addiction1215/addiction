@@ -48,7 +48,7 @@ public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 
 	@Override
 	public UserCigarette findLatestByUserId(Long userId) {
-		return userCigaretteRepository.findTopByUserIdOrderByCreatedDateDesc(userId)
+		return userCigaretteRepository.findTopByUserIdOrderByCreatedDateDescIdDesc(userId)
 			.orElse(null);
 	}
 }

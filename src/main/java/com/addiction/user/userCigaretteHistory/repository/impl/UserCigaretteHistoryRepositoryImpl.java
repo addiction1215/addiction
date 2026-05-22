@@ -4,8 +4,12 @@ import com.addiction.global.config.MongoConfig;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -82,5 +86,19 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
                 CigaretteHistoryDocument.class,
                 MongoConfig.COLLECTION_NAME
         );
+    }
+
+    @Override
+    public double findAverageSmokeCountByUserId(Long userId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userId").is(userId)),
+                Aggregation.group().avg("smokeCount").as("avgCount")
+        );
+        AggregationResults<Document> results = mongoTemplate.aggregate(
+                aggregation, MongoConfig.COLLECTION_NAME, Document.class);
+        Document result = results.getUniqueMappedResult();
+        if (result == null) return 0.0;
+        Object avgCount = result.get("avgCount");
+        return avgCount instanceof Number ? ((Number) avgCount).doubleValue() : 0.0;
     }
 }

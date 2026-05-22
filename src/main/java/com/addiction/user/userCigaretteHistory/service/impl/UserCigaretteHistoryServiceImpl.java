@@ -9,8 +9,6 @@ import com.addiction.user.userCigaretteHistory.enums.SmokingFeedback;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.*;
-import com.addiction.user.users.entity.User;
-import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +49,6 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     private final SecurityService securityService;
     private final UserCigaretteReadService userCigaretteReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
-    private final UserReadService userReadService;
 
     @Override
     public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
@@ -485,9 +482,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                 yesterday.format(BASIC_ISO_DATE), userId);
         int yesterdaySmokeCount = yesterdayDoc != null ? yesterdayDoc.getSmokeCount() : 0;
 
-        // 평소 흡연량 조회 (User의 totalScore)
-        User user = userReadService.findById(userId);
-        int usualSmokeCount = user.getTotalScore() != null ? user.getTotalScore() : 0;
+        // 평소 흡연량 조회 (MongoDB 전체 평균)
+        double usualSmokeCount = userCigaretteHistoryRepository.findAverageSmokeCountByUserId(userId);
 
         // 피드백 조건 찾기
         return SmokingFeedbackResponse.createResponse(
@@ -498,19 +494,16 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         );
     }
 
-    /**
-     * 변화율 계산
-     *
-     * @param current  현재 값 (어제 흡연량)
-     * @param previous 비교 대상 값 (평소 또는 그제 흡연량)
-     * @return 변화율 (%)
-     */
-    private double calculateChangeRate(int current, int previous) {
+    private double calculateChangeRate(int current, double previous) {
         if (previous == 0) {
             return current == 0 ? 0.0 : 100.0;
         }
 
-        double rate = ((double) (current - previous) / previous) * PERCENTAGE_MULTIPLIER;
+        double rate = ((current - previous) / previous) * PERCENTAGE_MULTIPLIER;
         return Math.round(rate * DECIMAL_MULTIPLIER) / DECIMAL_MULTIPLIER;
+    }
+
+    private double calculateChangeRate(int current, int previous) {
+        return calculateChangeRate(current, (double) previous);
     }
 }
