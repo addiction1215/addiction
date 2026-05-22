@@ -40,7 +40,7 @@ public class DailySmokingPushBatch {
 
         try {
             LocalDate yesterday = LocalDate.now().minusDays(1);
-            String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM_dd"));
+            String yesterdayStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE);
 
             List<User> users = userReadService.findAllWithPushes();
             log.info("총 {}명의 사용자에게 피드백 전송 시도", users.size());

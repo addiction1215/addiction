@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
@@ -21,7 +20,9 @@ import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class userCigaretteHistoryBatch {
@@ -34,8 +35,7 @@ public class userCigaretteHistoryBatch {
 	private final UserService userService;
 	private final UserReadService userReadService;
 
-	@Scheduled(cron = "0 0 0 * * *")
-	@Transactional
+	@Scheduled(cron = "0/10 * * * * *")
 	public void userCigaretteHistory() {
 		LocalDate yesterday = LocalDate.now().minusDays(1);
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
@@ -49,36 +49,42 @@ public class userCigaretteHistoryBatch {
 
 		for (Map.Entry<Long, List<UserCigarette>> entry : grouped.entrySet()) {
 			long userId = entry.getKey();
-
 			List<UserCigarette> cigarettes = entry.getValue();
+			try {
+				int smokeCount = cigarettes.size();
+				long avgPatienceTime = (long) cigarettes.stream()
+					.mapToLong(UserCigarette::getSmokePatienceTime)
+					.average()
+					.orElse(0);
 
-			int smokeCount = cigarettes.size();
-			long avgPatienceTime = (long) cigarettes.stream()
-				.mapToLong(UserCigarette::getSmokePatienceTime)
-				.average()
-				.orElse(0);
+				List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
+					.map(c -> CigaretteHistoryDocument.History.builder()
+						.address(c.getAddress())
+						.smokeTime(c.getCreatedDate())
+						.smokePatienceTime(c.getSmokePatienceTime())
+						.build())
+					.collect(Collectors.toList());
 
-			List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
-				.map(c -> CigaretteHistoryDocument.History.builder()
-					.address(c.getAddress())
-					.smokeTime(c.getCreatedDate())
-					.smokePatienceTime(c.getSmokePatienceTime())
-					.build())
-				.collect(Collectors.toList());
+				userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
 
-			userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
-
-			// 마지막 흡연 시간으로 startDate 업데이트
-			cigarettes.stream()
-				.map(UserCigarette::getSmokeTime)
-				.max(LocalDateTime::compareTo)
-				.ifPresent(lastSmokeTime -> userService.updateStartDate(userId, lastSmokeTime));
+				// 마지막 흡연 시간으로 startDate 업데이트
+				cigarettes.stream()
+					.map(UserCigarette::getSmokeTime)
+					.max(LocalDateTime::compareTo)
+					.ifPresent(lastSmokeTime -> userService.updateStartDate(userId, lastSmokeTime));
+			} catch (Exception e) {
+				log.error("사용자 {}의 흡연 기록 배치 처리 중 오류 발생 - skip", userId, e);
+			}
 		}
 
 		// 어제 흡연 기록이 없는 활성 유저는 금연시간 86400초(24시간)로 저장
 		for (User user : userReadService.findAll()) {
 			if (!grouped.containsKey(user.getId())) {
-				userCigaretteHistoryService.save(monthStr, dateStr, user.getId(), 0, SECONDS_PER_DAY, List.of());
+				try {
+					userCigaretteHistoryService.save(monthStr, dateStr, user.getId(), 0, SECONDS_PER_DAY, List.of());
+				} catch (Exception e) {
+					log.error("사용자 {}의 금연 기록 저장 중 오류 발생 - skip", user.getId(), e);
+				}
 			}
 		}
 
