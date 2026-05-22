@@ -35,7 +35,7 @@ public class userCigaretteHistoryBatch {
 	private final UserService userService;
 	private final UserReadService userReadService;
 
-	@Scheduled(cron = "0/10 * * * * *")
+	@Scheduled(cron = "0 0 0 * * *")
 	public void userCigaretteHistory() {
 		LocalDate yesterday = LocalDate.now().minusDays(1);
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
