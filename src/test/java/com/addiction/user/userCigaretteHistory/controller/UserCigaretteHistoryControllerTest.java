@@ -55,6 +55,7 @@ class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
                 UserCigaretteHistoryResponse.builder()
                         .address("서울시 강남구")
                         .smokePatienceTime(1800)
+                        .smokeTime(LocalDateTime.of(2024, 7, 1, 14, 30, 0))
                         .build()
         );
         given(userCigaretteHistoryService.findHistoryByDate(date)).willReturn(response);
@@ -67,7 +68,8 @@ class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].address").value("서울시 강남구"))
-                .andExpect(jsonPath("$.data[0].smokePatienceTime").value(1800));
+                .andExpect(jsonPath("$.data[0].smokePatienceTime").value(1800))
+                .andExpect(jsonPath("$.data[0].smokeTime").value("2024-07-01T14:30:00"));
     }
 
     @DisplayName("기간별 흡연기록 그래프를 조회한다.")

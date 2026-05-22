@@ -77,6 +77,7 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                 UserCigaretteHistoryResponse.builder()
                         .address("서울시 강남구 역삼동")
                         .smokePatienceTime(900)
+                        .smokeTime(java.time.LocalDateTime.of(2024, 6, 1, 14, 30, 0))
                         .build()
         );
         given(userCigaretteHistoryService.findHistoryByDate(any()))
@@ -101,7 +102,8 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("흡연기록 목록"),
                                 fieldWithPath("data[].address").type(JsonFieldType.STRING).description("흡연 장소"),
-                                fieldWithPath("data[].smokePatienceTime").type(JsonFieldType.NUMBER).description("인내 시간(초)")
+                                fieldWithPath("data[].smokePatienceTime").type(JsonFieldType.NUMBER).description("인내 시간(초)"),
+                                fieldWithPath("data[].smokeTime").type(JsonFieldType.STRING).description("흡연 시간").optional()
                         )
                 ));
     }
