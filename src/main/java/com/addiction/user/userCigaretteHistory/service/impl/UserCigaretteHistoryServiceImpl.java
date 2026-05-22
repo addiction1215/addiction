@@ -494,6 +494,16 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     @Override
+    public FirstSmokeDateResponse findFirstSmokeDate() {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        CigaretteHistoryDocument doc = userCigaretteHistoryRepository.findEarliestByUserId(userId);
+        if (doc == null) {
+            return FirstSmokeDateResponse.builder().firstDate(null).build();
+        }
+        return FirstSmokeDateResponse.createResponse(doc);
+    }
+
+    @Override
     public StatsFeedbackResponse getStatsFeedback() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         double avgSmokeCount = userCigaretteHistoryRepository.findAverageSmokeCountByUserId(userId);

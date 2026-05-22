@@ -11,6 +11,7 @@ import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHis
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyComparisonResponse;
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyCigaretteResponse;
 import com.addiction.user.userCigaretteHistory.service.response.SmokingFeedbackResponse;
+import com.addiction.user.userCigaretteHistory.service.response.FirstSmokeDateResponse;
 import com.addiction.user.userCigaretteHistory.service.response.StatsFeedbackResponse;
 
 public interface UserCigaretteHistoryService {
@@ -33,5 +34,7 @@ public interface UserCigaretteHistoryService {
 	SmokingFeedbackResponse getSmokingFeedback();
 
 	StatsFeedbackResponse getStatsFeedback();
+
+	FirstSmokeDateResponse findFirstSmokeDate();
 
 }

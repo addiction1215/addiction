@@ -505,6 +505,34 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
     }
 
 
+    @DisplayName("최초 흡연 날짜 조회 API")
+    @Test
+    void 최초_흡연_날짜_조회_API() throws Exception {
+        // given
+        given(userCigaretteHistoryService.findFirstSmokeDate())
+                .willReturn(FirstSmokeDateResponse.builder()
+                        .firstDate(LocalDateTime.parse("2024-04-01T00:00:00"))
+                        .build());
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/first-date")
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("cigarette-history-first-date",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                                fieldWithPath("data.firstDate").type(JsonFieldType.STRING).description("최초 흡연 날짜 (데이터 없을 경우 null)").optional()
+                        )
+                ));
+    }
+
     @DisplayName("통계 피드백 조회 API")
     @Test
     void 통계_피드백_조회_API() throws Exception {

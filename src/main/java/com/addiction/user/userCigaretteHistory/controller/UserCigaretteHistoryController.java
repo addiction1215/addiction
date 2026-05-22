@@ -5,6 +5,7 @@ import java.util.List;
 import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHistoryLastestResponse;
 import com.addiction.user.userCigaretteHistory.service.response.WeeklyComparisonResponse;
 import com.addiction.user.userCigaretteHistory.service.response.SmokingFeedbackResponse;
+import com.addiction.user.userCigaretteHistory.service.response.FirstSmokeDateResponse;
 import com.addiction.user.userCigaretteHistory.service.response.StatsFeedbackResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,6 +66,11 @@ public class UserCigaretteHistoryController {
     @GetMapping("/stats-feedback")
     public ApiResponse<StatsFeedbackResponse> getStatsFeedback() {
         return ApiResponse.ok(userCigaretteHistoryService.getStatsFeedback());
+    }
+
+    @GetMapping("/first-date")
+    public ApiResponse<FirstSmokeDateResponse> findFirstSmokeDate() {
+        return ApiResponse.ok(userCigaretteHistoryService.findFirstSmokeDate());
     }
 
 }

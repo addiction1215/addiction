@@ -303,4 +303,24 @@ class UserCigaretteHistoryControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.message").value("잘하고 있어요! 이제 더 줄여서 아예 끊어보는 건 어떨까요?"));
     }
+
+    @DisplayName("최초 흡연 날짜를 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 최초_흡연_날짜를_조회한다() throws Exception {
+        // given
+        FirstSmokeDateResponse response = FirstSmokeDateResponse.builder()
+                .firstDate(LocalDateTime.of(2024, 4, 1, 0, 0, 0))
+                .build();
+
+        given(userCigaretteHistoryService.findFirstSmokeDate()).willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cigarette-history/first-date")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.firstDate").value("2024-04-01T00:00:00"));
+    }
 }

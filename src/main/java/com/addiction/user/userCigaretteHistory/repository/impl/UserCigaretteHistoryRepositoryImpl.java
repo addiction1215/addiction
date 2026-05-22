@@ -89,6 +89,17 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
     }
 
     @Override
+    public CigaretteHistoryDocument findEarliestByUserId(Long userId) {
+        return mongoTemplate.findOne(
+                query(where("userId").is(userId))
+                        .with(Sort.by(Sort.Direction.ASC, "smokeDate"))
+                        .limit(1),
+                CigaretteHistoryDocument.class,
+                MongoConfig.COLLECTION_NAME
+        );
+    }
+
+    @Override
     public double findAverageSmokeCountByUserId(Long userId) {
         return aggregateSingleAvg(userId, "smokeCount");
     }
