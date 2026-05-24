@@ -55,5 +55,6 @@ public class UserReadServiceTest extends IntegrationTestSupport {
 		//then
 		assertThat(response.getEmail()).isEqualTo("test@test.com");
 		assertThat(response.getNickName()).isEqualTo("테스트 닉네임");
+		assertThat(response.getSnsType()).isEqualTo(SnsType.KAKAO);
 	}
 }

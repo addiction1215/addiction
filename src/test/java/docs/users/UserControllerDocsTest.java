@@ -491,6 +491,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                         .profileUrl("https://example.com/profile.jpg")
                         .email("test@example.com")
                         .nickName("테스트닉네임")
+                        .snsType(com.addiction.user.users.entity.enums.SnsType.NORMAL)
                         .build()
                 );
 
@@ -517,7 +518,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.email").type(JsonFieldType.STRING)
                                         .description("이메일"),
                                 fieldWithPath("data.nickName").type(JsonFieldType.STRING)
-                                        .description("닉네임")
+                                        .description("닉네임"),
+                                fieldWithPath("data.snsType").type(JsonFieldType.STRING)
+                                        .description("SNS 가입 타입")
                         )
                 ));
     }
