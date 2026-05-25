@@ -30,13 +30,13 @@ public class InquiryAnswer extends BaseTimeEntity {
     @JoinColumn(name = "inquiry_question_id", nullable = false)
     private InquiryQuestion inquiryQuestion;
 
-    @Column(columnDefinition = "TEXT")
-    private String answer;
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
 
     @Builder
-    public InquiryAnswer(Long id, InquiryQuestion inquiryQuestion, String answer) {
+    public InquiryAnswer(Long id, InquiryQuestion inquiryQuestion, String content) {
         this.id = id;
         this.inquiryQuestion = inquiryQuestion;
-        this.answer = answer;
+        this.content = content;
     }
 }

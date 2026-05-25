@@ -55,7 +55,7 @@ public class InquiryQuestionDetailResponse {
 
         return inquiryAnswers.stream()
                 .max(Comparator.comparing(InquiryAnswer::getCreatedDate, Comparator.nullsLast(Comparator.naturalOrder())))
-                .map(InquiryAnswer::getAnswer)
+                .map(InquiryAnswer::getContent)
                 .orElse(null);
     }
 }
