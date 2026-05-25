@@ -104,6 +104,22 @@ public class UserServiceImpl implements UserService {
 		return UserUpdateInfoResponse.createResponse(user);
 	}
 
+	@Override
+	public Boolean updatePassword(UserUpdatePasswordServiceRequest userUpdatePasswordServiceRequest) {
+		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+
+		validateCurrentPassword(user, userUpdatePasswordServiceRequest.getCurrentPassword());
+		validateNewPassword(userUpdatePasswordServiceRequest);
+
+		user.updateInfo(
+				bCryptPasswordEncoder,
+				userUpdatePasswordServiceRequest.getNewPassword(),
+				user.getPhoneNumber(),
+				user.getEmail()
+		);
+		return true;
+	}
+
     @Override
     public void updateStartDate(Long userId, LocalDateTime lastSmokeTime) {
         User user = userReadService.findById(userId);
@@ -120,6 +136,23 @@ public class UserServiceImpl implements UserService {
         if (Boolean.TRUE.equals(userUpdateProfileServiceRequest.getResetProfileImage())
                 && userUpdateProfileServiceRequest.getProfileUrl() != null) {
             throw new AddictionException("프로필 이미지 변경과 초기화는 동시에 요청할 수 없습니다.");
+        }
+    }
+
+    private void validateCurrentPassword(User user, String currentPassword) {
+        if (!bCryptPasswordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new AddictionException("현재 비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    private void validateNewPassword(UserUpdatePasswordServiceRequest userUpdatePasswordServiceRequest) {
+        if (userUpdatePasswordServiceRequest.getCurrentPassword().equals(userUpdatePasswordServiceRequest.getNewPassword())) {
+            throw new AddictionException("현재 비밀번호와 새 비밀번호는 같을 수 없습니다.");
+        }
+
+        if (!userUpdatePasswordServiceRequest.getNewPassword()
+                .equals(userUpdatePasswordServiceRequest.getNewPasswordConfirm())) {
+            throw new AddictionException("새 비밀번호 확인이 일치하지 않습니다.");
         }
     }
 

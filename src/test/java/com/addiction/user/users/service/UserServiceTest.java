@@ -10,6 +10,7 @@ import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.service.request.UserSaveServiceRequest;
+import com.addiction.user.users.service.request.UserUpdatePasswordServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateProfileServiceRequest;
 import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateServiceRequest;
@@ -18,6 +19,7 @@ import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -31,6 +33,8 @@ public class UserServiceTest extends IntegrationTestSupport {
     private UserService userService;
     @Autowired
     private UserReadService userReadService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @DisplayName("유저의 정보를 저장한다.")
     @Test
@@ -166,6 +170,73 @@ public class UserServiceTest extends IntegrationTestSupport {
 
         // when // then
         assertThrows(AddictionException.class, () -> userService.updateProfile(request));
+    }
+
+    @DisplayName("유저의 비밀번호를 변경한다.")
+    @Test
+    void 유저의_비밀번호를_변경한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdatePasswordServiceRequest request = UserUpdatePasswordServiceRequest.builder()
+                .currentPassword("1234")
+                .newPassword("newPassword123!")
+                .newPasswordConfirm("newPassword123!")
+                .build();
+
+        // when
+        Boolean result = userService.updatePassword(request);
+
+        // then
+        assertThat(result).isTrue();
+        assertThat(bCryptPasswordEncoder.matches(
+                "newPassword123!",
+                userRepository.findById(savedUser.getId()).orElseThrow().getPassword()
+        )).isTrue();
+    }
+
+    @DisplayName("유저의 비밀번호 변경시 현재 비밀번호가 다르면 예외가 발생한다.")
+    @Test
+    void 유저의_비밀번호_변경시_현재_비밀번호가_다르면_예외가_발생한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdatePasswordServiceRequest request = UserUpdatePasswordServiceRequest.builder()
+                .currentPassword("wrong-password")
+                .newPassword("newPassword123!")
+                .newPasswordConfirm("newPassword123!")
+                .build();
+
+        // when // then
+        assertThrows(AddictionException.class, () -> userService.updatePassword(request));
+    }
+
+    @DisplayName("유저의 비밀번호 변경시 새 비밀번호 확인이 다르면 예외가 발생한다.")
+    @Test
+    void 유저의_비밀번호_변경시_새_비밀번호_확인이_다르면_예외가_발생한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdatePasswordServiceRequest request = UserUpdatePasswordServiceRequest.builder()
+                .currentPassword("1234")
+                .newPassword("newPassword123!")
+                .newPasswordConfirm("anotherPassword123!")
+                .build();
+
+        // when // then
+        assertThrows(AddictionException.class, () -> userService.updatePassword(request));
     }
 
     @DisplayName("유저의 설문조사 결과를 저장한다.")

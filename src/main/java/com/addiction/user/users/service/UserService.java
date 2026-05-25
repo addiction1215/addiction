@@ -22,6 +22,8 @@ public interface UserService {
 
 	UserUpdateInfoResponse updateInfo(UserUpdateInfoServiceRequest userUpdateInfoServiceRequest); // 테스트코드X
 
+	Boolean updatePassword(UserUpdatePasswordServiceRequest userUpdatePasswordServiceRequest);
+
     Boolean withdraw();
 
     void updateStartDate(Long userId, LocalDateTime lastSmokeTime);

@@ -56,6 +56,11 @@ public class UserController {
         return ApiResponse.ok(userService.updateInfo(userUpdateInfoRequest.toServiceRequest()));
     }
 
+    @PatchMapping("/password")
+    public ApiResponse<Boolean> updatePassword(@RequestBody @Valid UserUpdatePasswordRequest userUpdatePasswordRequest) {
+        return ApiResponse.ok(userService.updatePassword(userUpdatePasswordRequest.toServiceRequest()));
+    }
+
     @GetMapping("/profile")
     public ApiResponse<UserProfileResponse> findProfile() {
         return ApiResponse.ok(userReadService.findProfile());

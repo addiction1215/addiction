@@ -124,6 +124,19 @@ include::{snippets}/user-update-info/request-fields.adoc[]
 include::{snippets}/user-update-info/http-response.adoc[]
 include::{snippets}/user-update-info/response-fields.adoc[]
 
+[[user-update-password]]
+=== 사용자 비밀번호 수정
+
+==== HTTP Request
+
+include::{snippets}/user-update-password/http-request.adoc[]
+include::{snippets}/user-update-password/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-update-password/http-response.adoc[]
+include::{snippets}/user-update-password/response-fields.adoc[]
+
 [[send-mail]]
 === 이메일 인증코드 전송
 

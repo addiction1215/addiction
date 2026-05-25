@@ -482,6 +482,51 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 ));
     }
 
+    @DisplayName("사용자 비밀번호 수정 API")
+    @Test
+    void 사용자_비밀번호를_수정한다() throws Exception {
+        // given
+        UserUpdatePasswordRequest request = UserUpdatePasswordRequest.builder()
+                .currentPassword("oldPassword123!")
+                .newPassword("newPassword123!")
+                .newPasswordConfirm("newPassword123!")
+                .build();
+
+        given(userService.updatePassword(any()))
+                .willReturn(true);
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/user/password")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-update-password",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("currentPassword").type(JsonFieldType.STRING)
+                                        .description("현재 비밀번호"),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING)
+                                        .description("새 비밀번호"),
+                                fieldWithPath("newPasswordConfirm").type(JsonFieldType.STRING)
+                                        .description("새 비밀번호 확인")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.BOOLEAN)
+                                        .description("비밀번호 변경 성공 여부")
+                        )
+                ));
+    }
+
     @DisplayName("사용자 간단 프로필 조회 API")
     @Test
     void 사용자_간단_프로필_조회_API() throws Exception {

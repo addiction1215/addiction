@@ -2,6 +2,7 @@ package com.addiction.user.users.controller;
 
 import com.addiction.ControllerTestSupport;
 import com.addiction.user.users.controller.request.UserUpdateProfileRequest;
+import com.addiction.user.users.controller.request.UserUpdatePasswordRequest;
 import com.addiction.user.users.controller.request.UserUpdatePurposeRequest;
 import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
@@ -359,6 +360,34 @@ public class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("금연 목표는 필수입니다."));
+    }
+
+    @DisplayName("사용자의 비밀번호를 수정한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 사용자의_비밀번호를_수정한다() throws Exception {
+        // given
+        UserUpdatePasswordRequest userUpdatePasswordRequest = UserUpdatePasswordRequest.builder()
+                .currentPassword("oldPassword123!")
+                .newPassword("newPassword123!")
+                .newPasswordConfirm("newPassword123!")
+                .build();
+
+        given(userService.updatePassword(any()))
+                .willReturn(true);
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/user/password")
+                                .content(objectMapper.writeValueAsString(userUpdatePasswordRequest))
+                                .contentType(APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("사용자의 간단한 프로필 정보를 조회한다.")
