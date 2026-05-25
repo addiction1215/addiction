@@ -56,6 +56,7 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                         .userId(1L)
                         .title("문의 제목입니다")
                         .question("문의 내용입니다")
+                        .answer("문의 답변입니다")
                         .imageKeys(List.of("image-key-1", "image-key-2"))
                         .build()
                 );
@@ -94,6 +95,8 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                                         .description("문의 제목"),
                                 fieldWithPath("data.question").type(JsonFieldType.STRING)
                                         .description("문의 내용"),
+                                fieldWithPath("data.answer").type(JsonFieldType.STRING).optional()
+                                        .description("문의 답변"),
                                 fieldWithPath("data.imageKeys").type(JsonFieldType.ARRAY).optional()
                                         .description("이미지 키 목록")
                         )
@@ -156,6 +159,7 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                         .id(1L)
                         .title("문의 제목입니다")
                         .question("문의 내용입니다")
+                        .answer("문의 답변입니다")
                         .imageKeys(List.of("image-key-1", "image-key-2"))
                         .inquiryStatus(InquiryStatus.WAITING)
                         .createdDate(LocalDateTime.of(2024, 1, 1, 0, 0))
@@ -188,6 +192,8 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                                         .description("문의 제목"),
                                 fieldWithPath("data.question").type(JsonFieldType.STRING)
                                         .description("문의 내용"),
+                                fieldWithPath("data.answer").type(JsonFieldType.STRING).optional()
+                                        .description("문의 답변"),
                                 fieldWithPath("data.imageKeys").type(JsonFieldType.ARRAY).optional()
                                         .description("이미지 키 목록"),
                                 fieldWithPath("data.inquiryStatus").type(JsonFieldType.STRING)

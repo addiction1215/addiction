@@ -33,7 +33,7 @@ public class InquiryQuestionReadServiceImpl implements InquiryQuestionReadServic
 
     @Override
     public InquiryQuestionDetailResponse findById(Long id) {
-        return inquiryQuestionRepository.findById(id)
+        return inquiryQuestionRepository.findDetailById(id)
                 .map(InquiryQuestionDetailResponse::createResponse)
                 .orElseThrow(() -> new NotFoundException("해당 문의를 찾을 수 없습니다."));
     }

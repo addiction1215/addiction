@@ -14,6 +14,8 @@ public interface InquiryQuestionRepository {
 
     Optional<InquiryQuestion> findById(Long id);
 
+    Optional<InquiryQuestion> findDetailById(Long id);
+
     void deleteById(Long id);
 
 }

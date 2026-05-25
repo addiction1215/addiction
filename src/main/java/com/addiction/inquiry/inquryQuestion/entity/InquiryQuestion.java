@@ -1,6 +1,7 @@
 package com.addiction.inquiry.inquryQuestion.entity;
 
 import com.addiction.global.BaseTimeEntity;
+import com.addiction.inquiry.inquiryAnswer.entity.InquiryAnswer;
 import com.addiction.inquiry.inquryQuestion.enums.InquiryStatus;
 import com.addiction.user.users.entity.User;
 import jakarta.persistence.*;
@@ -34,6 +35,9 @@ public class InquiryQuestion extends BaseTimeEntity {
     @CollectionTable(name = "inquiry_question_image_keys", joinColumns = @JoinColumn(name = "inquiry_question_id"))
     @Column(name = "image_key")
     private List<String> imageKeys;
+
+    @OneToMany(mappedBy = "inquiryQuestion", fetch = FetchType.LAZY)
+    private List<InquiryAnswer> inquiryAnswers;
 
     @Builder
     public InquiryQuestion(Long id, String question, String title, User user, InquiryStatus inquiryStatus, List<String> imageKeys) {

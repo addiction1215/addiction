@@ -32,6 +32,11 @@ public class InquiryQuestionRepositoryImpl implements InquiryQuestionRepository 
     }
 
     @Override
+    public Optional<InquiryQuestion> findDetailById(Long id) {
+        return inquiryQuestionJpaRepository.findDetailById(id);
+    }
+
+    @Override
     public void deleteById(Long id) {
         inquiryQuestionJpaRepository.deleteById(id);
     }
