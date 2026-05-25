@@ -50,6 +50,7 @@ public class MissionDetailResponse {
 
     public static MissionDetailResponse createResponse(MissionHistory missionHistory, String photoUrl1, String photoUrl2, String photoUrl3) {
         Mission mission = missionHistory.getMission();
+        List<String> addresses = missionHistory.getAddresses();
         return MissionDetailResponse.builder()
                 .missionId(mission.getId())
                 .title(mission.getTitle())
@@ -59,7 +60,7 @@ public class MissionDetailResponse {
                 .missionHistoryId(missionHistory.getId())
                 .status(missionHistory.getStatus())
                 .completeAt(missionHistory.getCompleteAt())
-                .addresses(missionHistory.getAddresses())
+                .addresses(addresses == null ? List.of() : List.copyOf(addresses))
                 .gpsVerifyCount(missionHistory.getGpsVerifyCount())
                 .photoUrl1(photoUrl1)
                 .photoUrl2(photoUrl2)
