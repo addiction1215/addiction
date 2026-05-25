@@ -56,7 +56,6 @@ public class InquiryQuestionControllerDocsTest extends RestDocsSupport {
                         .userId(1L)
                         .title("문의 제목입니다")
                         .question("문의 내용입니다")
-                        .answer("문의 답변입니다")
                         .imageKeys(List.of("image-key-1", "image-key-2"))
                         .build()
                 );
