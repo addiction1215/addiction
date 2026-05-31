@@ -79,6 +79,9 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(result.getContent())
                 .extracting(FriendProfileDto::getFriendId)
                 .containsExactly(activeFriend.getId());
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getEmail)
+                .containsExactly(activeFriend.getEmail());
     }
 
     @DisplayName("내가 친구 요청을 받은 쪽이어도 친구 목록을 조회한다.")
@@ -141,6 +144,35 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(result.getContent())
                 .extracting(FriendProfileDto::getFriendId)
                 .containsExactly(activeFriend.getId());
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getEmail)
+                .containsExactly(activeFriend.getEmail());
+    }
+
+    @DisplayName("내가 친구 요청을 받은 쪽이어도 차단 친구 목록을 조회한다.")
+    @Test
+    void getBlockedFriendList_whenCurrentUserIsReceiver() {
+        User requester = createUser("requester@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        requester.updateNickName("requester");
+        User receiver = createUser("receiver@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        userRepository.saveAll(List.of(requester, receiver));
+
+        Friend friendship = Friend.createRequest(requester, receiver);
+        friendship.block();
+        friendJpaRepository.save(friendship);
+
+        Page<FriendProfileDto> result = friendQueryRepository.getBlockedFriendList(
+                receiver.getId(),
+                PageRequest.of(0, 10)
+        );
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getFriendId)
+                .containsExactly(requester.getId());
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getEmail)
+                .containsExactly(requester.getEmail());
     }
 
     @DisplayName("내가 받은 친구 요청 목록을 조회한다.")

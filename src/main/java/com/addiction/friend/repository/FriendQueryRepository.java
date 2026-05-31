@@ -69,17 +69,28 @@ public class FriendQueryRepository {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
                         friend.id,
-                        friend.receiver.id,
-                        friend.receiver.nickName
+                        new CaseBuilder()
+                                .when(friend.requester.id.eq(userId))
+                                .then(receiver.id)
+                                .otherwise(requester.id),
+                        new CaseBuilder()
+                                .when(friend.requester.id.eq(userId))
+                                .then(receiver.nickName)
+                                .otherwise(requester.nickName),
+                        new CaseBuilder()
+                                .when(friend.requester.id.eq(userId))
+                                .then(receiver.email)
+                                .otherwise(requester.email)
                 ))
                 .from(friend)
-                .join(friend.receiver, user)
+                .join(friend.requester, requester)
+                .join(friend.receiver, receiver)
                 .where(
                         isParticipant(userId),
                         friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED),
-                        isActiveUser()
+                        isActiveFriend(userId)
                 )
-                .orderBy(friend.receiver.nickName.desc())
+                .orderBy(friend.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -202,11 +213,12 @@ public class FriendQueryRepository {
                 queryFactory
                         .select(friend.count())
                         .from(friend)
-                        .join(friend.receiver, user)
+                        .join(friend.requester, requester)
+                        .join(friend.receiver, receiver)
                         .where(
                                 isParticipant(userId),
                                 friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED),
-                                isActiveUser()
+                                isActiveFriend(userId)
                         )
                         .fetchOne()
         ).orElse(0L);
