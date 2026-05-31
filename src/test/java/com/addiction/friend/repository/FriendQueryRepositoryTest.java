@@ -137,5 +137,8 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(result.getContent())
                 .extracting(FriendProfileDto::getFriendId)
                 .containsExactly(activeRequester.getId());
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getEmail)
+                .containsExactly(activeRequester.getEmail());
     }
 }

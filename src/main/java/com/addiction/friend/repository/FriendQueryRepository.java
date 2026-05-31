@@ -112,7 +112,8 @@ public class FriendQueryRepository {
                 .select(Projections.constructor(FriendProfileDto.class,
                         friend.id,
                         friend.requester.id,
-                        friend.requester.nickName
+                        friend.requester.nickName,
+                        friend.requester.email
                 ))
                 .from(friend)
                 .join(friend.requester, user)
