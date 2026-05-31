@@ -37,7 +37,9 @@ public class FriendQueryRepository {
                 .from(friend)
                 .join(friend.receiver, user)
                 .where(
-                        isRequesterIdEqualTo(userId).and(friend.status.eq(FriendStatus.ACCEPTED))
+                        isRequesterIdEqualTo(userId),
+                        friend.status.eq(FriendStatus.ACCEPTED),
+                        isActiveUser()
                 )
                 .orderBy(friend.receiver.nickName.desc())
                 .offset(pageable.getOffset())
@@ -60,7 +62,8 @@ public class FriendQueryRepository {
                 .join(friend.receiver, user)
                 .where(
                         isParticipant(userId),
-                        friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED)
+                        friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED),
+                        isActiveUser()
                 )
                 .orderBy(friend.receiver.nickName.desc())
                 .offset(pageable.getOffset())
@@ -85,6 +88,7 @@ public class FriendQueryRepository {
                 .from(user)
                 .where(
                         user.id.ne(userId),
+                        isActiveUser(),
                         user.email.containsIgnoreCase(keyword),
                         user.id.notIn(
                                 queryFactory
@@ -110,6 +114,7 @@ public class FriendQueryRepository {
                         .from(user)
                         .where(
                                 user.id.ne(userId),
+                                isActiveUser(),
                                 user.email.containsIgnoreCase(keyword),
                                 user.id.notIn(
                                         queryFactory
@@ -127,8 +132,11 @@ public class FriendQueryRepository {
                 queryFactory
                         .select(friend.count())
                         .from(friend)
+                        .join(friend.receiver, user)
                         .where(
-                                isRequesterIdEqualTo(userId)
+                                isRequesterIdEqualTo(userId),
+                                friend.status.eq(FriendStatus.ACCEPTED),
+                                isActiveUser()
                         )
                         .fetchOne()
         ).orElse(0L);
@@ -139,9 +147,11 @@ public class FriendQueryRepository {
                 queryFactory
                         .select(friend.count())
                         .from(friend)
+                        .join(friend.receiver, user)
                         .where(
                                 isParticipant(userId),
-                                friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED)
+                                friend.status.eq(com.addiction.friend.entity.FriendStatus.BLOCKED),
+                                isActiveUser()
                         )
                         .fetchOne()
         ).orElse(0L);
@@ -153,5 +163,9 @@ public class FriendQueryRepository {
 
     private BooleanExpression isParticipant(Long userId) {
         return friend.requester.id.eq(userId).or(friend.receiver.id.eq(userId));
+    }
+
+    private BooleanExpression isActiveUser() {
+        return user.useYn.eq("Y");
     }
 }
