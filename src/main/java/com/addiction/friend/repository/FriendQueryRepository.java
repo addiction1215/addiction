@@ -2,8 +2,11 @@ package com.addiction.friend.repository;
 
 import com.addiction.friend.entity.FriendStatus;
 import com.addiction.friend.repository.response.FriendProfileDto;
+import com.addiction.user.users.entity.QUser;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,30 +21,37 @@ import static com.addiction.friend.entity.QFriend.friend;
 import static com.addiction.user.users.entity.QUser.user;
 import static java.util.Optional.ofNullable;
 
-import com.querydsl.core.types.dsl.Expressions;
-
 @RequiredArgsConstructor
 @Repository
 @Slf4j
 public class FriendQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final QUser requester = new QUser("requester");
+    private final QUser receiver = new QUser("receiver");
 
     public Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable) {
         List<FriendProfileDto> content = queryFactory
                 .select(Projections.constructor(FriendProfileDto.class,
                         friend.id,
-                        friend.receiver.id,
-                        friend.receiver.nickName
+                        new CaseBuilder()
+                                .when(friend.requester.id.eq(userId))
+                                .then(receiver.id)
+                                .otherwise(requester.id),
+                        new CaseBuilder()
+                                .when(friend.requester.id.eq(userId))
+                                .then(receiver.nickName)
+                                .otherwise(requester.nickName)
                 ))
                 .from(friend)
-                .join(friend.receiver, user)
+                .join(friend.requester, requester)
+                .join(friend.receiver, receiver)
                 .where(
-                        isRequesterIdEqualTo(userId),
+                        isParticipant(userId),
                         friend.status.eq(FriendStatus.ACCEPTED),
-                        isActiveUser()
+                        isActiveFriend(userId)
                 )
-                .orderBy(friend.receiver.nickName.desc())
+                .orderBy(friend.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -172,11 +182,12 @@ public class FriendQueryRepository {
                 queryFactory
                         .select(friend.count())
                         .from(friend)
-                        .join(friend.receiver, user)
+                        .join(friend.requester, requester)
+                        .join(friend.receiver, receiver)
                         .where(
-                                isRequesterIdEqualTo(userId),
+                                isParticipant(userId),
                                 friend.status.eq(FriendStatus.ACCEPTED),
-                                isActiveUser()
+                                isActiveFriend(userId)
                         )
                         .fetchOne()
         ).orElse(0L);
@@ -207,6 +218,11 @@ public class FriendQueryRepository {
 
     private BooleanExpression isParticipant(Long userId) {
         return friend.requester.id.eq(userId).or(friend.receiver.id.eq(userId));
+    }
+
+    private BooleanExpression isActiveFriend(Long userId) {
+        return friend.requester.id.eq(userId).and(receiver.useYn.eq("Y"))
+                .or(friend.receiver.id.eq(userId).and(requester.useYn.eq("Y")));
     }
 
     private BooleanExpression isActiveUser() {

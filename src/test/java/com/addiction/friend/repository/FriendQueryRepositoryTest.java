@@ -81,6 +81,37 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
                 .containsExactly(activeFriend.getId());
     }
 
+    @DisplayName("내가 친구 요청을 받은 쪽이어도 친구 목록을 조회한다.")
+    @Test
+    void getFriendList_whenCurrentUserIsReceiver() {
+        User requester = createUser("requester@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        requester.updateNickName("requester");
+        User receiver = createUser("receiver@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User withdrawnRequester = createUser("withdrawn@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        withdrawnRequester.updateNickName("withdrawn");
+        withdrawnRequester.withdraw();
+        userRepository.saveAll(List.of(requester, receiver, withdrawnRequester));
+
+        Friend friendship = Friend.createRequest(requester, receiver);
+        friendship.accept();
+        Friend withdrawnFriendship = Friend.createRequest(withdrawnRequester, receiver);
+        withdrawnFriendship.accept();
+        friendJpaRepository.saveAll(List.of(friendship, withdrawnFriendship));
+
+        Page<FriendProfileDto> result = friendQueryRepository.getFriendList(
+                receiver.getId(),
+                PageRequest.of(0, 10)
+        );
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getFriendId)
+                .containsExactly(requester.getId());
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getNickname)
+                .containsExactly(requester.getNickName());
+    }
+
     @DisplayName("차단 친구 목록 조회 시 탈퇴 유저는 제외한다.")
     @Test
     void getBlockedFriendList_excludesWithdrawnUsers() {
