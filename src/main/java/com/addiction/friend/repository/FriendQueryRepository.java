@@ -41,7 +41,11 @@ public class FriendQueryRepository {
                         new CaseBuilder()
                                 .when(friend.requester.id.eq(userId))
                                 .then(receiver.nickName)
-                                .otherwise(requester.nickName)
+                                .otherwise(requester.nickName),
+                        new CaseBuilder()
+                                .when(friend.requester.id.eq(userId))
+                                .then(receiver.email)
+                                .otherwise(requester.email)
                 ))
                 .from(friend)
                 .join(friend.requester, requester)

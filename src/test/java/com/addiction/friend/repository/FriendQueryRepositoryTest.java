@@ -110,6 +110,9 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(result.getContent())
                 .extracting(FriendProfileDto::getNickname)
                 .containsExactly(requester.getNickName());
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getEmail)
+                .containsExactly(requester.getEmail());
     }
 
     @DisplayName("차단 친구 목록 조회 시 탈퇴 유저는 제외한다.")
