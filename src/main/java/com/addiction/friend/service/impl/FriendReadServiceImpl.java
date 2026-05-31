@@ -37,6 +37,14 @@ public class FriendReadServiceImpl implements FriendReadService {
     }
 
     @Override
+    public PageCustom<FriendProfileDto> getReceivedFriendRequests(PageInfoServiceRequest pageRequest) {
+        long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        Pageable pageable = pageRequest.toPageable();
+
+        return PageCustom.of(friendRepository.getReceivedFriendRequests(userId, pageable));
+    }
+
+    @Override
     public PageCustom<FriendProfileDto> searchFriends(String keyword, PageInfoServiceRequest pageRequest) {
         long userId = securityService.getCurrentLoginUserInfo().getUserId();
         Pageable pageable = pageRequest.toPageable();

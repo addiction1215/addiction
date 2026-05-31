@@ -8,6 +8,7 @@ public interface FriendRepository {
 
     Page<FriendProfileDto> getFriendList(Long userId, Pageable pageable);
     Page<FriendProfileDto> getBlockedFriendList(Long userId, Pageable pageable);
+    Page<FriendProfileDto> getReceivedFriendRequests(Long userId, Pageable pageable);
     Page<FriendProfileDto> searchFriends(Long userId, String keyword, Pageable pageable);
 
 }

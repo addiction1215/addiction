@@ -107,6 +107,30 @@ public class FriendQueryRepository {
         return new PageImpl<>(content, pageable, total);
     }
 
+    public Page<FriendProfileDto> getReceivedFriendRequests(Long userId, Pageable pageable) {
+        List<FriendProfileDto> content = queryFactory
+                .select(Projections.constructor(FriendProfileDto.class,
+                        friend.id,
+                        friend.requester.id,
+                        friend.requester.nickName
+                ))
+                .from(friend)
+                .join(friend.requester, user)
+                .where(
+                        isReceiverIdEqualTo(userId),
+                        friend.status.eq(FriendStatus.PENDING),
+                        isActiveUser()
+                )
+                .orderBy(friend.createdDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = getTotalReceivedFriendRequestsCount(userId);
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private long getSearchFriendsCount(Long userId, String keyword) {
         return ofNullable(
                 queryFactory
@@ -122,6 +146,21 @@ public class FriendQueryRepository {
                                                 .from(friend)
                                                 .where(friend.requester.id.eq(userId))
                                 )
+                        )
+                        .fetchOne()
+        ).orElse(0L);
+    }
+
+    private long getTotalReceivedFriendRequestsCount(Long userId) {
+        return ofNullable(
+                queryFactory
+                        .select(friend.count())
+                        .from(friend)
+                        .join(friend.requester, user)
+                        .where(
+                                isReceiverIdEqualTo(userId),
+                                friend.status.eq(FriendStatus.PENDING),
+                                isActiveUser()
                         )
                         .fetchOne()
         ).orElse(0L);
@@ -159,6 +198,10 @@ public class FriendQueryRepository {
 
     private BooleanExpression isRequesterIdEqualTo(Long userId) {
         return friend.requester.id.eq(userId);
+    }
+
+    private BooleanExpression isReceiverIdEqualTo(Long userId) {
+        return friend.receiver.id.eq(userId);
     }
 
     private BooleanExpression isParticipant(Long userId) {

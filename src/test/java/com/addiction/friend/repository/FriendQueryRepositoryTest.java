@@ -108,4 +108,34 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
                 .extracting(FriendProfileDto::getFriendId)
                 .containsExactly(activeFriend.getId());
     }
+
+    @DisplayName("내가 받은 친구 요청 목록을 조회한다.")
+    @Test
+    void getReceivedFriendRequests() {
+        User receiver = createUser("receiver@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User activeRequester = createUser("active@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        activeRequester.updateNickName("active");
+        User acceptedRequester = createUser("accepted@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        acceptedRequester.updateNickName("accepted");
+        User withdrawnRequester = createUser("withdrawn@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        withdrawnRequester.updateNickName("withdrawn");
+        withdrawnRequester.withdraw();
+        userRepository.saveAll(List.of(receiver, activeRequester, acceptedRequester, withdrawnRequester));
+
+        Friend pendingRequest = Friend.createRequest(activeRequester, receiver);
+        Friend acceptedRequest = Friend.createRequest(acceptedRequester, receiver);
+        acceptedRequest.accept();
+        Friend withdrawnRequest = Friend.createRequest(withdrawnRequester, receiver);
+        friendJpaRepository.saveAll(List.of(pendingRequest, acceptedRequest, withdrawnRequest));
+
+        Page<FriendProfileDto> result = friendQueryRepository.getReceivedFriendRequests(
+                receiver.getId(),
+                PageRequest.of(0, 10)
+        );
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent())
+                .extracting(FriendProfileDto::getFriendId)
+                .containsExactly(activeRequester.getId());
+    }
 }
