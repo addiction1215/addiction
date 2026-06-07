@@ -118,7 +118,7 @@ public class MissionHistory extends BaseTimeEntity {
     }
 
     public void complete() {
-        this.status = MissionStatus.READY;
+        this.status = MissionStatus.COMPLETED;
         this.completeAt = LocalDateTime.now();
     }
 
