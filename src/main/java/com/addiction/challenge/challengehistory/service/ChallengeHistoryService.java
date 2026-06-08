@@ -2,9 +2,11 @@ package com.addiction.challenge.challengehistory.service;
 
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeCancelRequest;
+import com.addiction.challenge.challengehistory.controller.request.ChallengeCompleteRequest;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.controller.request.FailChallengeHistoryRequest;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
+import com.addiction.challenge.challengehistory.service.response.ChallengeCompleteResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeJoinResponse;
 
 public interface ChallengeHistoryService {
@@ -17,4 +19,9 @@ public interface ChallengeHistoryService {
      * 챌린지 포기하기
      */
     ChallengeCancelResponse cancelChallenge(ChallengeCancelRequest request);
+
+    /**
+     * 챌린지 완료하기
+     */
+    ChallengeCompleteResponse completeChallenge(ChallengeCompleteRequest request);
 }

@@ -45,6 +45,12 @@ public class ChallengeHistory extends BaseTimeEntity {
         }
     }
 
+    public void confirmCompleteUser(Long userId) {
+        if (!user.getId().equals(userId)) {
+            throw new AddictionException("본인의 챌린지만 완료할 수 있습니다.");
+        }
+    }
+
     public void confirmCancel() {
         if (status == ChallengeStatus.CANCELLED) {
             throw new AddictionException("이미 포기한 챌린지입니다.");
@@ -54,6 +60,12 @@ public class ChallengeHistory extends BaseTimeEntity {
     public void confirmComplete() {
         if (status == ChallengeStatus.COMPLETED) {
             throw new AddictionException("이미 완료된 챌린지는 포기할 수 없습니다.");
+        }
+    }
+
+    public void confirmProgressing() {
+        if (status != ChallengeStatus.PROGRESSING) {
+            throw new AddictionException("진행중인 챌린지만 완료할 수 있습니다.");
         }
     }
 

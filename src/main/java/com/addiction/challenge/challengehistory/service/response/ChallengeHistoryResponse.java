@@ -15,9 +15,10 @@ public class ChallengeHistoryResponse {
     private final Integer reward;
     private final Integer progress;
     private final ChallengeStatus status;
+    private final Boolean completionAvailable;
 
     @Builder
-    public ChallengeHistoryResponse(Long challengeHistoryId, String title, String content, String badge, Integer reward, Integer progress, ChallengeStatus status) {
+    public ChallengeHistoryResponse(Long challengeHistoryId, String title, String content, String badge, Integer reward, Integer progress, ChallengeStatus status, Boolean completionAvailable) {
         this.challengeHistoryId = challengeHistoryId;
         this.title = title;
         this.content = content;
@@ -25,6 +26,9 @@ public class ChallengeHistoryResponse {
         this.status = status;
         this.reward = reward;
         this.progress = progress;
+        this.completionAvailable = completionAvailable != null
+                ? completionAvailable
+                : status == ChallengeStatus.PROGRESSING && progress != null && progress == 100;
     }
 
     public static ChallengeHistoryResponse createResponse(ChallengeHistory challengeHistory, String badge, Integer progress) {

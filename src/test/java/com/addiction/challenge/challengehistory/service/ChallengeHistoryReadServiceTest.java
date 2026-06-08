@@ -6,6 +6,10 @@ import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
 import com.addiction.challenge.challengehistory.service.response.FinishedChallengeHistoryResponse;
+import com.addiction.challenge.mission.entity.Mission;
+import com.addiction.challenge.mission.entity.MissionCategoryStatus;
+import com.addiction.challenge.missionhistory.entity.MissionHistory;
+import com.addiction.challenge.missionhistory.entity.MissionStatus;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
 import com.addiction.jwt.dto.LoginUserInfo;
@@ -59,6 +63,7 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getReward()).isEqualTo(500);
         assertThat(response.getProgress()).isEqualTo(0);
         assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
+        assertThat(response.getCompletionAvailable()).isFalse();
     }
 
     @DisplayName("진행중인 챌린지가 없으면 null을 반환한다.")
@@ -119,6 +124,48 @@ class ChallengeHistoryReadServiceTest extends IntegrationTestSupport {
         assertThat(response.getReward()).isEqualTo(999);
         assertThat(response.getProgress()).isEqualTo(0);
         assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
+        assertThat(response.getCompletionAvailable()).isFalse();
+    }
+
+    @DisplayName("진행중인 챌린지의 진행률이 100이면 완료 가능 여부가 true로 반환된다.")
+    @Test
+    void getProgressingChallengeWithCompletionAvailable() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        given(s3StorageService.createPresignedUrl(any(), any()))
+                .willReturn("test-presigned-url");
+
+        Challenge challenge = createChallenge("테스트 챌린지", "테스트 챌린지 상세 내용", "test_badge.png", 999);
+        Challenge savedChallenge = cChallengeJpaRepository.save(challenge);
+
+        ChallengeHistory challengeHistory = createChallengeHistory(savedChallenge, savedUser, ChallengeStatus.PROGRESSING);
+        ChallengeHistory savedChallengeHistory = challengeHistoryJpaRepository.save(challengeHistory);
+
+        Mission mission1 = missionJpaRepository.save(createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
+                "미션1", "미션 내용1", 10));
+        Mission mission2 = missionJpaRepository.save(createMission(savedChallenge, MissionCategoryStatus.REPLACE_ACTION,
+                "미션2", "미션 내용2", 10));
+
+        MissionHistory missionHistory1 = createMissionHistory(savedChallengeHistory, mission1, savedUser,
+                MissionStatus.COMPLETED, null);
+        MissionHistory missionHistory2 = createMissionHistory(savedChallengeHistory, mission2, savedUser,
+                MissionStatus.COMPLETED, null);
+        missionHistoryJpaRepository.save(missionHistory1);
+        missionHistoryJpaRepository.save(missionHistory2);
+
+        // when
+        ChallengeHistoryResponse response = challengeHistoryReadService.getProgressingChallenge();
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.getProgress()).isEqualTo(100);
+        assertThat(response.getStatus()).isEqualTo(ChallengeStatus.PROGRESSING);
+        assertThat(response.getCompletionAvailable()).isTrue();
     }
 
     @DisplayName("완료된 챌린지 목록을 페이징하여 조회한다.")

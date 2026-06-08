@@ -3,6 +3,7 @@ package com.addiction.challenge.challengehistory.service.Impl;
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challange.service.ChallengeReadService;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeCancelRequest;
+import com.addiction.challenge.challengehistory.controller.request.ChallengeCompleteRequest;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
@@ -10,12 +11,15 @@ import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRe
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
+import com.addiction.challenge.challengehistory.service.response.ChallengeCompleteResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeJoinResponse;
 import com.addiction.challenge.mission.entity.Mission;
 import com.addiction.challenge.mission.service.MissionReadService;
 import com.addiction.challenge.missionhistory.entity.MissionHistory;
 import com.addiction.challenge.missionhistory.entity.MissionStatus;
+import com.addiction.challenge.missionhistory.repository.MissionHistoryRepository;
 import com.addiction.challenge.missionhistory.service.MissionHistoryService;
+import com.addiction.global.exception.AddictionException;
 import com.addiction.global.security.SecurityService;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.UserReadService;
@@ -40,6 +44,7 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
     private final ChallengeHistoryReadService challengeHistoryReadService;
 
     private final ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
+    private final MissionHistoryRepository missionHistoryRepository;
 
     @Override
     public ChallengeJoinResponse joinChallenge(ChallengeJoinRequest request) {
@@ -100,6 +105,38 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
 
         // 6. Response 생성 (ID만 반환)
         return ChallengeCancelResponse.of(challengeHistory.getId());
+    }
+
+    @Override
+    public ChallengeCompleteResponse completeChallenge(ChallengeCompleteRequest request) {
+        Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+
+        log.info("챌린지 완료 시작 - challengeHistoryId: {}, userId: {}", request.getChallengeHistoryId(), userId);
+
+        ChallengeHistory challengeHistory = challengeHistoryReadService.findById(request.getChallengeHistoryId());
+
+        challengeHistory.confirmCompleteUser(userId);
+        challengeHistory.confirmProgressing();
+
+        Integer progress = calculateProgress(challengeHistory.getId());
+        if (progress < 100) {
+            throw new AddictionException("진행률이 100인 챌린지만 완료할 수 있습니다.");
+        }
+
+        challengeHistory.updateStatus(ChallengeStatus.COMPLETED);
+
+        log.info("챌린지 완료 처리 완료 - challengeHistoryId: {}", challengeHistory.getId());
+
+        return ChallengeCompleteResponse.of(challengeHistory);
+    }
+
+    private Integer calculateProgress(Long challengeHistoryId) {
+        long total = missionHistoryRepository.countByChallengeHistoryId(challengeHistoryId);
+        if (total == 0) {
+            return 0;
+        }
+        long completed = missionHistoryRepository.countByChallengeHistoryIdAndStatus(challengeHistoryId, MissionStatus.COMPLETED);
+        return (int) (completed * 100 / total);
     }
 
 }

@@ -1,10 +1,12 @@
 package com.addiction.challenge.challengehistory.controller;
 
 import com.addiction.challenge.challengehistory.controller.request.ChallengeCancelRequest;
+import com.addiction.challenge.challengehistory.controller.request.ChallengeCompleteRequest;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
+import com.addiction.challenge.challengehistory.service.response.ChallengeCompleteResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeJoinResponse;
 import com.addiction.challenge.challengehistory.service.response.FinishedChallengeHistoryResponse;
@@ -40,5 +42,10 @@ public class ChallengeHistoryController {
     @PatchMapping("/cancel")
     public ApiResponse<ChallengeCancelResponse> cancelChallenge(@Valid @RequestBody ChallengeCancelRequest request) {
         return ApiResponse.ok(challengeHistoryService.cancelChallenge(request));
+    }
+
+    @PatchMapping("/complete")
+    public ApiResponse<ChallengeCompleteResponse> completeChallenge(@Valid @RequestBody ChallengeCompleteRequest request) {
+        return ApiResponse.ok(challengeHistoryService.completeChallenge(request));
     }
 }

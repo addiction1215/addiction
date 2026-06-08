@@ -1,13 +1,18 @@
 package com.addiction.challenge.challengehistory.controller;
 
 import com.addiction.ControllerTestSupport;
+import com.addiction.challenge.challengehistory.controller.request.ChallengeCompleteRequest;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
+import com.addiction.challenge.challengehistory.service.response.ChallengeCompleteResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -164,5 +169,38 @@ class ChallengeHistoryControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.httpStatus").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("챌린지를 완료 처리한다")
+    @Test
+    @WithMockUser(roles = "USER")
+    void completeChallenge() throws Exception {
+        // given
+        ChallengeCompleteRequest request = ChallengeCompleteRequest.builder()
+                .challengeHistoryId(1L)
+                .build();
+
+        ChallengeCompleteResponse response = ChallengeCompleteResponse.builder()
+                .challengeHistoryId(1L)
+                .status(ChallengeStatus.COMPLETED)
+                .build();
+
+        given(challengeHistoryService.completeChallenge(any(ChallengeCompleteRequest.class)))
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/challenge-history/complete")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType("application/json")
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value("200"))
+                .andExpect(jsonPath("$.httpStatus").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data.challengeHistoryId").value(1))
+                .andExpect(jsonPath("$.data.status").value("COMPLETED"));
     }
 }

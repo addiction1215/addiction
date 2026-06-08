@@ -49,3 +49,14 @@ include::{snippets}/challenge-history-cancel/request-fields.adoc[]
 include::{snippets}/challenge-history-cancel/http-response.adoc[]
 include::{snippets}/challenge-history-cancel/response-fields.adoc[]
 
+[[challenge-history-complete]]
+=== 챌린지 완료
+
+==== HTTP Request
+include::{snippets}/challenge-history-complete/http-request.adoc[]
+include::{snippets}/challenge-history-complete/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/challenge-history-complete/http-response.adoc[]
+include::{snippets}/challenge-history-complete/response-fields.adoc[]
+

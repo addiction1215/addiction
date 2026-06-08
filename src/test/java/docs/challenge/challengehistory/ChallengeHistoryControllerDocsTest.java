@@ -2,11 +2,13 @@ package docs.challenge.challengehistory;
 
 import com.addiction.challenge.challengehistory.controller.ChallengeHistoryController;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeCancelRequest;
+import com.addiction.challenge.challengehistory.controller.request.ChallengeCompleteRequest;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
+import com.addiction.challenge.challengehistory.service.response.ChallengeCompleteResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeHistoryResponse;
 import com.addiction.challenge.challengehistory.service.response.ChallengeJoinResponse;
 import com.addiction.challenge.challengehistory.service.response.FinishedChallengeHistoryResponse;
@@ -58,7 +60,8 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                 .badge("https://example.com/badge/7days.png")
                 .status(ChallengeStatus.PROGRESSING)
                 .reward(100)
-                .progress(60)
+                .progress(100)
+                .completionAvailable(true)
                 .build();
 
         given(challengeHistoryReadService.getProgressingChallenge())
@@ -96,7 +99,9 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.progress").type(JsonFieldType.NUMBER)
                                         .description("미션 진행률 (0~100)"),
                                 fieldWithPath("data.status").type(JsonFieldType.STRING)
-                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values()))
+                                        .description("챌린지 상태: " + Arrays.toString(ChallengeStatus.values())),
+                                fieldWithPath("data.completionAvailable").type(JsonFieldType.BOOLEAN)
+                                        .description("완료 처리 가능 여부 (status가 PROGRESSING이고 progress가 100인 경우 true)")
                         )
                 ));
     }
@@ -326,6 +331,54 @@ public class ChallengeHistoryControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.challengeHistoryId").type(JsonFieldType.NUMBER)
                                         .description("포기된 챌린지 이력 ID")
+                        )
+                ));
+    }
+
+    @DisplayName("챌린지 완료 API")
+    @Test
+    void 챌린지_완료_API() throws Exception {
+        // given
+        ChallengeCompleteRequest request = ChallengeCompleteRequest.builder()
+                .challengeHistoryId(1L)
+                .build();
+
+        ChallengeCompleteResponse response = ChallengeCompleteResponse.builder()
+                .challengeHistoryId(1L)
+                .status(ChallengeStatus.COMPLETED)
+                .build();
+
+        given(challengeHistoryService.completeChallenge(any(ChallengeCompleteRequest.class)))
+                .willReturn(response);
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/challenge-history/complete")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("challenge-history-complete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("challengeHistoryId").type(JsonFieldType.NUMBER)
+                                        .description("완료 처리할 챌린지 이력 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("응답 코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("HTTP 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.challengeHistoryId").type(JsonFieldType.NUMBER)
+                                        .description("완료 처리된 챌린지 이력 ID"),
+                                fieldWithPath("data.status").type(JsonFieldType.STRING)
+                                        .description("변경된 챌린지 상태: " + Arrays.toString(ChallengeStatus.values()))
                         )
                 ));
     }
