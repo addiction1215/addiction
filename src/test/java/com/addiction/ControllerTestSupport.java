@@ -28,6 +28,7 @@ import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.service.BenefitService;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserReadService;
+import com.addiction.global.logagent.LogAgentWebhookService;
 import com.addiction.global.slack.SlackService;
 import com.addiction.user.users.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -119,5 +120,8 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected SlackService slackService;
+
+    @MockitoBean
+    protected LogAgentWebhookService logAgentWebhookService;
 
 }

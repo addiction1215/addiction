@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.addiction.global.ApiResponse;
+import com.addiction.global.logagent.LogAgentWebhookService;
 import com.addiction.global.slack.SlackService;
 import com.addiction.jwt.exception.JwtTokenException;
 
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiControllerAdvice {
 
 	private final SlackService slackService;
+	private final LogAgentWebhookService logAgentWebhookService;
 
 	/**
 	 * 예상치 못한 서버로직에러 발생시 처리
@@ -36,6 +38,7 @@ public class ApiControllerAdvice {
 	public ApiResponse<Object> exception(Exception e, HttpServletRequest request) throws IOException {
 		log.error(e.getMessage(), e);
 		slackService.sendErrorNotification(e, request);
+		logAgentWebhookService.sendError(e, request);
 		return ApiResponse.of(
 			HttpStatus.INTERNAL_SERVER_ERROR,
 			"서버 로직 에러",
