@@ -60,6 +60,11 @@ slack:
   webhook:
     url: www.test.com/test/webhook/url
 
+log-agent:
+  webhook-url: http://log-agent-api.sangkihan.co.kr/api/v1/webhook/error
+  server-name: addiction
+  server-ip: 172.0.0.1
+
 aws:
   access-key: testaccesskey  # AWS IAM Access Key
   secret-key: testsecretkey  # AWS IAM Secret Key

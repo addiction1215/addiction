@@ -176,7 +176,8 @@ tasks.processResources {
                 EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD'),
                 AWS_ACCESS_KEY: System.getenv('AWS_ACCESS_KEY'),
                 AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
-                SLACK_WEBHOOK: System.getenv('SLACK_WEBHOOK')
+                SLACK_WEBHOOK: System.getenv('SLACK_WEBHOOK'),
+                SERVER_IP: System.getenv('SERVER_IP')
         )
     }
 
@@ -191,7 +192,8 @@ tasks.processResources {
                 EMAIL_PASSWORD: System.getenv('EMAIL_PASSWORD'),
                 AWS_ACCESS_KEY: System.getenv('AWS_ACCESS_KEY'),
                 AWS_SECRET_KEY: System.getenv('AWS_SECRET_KEY'),
-                SLACK_WEBHOOK: System.getenv('SLACK_WEBHOOK')
+                SLACK_WEBHOOK: System.getenv('SLACK_WEBHOOK'),
+                SERVER_IP: System.getenv('SERVER_IP')
         )
     }
 }

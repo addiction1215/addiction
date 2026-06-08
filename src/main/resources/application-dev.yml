@@ -66,6 +66,11 @@ slack:
   webhook:
     url: ${SLACK_WEBHOOK}
 
+log-agent:
+  webhook-url: http://log-agent-api.sangkihan.co.kr/api/v1/webhook/error
+  server-name: addiction
+  server-ip: 172.0.0.1
+
 management:
   endpoints:
     web:

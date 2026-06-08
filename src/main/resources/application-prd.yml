@@ -94,3 +94,8 @@ aws:
       challenge: quitmate-challenge-prd
       challenge-badge: quitmate-challenge-badge-prd
       inquiry: quitmate-inquiry-prd
+
+log-agent:
+  webhook-url: https://log-agent-api.sangkihan.co.kr/api/v1/webhook/error
+  server-name: addiction
+  server-ip: ${SERVER_IP}
