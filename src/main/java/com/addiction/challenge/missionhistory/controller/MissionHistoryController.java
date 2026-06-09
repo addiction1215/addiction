@@ -52,12 +52,12 @@ public class MissionHistoryController {
     }
 
     /**
-     * 미션 최종 제출
+     * 관리자 미션 승인
      */
-    @PatchMapping("/complete/{missionHistoryId}")
-    public ApiResponse<MissionSubmitResponse> completeMission(
+    @PatchMapping("/approve/{missionHistoryId}")
+    public ApiResponse<MissionSubmitResponse> approveMission(
             @PathVariable Long missionHistoryId
     ) {
-        return ApiResponse.ok(missionHistoryService.completeMission(missionHistoryId));
+        return ApiResponse.ok(missionHistoryService.approveMission(missionHistoryId));
     }
 }

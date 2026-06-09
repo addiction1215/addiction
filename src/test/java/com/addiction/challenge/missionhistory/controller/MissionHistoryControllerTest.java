@@ -120,15 +120,15 @@ class MissionHistoryControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
-    @DisplayName("미션을 최종 제출한다")
+    @DisplayName("관리자가 미션을 승인한다")
     @Test
-    @WithMockUser(roles = "USER")
-    void completeMission() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    void approveMission() throws Exception {
         // given
         Long missionHistoryId = 101L;
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/mission-history/complete/{missionHistoryId}", missionHistoryId)
+                        patch("/api/v1/mission-history/approve/{missionHistoryId}", missionHistoryId)
                                 .with(csrf())
                 )
                 .andDo(print())

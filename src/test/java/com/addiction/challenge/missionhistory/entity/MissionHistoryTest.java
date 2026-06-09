@@ -7,16 +7,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MissionHistoryTest {
 
-    @DisplayName("미션을 완료하면 상태가 COMPLETED로 변경되고 완료 시간이 기록된다")
+    @DisplayName("미션 제출 조건을 만족하면 승인 대기 상태로 변경된다")
     @Test
-    void complete() {
+    void markReady() {
         MissionHistory missionHistory = MissionHistory.builder()
                 .status(MissionStatus.PROGRESSING)
                 .build();
 
-        missionHistory.complete();
+        missionHistory.markReady();
 
         assertThat(missionHistory.getStatus()).isEqualTo(MissionStatus.READY);
+        assertThat(missionHistory.getCompleteAt()).isNull();
+    }
+
+    @DisplayName("승인 대기 미션을 승인하면 완료 상태로 변경되고 완료 시간이 기록된다")
+    @Test
+    void approve() {
+        MissionHistory missionHistory = MissionHistory.builder()
+                .status(MissionStatus.READY)
+                .build();
+
+        missionHistory.approve();
+
+        assertThat(missionHistory.getStatus()).isEqualTo(MissionStatus.COMPLETED);
         assertThat(missionHistory.getCompleteAt()).isNotNull();
     }
 }

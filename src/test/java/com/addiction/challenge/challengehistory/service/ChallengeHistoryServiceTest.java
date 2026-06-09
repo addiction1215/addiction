@@ -121,9 +121,9 @@ class ChallengeHistoryServiceTest extends IntegrationTestSupport {
         }
     }
 
-    @DisplayName("진행률이 100 미만이면 완료 처리할 수 없다.")
+    @DisplayName("PROGRESSING 상태의 미션이 남아 있으면 챌린지를 완료 처리할 수 없다.")
     @Test
-    void completeChallengeWhenProgressIsLessThan100() {
+    void completeChallengeWhenProgressingMissionExists() {
         // given
         User savedUser = userRepository.save(createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE));
         given(securityService.getCurrentLoginUserInfo())
@@ -139,7 +139,28 @@ class ChallengeHistoryServiceTest extends IntegrationTestSupport {
         // when // then
         assertThatThrownBy(() -> challengeHistoryService.completeChallenge(request))
                 .isInstanceOf(AddictionException.class)
-                .hasMessage("진행률이 100인 챌린지만 완료할 수 있습니다.");
+                .hasMessage("모든 미션이 완료된 챌린지만 완료할 수 있습니다.");
+    }
+
+    @DisplayName("READY 상태의 미션이 남아 있으면 챌린지를 완료 처리할 수 없다.")
+    @Test
+    void completeChallengeWhenReadyMissionExists() {
+        // given
+        User savedUser = userRepository.save(createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE));
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        ChallengeHistory savedChallengeHistory = saveChallengeHistoryWithMissions(savedUser, ChallengeStatus.PROGRESSING,
+                MissionStatus.COMPLETED, MissionStatus.READY);
+
+        ChallengeCompleteRequest request = ChallengeCompleteRequest.builder()
+                .challengeHistoryId(savedChallengeHistory.getId())
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> challengeHistoryService.completeChallenge(request))
+                .isInstanceOf(AddictionException.class)
+                .hasMessage("모든 미션이 완료된 챌린지만 완료할 수 있습니다.");
     }
 
     @DisplayName("존재하지 않는 챌린지 이력이면 완료 처리할 수 없다.")

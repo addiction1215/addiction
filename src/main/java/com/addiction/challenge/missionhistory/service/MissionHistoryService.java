@@ -22,8 +22,8 @@ public interface MissionHistoryService {
     MissionSubmitResponse submitMission(MissionSubmitServiceRequest request);
 
     /**
-     * 미션 최종 제출
+     * 미션 승인
      */
-    MissionSubmitResponse completeMission(Long missionHistoryId);
+    MissionSubmitResponse approveMission(Long missionHistoryId);
 
 }

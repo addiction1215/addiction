@@ -421,25 +421,25 @@ public class MissionHistoryControllerDocsTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("미션 최종 제출 API")
+    @DisplayName("관리자 미션 승인 API")
     @Test
-    void 미션_최종_제출_API() throws Exception {
+    void 관리자_미션_승인_API() throws Exception {
         // given
         MissionSubmitResponse response = MissionSubmitResponse.builder()
                 .missionHistoryId(101L)
                 .build();
 
-        given(missionHistoryService.completeMission(anyLong()))
+        given(missionHistoryService.approveMission(anyLong()))
                 .willReturn(response);
 
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/mission-history/complete/{missionHistoryId}", 101L)
+                        patch("/api/v1/mission-history/approve/{missionHistoryId}", 101L)
                                 .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("mission-history-complete",
+                .andDo(document("mission-history-approve",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(

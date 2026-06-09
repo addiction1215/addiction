@@ -118,9 +118,8 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
         challengeHistory.confirmCompleteUser(userId);
         challengeHistory.confirmProgressing();
 
-        Integer progress = calculateProgress(challengeHistory.getId());
-        if (progress < 100) {
-            throw new AddictionException("진행률이 100인 챌린지만 완료할 수 있습니다.");
+        if (!isAllMissionsCompleted(challengeHistory.getId())) {
+            throw new AddictionException("모든 미션이 완료된 챌린지만 완료할 수 있습니다.");
         }
 
         challengeHistory.updateStatus(ChallengeStatus.COMPLETED);
@@ -130,13 +129,13 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
         return ChallengeCompleteResponse.of(challengeHistory);
     }
 
-    private Integer calculateProgress(Long challengeHistoryId) {
+    private boolean isAllMissionsCompleted(Long challengeHistoryId) {
         long total = missionHistoryRepository.countByChallengeHistoryId(challengeHistoryId);
         if (total == 0) {
-            return 0;
+            return false;
         }
         long completed = missionHistoryRepository.countByChallengeHistoryIdAndStatus(challengeHistoryId, MissionStatus.COMPLETED);
-        return (int) (completed * 100 / total);
+        return total == completed;
     }
 
 }

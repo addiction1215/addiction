@@ -117,8 +117,15 @@ public class MissionHistory extends BaseTimeEntity {
         this.abstinenceTime = time;
     }
 
-    public void complete() {
+    public void markReady() {
         this.status = MissionStatus.READY;
+    }
+
+    public void approve() {
+        if (this.status != MissionStatus.READY) {
+            throw new AddictionException("승인 대기 상태의 미션만 승인할 수 있습니다.");
+        }
+        this.status = MissionStatus.COMPLETED;
         this.completeAt = LocalDateTime.now();
     }
 
