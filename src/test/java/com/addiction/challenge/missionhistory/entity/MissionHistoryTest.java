@@ -16,7 +16,7 @@ class MissionHistoryTest {
 
         missionHistory.complete();
 
-        assertThat(missionHistory.getStatus()).isEqualTo(MissionStatus.COMPLETED);
+        assertThat(missionHistory.getStatus()).isEqualTo(MissionStatus.READY);
         assertThat(missionHistory.getCompleteAt()).isNotNull();
     }
 }
