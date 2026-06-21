@@ -87,6 +87,34 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
                 );
     }
 
+    @DisplayName("남은 챌린지 목록에서 useYn이 N인 챌린지는 제외한다.")
+    @Test
+    void getLeftChallengeListExcludesUnusedChallenge() {
+        // given
+        User user = userRepository.save(createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE));
+        given(securityService.getCurrentLoginUserInfo()).willReturn(LoginUserInfo.of(user.getId()));
+        given(s3StorageService.createPresignedUrl(any(), any())).willReturn("test-presigned-url");
+
+        Challenge activeChallenge = cChallengeJpaRepository.save(createChallenge("노출 챌린지", "내용", "badge.png", 100));
+        cChallengeJpaRepository.save(Challenge.builder()
+                .title("삭제 챌린지")
+                .content("내용")
+                .badge("badge.png")
+                .reward(200)
+                .useYn("N")
+                .build());
+
+        PageInfoServiceRequest pageRequest = PageInfoServiceRequest.builder().page(1).size(10).build();
+
+        // when
+        PageCustom<ChallengeResponse> response = challengeReadService.getLeftChallengeList(pageRequest);
+
+        // then
+        assertThat(response.getContent()).extracting(ChallengeResponse::getChallengeId)
+                .containsExactly(activeChallenge.getId());
+        assertThat(response.getPageInfo().getTotalElement()).isEqualTo(1);
+    }
+
     @DisplayName("모든 챌린지를 시작한 경우 빈 목록을 반환한다.")
     @Test
     void getLeftChallengeListWhenAllStarted() {

@@ -21,12 +21,11 @@ public class ChallengeHistoryQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     /**
-     * 남은 챌린지 조회 (사용자가 완료하지 않은 챌린지들)
-     * Challenge 전체에서 해당 사용자의 ChallengeHistory에 COMPLETED가 아닌 것들
+     * 사용 중이며, 사용자의 챌린지 이력이 없는 챌린지를 조회한다.
      */
     public Page<Challenge> findLeftChallenges(Long userId, Pageable pageable) {
-        // 사용자가 완료한 챌린지 ID 목록 조회
-        List<Long> completedChallengeIds = jpaQueryFactory
+        // 사용자가 챌린지 이력을 생성한 챌린지 ID 목록 조회
+        List<Long> challengeHistoryIds = jpaQueryFactory
                 .select(challengeHistory.challenge.id)
                 .from(challengeHistory)
                 .where(
@@ -34,10 +33,13 @@ public class ChallengeHistoryQueryRepository {
                 )
                 .fetch();
 
-        // 완료하지 않은 챌린지 조회
+        // 사용 중이고 이력이 없는 챌린지 조회
         List<Challenge> content = jpaQueryFactory
                 .selectFrom(challenge)
-                .where(challenge.id.notIn(completedChallengeIds))
+                .where(
+                        challenge.useYn.eq("Y"),
+                        challenge.id.notIn(challengeHistoryIds)
+                )
                 .orderBy(challenge.id.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -47,7 +49,10 @@ public class ChallengeHistoryQueryRepository {
         Long total = jpaQueryFactory
                 .select(challenge.count())
                 .from(challenge)
-                .where(challenge.id.notIn(completedChallengeIds))
+                .where(
+                        challenge.useYn.eq("Y"),
+                        challenge.id.notIn(challengeHistoryIds)
+                )
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
