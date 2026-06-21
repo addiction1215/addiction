@@ -28,6 +28,11 @@ public class AlertHistoryController {
 		return ApiResponse.ok(alertHistoryReadService.getAlertHistory(request.toServiceRequest(), tabType));
 	}
 
+	@GetMapping("/notices/{id}")
+	public ApiResponse<AlertHistoryResponse> getNoticeAlertHistory(@PathVariable Long id) {
+		return ApiResponse.ok(alertHistoryReadService.getNoticeAlertHistory(id));
+	}
+
 	@PatchMapping("/{id}")
 	public ApiResponse<AlertHistoryStatusResponse> updateAlertHistoryStatus(@PathVariable Long id) {
 		return ApiResponse.ok(alertHistoryService.updateAlertHistoryStatus(id));

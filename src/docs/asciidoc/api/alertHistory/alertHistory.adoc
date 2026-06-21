@@ -11,6 +11,17 @@ include::{snippets}/alertHistory-get/query-parameters.adoc[]
 include::{snippets}/alertHistory-get/http-response.adoc[]
 include::{snippets}/alertHistory-get/response-fields.adoc[]
 
+[[alertHistory-get-notice]]
+=== 공지사항 단일 조회
+
+==== HTTP Request
+include::{snippets}/alertHistory-get-notice/http-request.adoc[]
+include::{snippets}/alertHistory-get-notice/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/alertHistory-get-notice/http-response.adoc[]
+include::{snippets}/alertHistory-get-notice/response-fields.adoc[]
+
 [[alertHistory-update]]
 === 홈/알림 `읽음` 수정
 

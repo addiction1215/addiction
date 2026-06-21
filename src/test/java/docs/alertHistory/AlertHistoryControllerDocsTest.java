@@ -169,6 +169,59 @@ public class AlertHistoryControllerDocsTest extends RestDocsSupport {
 			));
 	}
 
+	@DisplayName("공지사항 단일 알림 내역을 가져오는 API")
+	@Test
+	@WithMockUser("USER")
+	void getNoticeAlertHistory() throws Exception {
+		// given
+		Long id = 1L;
+
+		AlertHistoryResponse response = createAlertHistoryResponse(
+			id, "공지사항", AlertHistoryStatus.UNCHECKED, AlertDestinationType.NOTICE, "공지사항 상세",
+			LocalDateTime.of(2024, 3, 1, 12, 0, 0)
+		);
+
+		given(alertHistoryReadService.getNoticeAlertHistory(id))
+			.willReturn(response);
+
+		// when // then
+		mockMvc.perform(
+				get("/api/v1/alertHistories/notices/{id}", id)
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andDo(document("alertHistory-get-notice",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				pathParameters(
+					parameterWithName("id")
+						.description("공지사항 알림 내역 ID")
+				),
+				responseFields(
+					fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+						.description("코드"),
+					fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+						.description("상태"),
+					fieldWithPath("message").type(JsonFieldType.STRING)
+						.description("메세지"),
+					fieldWithPath("data").type(JsonFieldType.OBJECT)
+						.description("응답 데이터"),
+					fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+						.description("공지사항 알림 내역 ID"),
+					fieldWithPath("data.alertDescription").type(JsonFieldType.STRING)
+						.description("공지사항 내용"),
+					fieldWithPath("data.alertHistoryStatus").type(JsonFieldType.STRING)
+						.description("공지사항 읽음 상태"),
+					fieldWithPath("data.alertDestinationType").type(JsonFieldType.STRING)
+						.description("알림 이동 목적지 타입"),
+					fieldWithPath("data.alertDestinationInfo").type(JsonFieldType.STRING)
+						.description("알림 이동 목적지 정보 (String 또는 null 가능)"),
+					fieldWithPath("data.createdDate").type(JsonFieldType.STRING)
+						.description("공지사항 등록일")
+				)
+			));
+	}
+
 	private AlertHistoryResponse createAlertHistoryResponse(Long id, String description, AlertHistoryStatus status,
 		AlertDestinationType alertDestinationType, String alertDestinationInfo, LocalDateTime createdDate) {
 		return AlertHistoryResponse.builder()

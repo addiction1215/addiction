@@ -18,6 +18,7 @@ import com.addiction.alertHistory.service.alertHistory.AlertHistoryReadService;
 import com.addiction.alertHistory.service.alertHistory.response.AlertHistoryResponse;
 import com.addiction.global.page.request.PageInfoServiceRequest;
 import com.addiction.global.page.response.PageCustom;
+import com.addiction.global.exception.NotFoundException;
 import com.addiction.user.push.entity.Push;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
@@ -130,6 +131,109 @@ class AlertHistoryReadServiceTest extends IntegrationTestSupport {
 		// then
 		assertThat(result.getContent()).hasSize(1);
 		assertThat(result.getContent().get(0).getAlertDescription()).isEqualTo("공지사항");
+	}
+
+	@DisplayName("공지사항 ID를 받아서 단일 공지사항을 가져온다.")
+	@Test
+	void getNoticeAlertHistory() {
+		// given
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		userRepository.save(user);
+
+		AlertHistory noticeAlert = AlertHistory.builder()
+			.user(user)
+			.alertDescription("공지사항")
+			.alertHistoryStatus(AlertHistoryStatus.UNCHECKED)
+			.alertDestinationType(AlertDestinationType.NOTICE)
+			.alertDestinationInfo("공지사항 상세")
+			.build();
+		AlertHistory savedNoticeAlert = alertHistoryRepository.save(noticeAlert);
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(user.getId()));
+
+		// when
+		AlertHistoryResponse result = alertHistoryReadService.getNoticeAlertHistory(savedNoticeAlert.getId());
+
+		// then
+		assertThat(result)
+			.extracting("id", "alertDescription", "alertHistoryStatus", "alertDestinationType", "alertDestinationInfo")
+			.contains(
+				savedNoticeAlert.getId(),
+				"공지사항",
+				AlertHistoryStatus.UNCHECKED,
+				AlertDestinationType.NOTICE,
+				"공지사항 상세"
+			);
+	}
+
+	@DisplayName("공지 상세 정보가 null이어도 공지 알림 자체는 정상 조회한다.")
+	@Test
+	void getNoticeAlertHistoryWithNullDestinationInfo() {
+		// given
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		userRepository.save(user);
+
+		AlertHistory savedNoticeAlert = alertHistoryRepository.save(AlertHistory.builder()
+			.user(user)
+			.alertDescription("공지사항")
+			.alertHistoryStatus(AlertHistoryStatus.UNCHECKED)
+			.alertDestinationType(AlertDestinationType.NOTICE)
+			.build());
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(user.getId()));
+
+		// when
+		AlertHistoryResponse result = alertHistoryReadService.getNoticeAlertHistory(savedNoticeAlert.getId());
+
+		// then
+		assertThat(result.getId()).isEqualTo(savedNoticeAlert.getId());
+		assertThat(result.getAlertDestinationInfo()).isNull();
+	}
+
+	@DisplayName("활동 알림 ID로 단일 공지사항을 조회하면 예외가 발생한다.")
+	@Test
+	void getNoticeAlertHistoryWithActiveAlert() {
+		// given
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		userRepository.save(user);
+
+		AlertHistory activeAlert = createAlertHistory(user, "활동 알림", AlertHistoryStatus.UNCHECKED);
+		AlertHistory savedActiveAlert = alertHistoryRepository.save(activeAlert);
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(user.getId()));
+
+		// when // then
+		assertThatThrownBy(() -> alertHistoryReadService.getNoticeAlertHistory(savedActiveAlert.getId()))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessage("해당 공지사항은 없습니다. id = " + savedActiveAlert.getId());
+	}
+
+	@DisplayName("다른 사용자의 공지사항 ID로 단일 공지사항을 조회하면 예외가 발생한다.")
+	@Test
+	void getNoticeAlertHistoryWithOtherUserNotice() {
+		// given
+		User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		User otherUser = createUser("other@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		userRepository.saveAll(List.of(user, otherUser));
+
+		AlertHistory noticeAlert = AlertHistory.builder()
+			.user(otherUser)
+			.alertDescription("다른 사용자 공지사항")
+			.alertHistoryStatus(AlertHistoryStatus.UNCHECKED)
+			.alertDestinationType(AlertDestinationType.NOTICE)
+			.build();
+		AlertHistory savedNoticeAlert = alertHistoryRepository.save(noticeAlert);
+
+		given(securityService.getCurrentLoginUserInfo())
+			.willReturn(createLoginUserInfo(user.getId()));
+
+		// when // then
+		assertThatThrownBy(() -> alertHistoryReadService.getNoticeAlertHistory(savedNoticeAlert.getId()))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessage("해당 공지사항은 없습니다. id = " + savedNoticeAlert.getId());
 	}
 
 	@DisplayName("유저가 읽지 않은 알림이 하나 이상인지 확인한다.")

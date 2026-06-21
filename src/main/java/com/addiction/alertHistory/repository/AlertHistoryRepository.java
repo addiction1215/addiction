@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.alertHistory.entity.AlertHistoryTabType;
 
@@ -19,6 +19,12 @@ public interface AlertHistoryRepository {
 	Page<AlertHistory> findByUserId(Long userId, AlertHistoryTabType tabType, Pageable pageable);
 
 	Optional<AlertHistory> findById(Long id);
+
+	Optional<AlertHistory> findByIdAndUserIdAndAlertDestinationType(
+		Long id,
+		Long userId,
+		AlertDestinationType alertDestinationType
+	);
 
 	boolean hasUncheckedAlerts(Long userId);
 

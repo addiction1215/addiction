@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertHistory.entity.AlertHistory;
 import com.addiction.alertHistory.entity.AlertHistoryTabType;
 import com.addiction.alertHistory.repository.AlertHistoryJpaRepository;
@@ -40,6 +41,15 @@ public class AlertHistoryRepositoryImpl implements AlertHistoryRepository {
 	@Override
 	public Optional<AlertHistory> findById(Long id) {
 		return alertHistoryJpaRepository.findById(id);
+	}
+
+	@Override
+	public Optional<AlertHistory> findByIdAndUserIdAndAlertDestinationType(
+		Long id,
+		Long userId,
+		AlertDestinationType alertDestinationType
+	) {
+		return alertHistoryJpaRepository.findByIdAndUserIdAndAlertDestinationType(id, userId, alertDestinationType);
 	}
 
 	@Override
