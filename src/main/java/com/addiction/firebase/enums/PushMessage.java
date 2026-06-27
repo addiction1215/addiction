@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PushMessage {
 
-	TITLE("Addiction 알림"),
+	TITLE("Quitmate 알림"),
 	FRIEND("친구 추가 알림");
 
 	private final String text;
