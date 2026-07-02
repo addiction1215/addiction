@@ -7,7 +7,7 @@ import com.addiction.challenge.challengehistory.controller.request.ChallengeComp
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
-import com.addiction.challenge.challengehistory.repository.ChallengeHistoryJpaRepository;
+import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
 import com.addiction.challenge.challengehistory.service.response.ChallengeCancelResponse;
@@ -43,7 +43,7 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
     private final UserReadService userReadService;
     private final ChallengeHistoryReadService challengeHistoryReadService;
 
-    private final ChallengeHistoryJpaRepository challengeHistoryJpaRepository;
+    private final ChallengeHistoryRepository challengeHistoryRepository;
     private final MissionHistoryRepository missionHistoryRepository;
 
     @Override
@@ -51,6 +51,10 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
 
         log.info("챌린지 참여 시작 - challengeId: {}, userId: {}", request.getChallengeId(), userId);
+
+        if (challengeHistoryRepository.existsByUserIdAndStatus(userId, ChallengeStatus.PROGRESSING)) {
+            throw new AddictionException("이미 진행 중인 챌린지가 있습니다.");
+        }
 
         // 1. 챌린지 존재 확인
         Challenge challenge = challengeReadService.findById(request.getChallengeId());
@@ -60,7 +64,7 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
 
         // 3. ChallengeHistory 생성
         ChallengeHistory challengeHistory = ChallengeHistory.createEntity(challenge, user, ChallengeStatus.PROGRESSING);
-        challengeHistoryJpaRepository.save(challengeHistory);
+        challengeHistoryRepository.save(challengeHistory);
 
         log.info("ChallengeHistory 생성 완료 - challengeHistoryId: {}", challengeHistory.getId());
 

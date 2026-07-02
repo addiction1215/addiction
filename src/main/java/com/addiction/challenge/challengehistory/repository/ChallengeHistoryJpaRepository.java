@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface ChallengeHistoryJpaRepository extends JpaRepository<ChallengeHistory, Long> {
 
+    boolean existsByUserIdAndStatus(Long userId, ChallengeStatus status);
+
     /**
      * 사용자의 특정 챌린지 히스토리 조회
      */

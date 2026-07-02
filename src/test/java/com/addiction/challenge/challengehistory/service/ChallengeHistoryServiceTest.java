@@ -2,6 +2,7 @@ package com.addiction.challenge.challengehistory.service;
 
 import com.addiction.IntegrationTestSupport;
 import com.addiction.challenge.challange.entity.Challenge;
+import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.controller.request.ChallengeCompleteRequest;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
@@ -36,6 +37,32 @@ class ChallengeHistoryServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ChallengeHistoryReadService challengeHistoryReadService;
+
+    @DisplayName("이미 진행 중인 챌린지가 있으면 새로운 챌린지에 참여할 수 없다.")
+    @Test
+    void joinChallengeWhenProgressingChallengeExists() {
+        // given
+        User savedUser = userRepository.save(createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE));
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        Challenge progressingChallenge = cChallengeJpaRepository.save(
+                createChallenge("진행 중 챌린지", "진행 중", "badge1.png", 100));
+        challengeHistoryJpaRepository.save(
+                createChallengeHistory(progressingChallenge, savedUser, ChallengeStatus.PROGRESSING));
+
+        Challenge newChallenge = cChallengeJpaRepository.save(
+                createChallenge("새 챌린지", "새 챌린지", "badge2.png", 200));
+        ChallengeJoinRequest request = ChallengeJoinRequest.builder()
+                .challengeId(newChallenge.getId())
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> challengeHistoryService.joinChallenge(request))
+                .isInstanceOf(AddictionException.class)
+                .hasMessage("이미 진행 중인 챌린지가 있습니다.");
+        assertThat(challengeHistoryJpaRepository.count()).isEqualTo(1);
+    }
 
     @DisplayName("진행률이 100인 진행중 챌린지를 완료 처리한다.")
     @Test

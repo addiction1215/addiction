@@ -18,6 +18,11 @@ public class ChallengeHistoryRepositoryImpl implements ChallengeHistoryRepositor
     private final ChallengeHistoryQueryRepository challengeHistoryQueryRepository;
 
     @Override
+    public boolean existsByUserIdAndStatus(Long userId, ChallengeStatus status) {
+        return challengeHistoryJpaRepository.existsByUserIdAndStatus(userId, status);
+    }
+
+    @Override
     public Optional<ChallengeHistory> findProgressingChallenge(Long userId) {
         return challengeHistoryJpaRepository.findFirstByUserIdAndStatus(userId, ChallengeStatus.PROGRESSING);
     }

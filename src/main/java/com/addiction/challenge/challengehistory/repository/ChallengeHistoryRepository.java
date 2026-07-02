@@ -2,12 +2,15 @@ package com.addiction.challenge.challengehistory.repository;
 
 import com.addiction.challenge.challange.entity.Challenge;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
+import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
 public interface ChallengeHistoryRepository {
+
+    boolean existsByUserIdAndStatus(Long userId, ChallengeStatus status);
     
     /**
      * 사용자의 진행중인 챌린지 조회
