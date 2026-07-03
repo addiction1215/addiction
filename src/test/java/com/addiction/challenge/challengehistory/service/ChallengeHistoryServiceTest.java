@@ -64,6 +64,56 @@ class ChallengeHistoryServiceTest extends IntegrationTestSupport {
         assertThat(challengeHistoryJpaRepository.count()).isEqualTo(1);
     }
 
+    @DisplayName("이미 완료한 챌린지에는 다시 참여할 수 없다.")
+    @Test
+    void joinChallengeWhenChallengeAlreadyCompleted() {
+        // given
+        User savedUser = userRepository.save(createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE));
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        Challenge challenge = cChallengeJpaRepository.save(
+                createChallenge("완료한 챌린지", "완료", "badge.png", 100));
+        challengeHistoryJpaRepository.save(
+                createChallengeHistory(challenge, savedUser, ChallengeStatus.COMPLETED));
+
+        ChallengeJoinRequest request = ChallengeJoinRequest.builder()
+                .challengeId(challenge.getId())
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> challengeHistoryService.joinChallenge(request))
+                .isInstanceOf(AddictionException.class)
+                .hasMessage("이미 완료한 챌린지입니다.");
+        assertThat(challengeHistoryJpaRepository.count()).isEqualTo(1);
+    }
+
+    @DisplayName("취소한 챌린지에는 다시 참여할 수 있다.")
+    @Test
+    void joinChallengeWhenPreviousChallengeWasCancelled() {
+        // given
+        User savedUser = userRepository.save(createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE));
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(LoginUserInfo.of(savedUser.getId()));
+
+        Challenge challenge = cChallengeJpaRepository.save(
+                createChallenge("취소한 챌린지", "재참여", "badge.png", 100));
+        challengeHistoryJpaRepository.save(
+                createChallengeHistory(challenge, savedUser, ChallengeStatus.CANCELLED));
+
+        ChallengeJoinRequest request = ChallengeJoinRequest.builder()
+                .challengeId(challenge.getId())
+                .build();
+
+        // when
+        challengeHistoryService.joinChallenge(request);
+
+        // then
+        assertThat(challengeHistoryJpaRepository.count()).isEqualTo(2);
+        assertThat(challengeHistoryJpaRepository.existsByUserIdAndStatus(
+                savedUser.getId(), ChallengeStatus.PROGRESSING)).isTrue();
+    }
+
     @DisplayName("진행률이 100인 진행중 챌린지를 완료 처리한다.")
     @Test
     void completeChallenge() {

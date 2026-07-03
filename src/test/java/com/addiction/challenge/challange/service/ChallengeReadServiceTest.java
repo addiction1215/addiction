@@ -283,7 +283,7 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
                 );
     }
 
-    @DisplayName("다양한 상태의 챌린지 이력이 있어도 남은 챌린지만 조회된다.")
+    @DisplayName("취소하거나 실패한 챌린지는 남은 챌린지로 다시 조회된다.")
     @Test
     void getLeftChallengeListWithVariousStatuses() {
         // given
@@ -328,13 +328,15 @@ class ChallengeReadServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.getContent()).hasSize(2);
-        assertThat(response.getPageInfo().getTotalElement()).isEqualTo(2);
+        assertThat(response.getContent()).hasSize(4);
+        assertThat(response.getPageInfo().getTotalElement()).isEqualTo(4);
 
         // ChallengeResponse 모든 필드(5개) 검증 - 남은 챌린지만
         assertThat(response.getContent())
                 .extracting("challengeId", "title", "content", "badge", "reward")
                 .containsExactlyInAnyOrder(
+                        tuple(savedChallenge3.getId(), "실패 챌린지", "내용3", "test-presigned-url", 300),
+                        tuple(savedChallenge4.getId(), "포기 챌린지", "내용4", "test-presigned-url", 400),
                         tuple(savedChallenge5.getId(), "남은 챌린지1", "내용5", "test-presigned-url", 500),
                         tuple(savedChallenge6.getId(), "남은 챌린지2", "내용6", "test-presigned-url", 600)
                 );

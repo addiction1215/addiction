@@ -6,11 +6,16 @@ import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface ChallengeHistoryRepository {
 
     boolean existsByUserIdAndStatus(Long userId, ChallengeStatus status);
+
+    boolean existsByUserIdAndChallengeIdAndStatusIn(Long userId,
+                                                     Long challengeId,
+                                                     Collection<ChallengeStatus> statuses);
     
     /**
      * 사용자의 진행중인 챌린지 조회
@@ -35,7 +40,7 @@ public interface ChallengeHistoryRepository {
     /**
      * 사용자의 특정 챌린지 히스토리 조회
      */
-    Optional<ChallengeHistory> findByUserIdAndChallengeId(Long userId, Long challengeId);
+    Optional<ChallengeHistory> findLatestByUserIdAndChallengeId(Long userId, Long challengeId);
 
     Optional<ChallengeHistory> findById(Long challengeHistoryId);
 }

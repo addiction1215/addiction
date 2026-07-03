@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,8 +24,16 @@ public class ChallengeHistoryRepositoryImpl implements ChallengeHistoryRepositor
     }
 
     @Override
+    public boolean existsByUserIdAndChallengeIdAndStatusIn(Long userId,
+                                                            Long challengeId,
+                                                            Collection<ChallengeStatus> statuses) {
+        return challengeHistoryJpaRepository.existsByUserIdAndChallengeIdAndStatusIn(userId, challengeId, statuses);
+    }
+
+    @Override
     public Optional<ChallengeHistory> findProgressingChallenge(Long userId) {
-        return challengeHistoryJpaRepository.findFirstByUserIdAndStatus(userId, ChallengeStatus.PROGRESSING);
+        return challengeHistoryJpaRepository.findFirstByUserIdAndStatusOrderByCreatedDateDescIdDesc(
+                userId, ChallengeStatus.PROGRESSING);
     }
 
     @Override
@@ -43,8 +52,9 @@ public class ChallengeHistoryRepositoryImpl implements ChallengeHistoryRepositor
     }
 
     @Override
-    public Optional<ChallengeHistory> findByUserIdAndChallengeId(Long userId, Long challengeId) {
-        return challengeHistoryJpaRepository.findByUserIdAndChallengeId(userId, challengeId);
+    public Optional<ChallengeHistory> findLatestByUserIdAndChallengeId(Long userId, Long challengeId) {
+        return challengeHistoryJpaRepository.findFirstByUserIdAndChallengeIdOrderByCreatedDateDescIdDesc(
+                userId, challengeId);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.addiction.challenge.challange.repository;
 
 import com.addiction.challenge.challange.repository.response.ChallengeDto;
+import com.addiction.challenge.challengehistory.entity.QChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +26,8 @@ public class ChallengeQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public List<ChallengeDto> findByUserId(Long userId) {
+        QChallengeHistory latestHistory = new QChallengeHistory("latestHistory");
+
         JPAQuery<ChallengeDto> query = jpaQueryFactory
                 .select(Projections.constructor(ChallengeDto.class,
                         challenge.id,
@@ -35,7 +39,16 @@ public class ChallengeQueryRepository {
                 .from(challenge)
                 .leftJoin(challengeHistory)
                 .on(challenge.id.eq(challengeHistory.challenge.id)
-                        .and(challengeHistory.user.id.eq(userId)));
+                        .and(challengeHistory.user.id.eq(userId))
+                        .and(challengeHistory.id.eq(
+                                JPAExpressions
+                                        .select(latestHistory.id.max())
+                                        .from(latestHistory)
+                                        .where(
+                                                latestHistory.user.id.eq(userId),
+                                                latestHistory.challenge.id.eq(challenge.id)
+                                        )
+                        )));
 
         return query.fetch();
     }
@@ -58,7 +71,7 @@ public class ChallengeQueryRepository {
                         challengeHistory.user.id.eq(userId),
                         challengeHistory.status.eq(ChallengeStatus.PROGRESSING)
                 )
-                .orderBy(challengeHistory.createdDate.desc())
+                .orderBy(challengeHistory.createdDate.desc(), challengeHistory.id.desc())
                 .limit(1)
                 .fetchOne();
 

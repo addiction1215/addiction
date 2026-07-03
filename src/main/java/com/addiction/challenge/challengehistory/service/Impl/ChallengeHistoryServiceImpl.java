@@ -7,6 +7,7 @@ import com.addiction.challenge.challengehistory.controller.request.ChallengeComp
 import com.addiction.challenge.challengehistory.controller.request.ChallengeJoinRequest;
 import com.addiction.challenge.challengehistory.entity.ChallengeHistory;
 import com.addiction.challenge.challengehistory.entity.ChallengeStatus;
+import com.addiction.challenge.challengehistory.policy.ChallengeParticipationPolicy;
 import com.addiction.challenge.challengehistory.repository.ChallengeHistoryRepository;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryReadService;
 import com.addiction.challenge.challengehistory.service.ChallengeHistoryService;
@@ -54,6 +55,13 @@ public class ChallengeHistoryServiceImpl implements ChallengeHistoryService {
 
         if (challengeHistoryRepository.existsByUserIdAndStatus(userId, ChallengeStatus.PROGRESSING)) {
             throw new AddictionException("이미 진행 중인 챌린지가 있습니다.");
+        }
+
+        if (challengeHistoryRepository.existsByUserIdAndChallengeIdAndStatusIn(
+                userId,
+                request.getChallengeId(),
+                ChallengeParticipationPolicy.REJOIN_BLOCKING_STATUSES)) {
+            throw new AddictionException("이미 완료한 챌린지입니다.");
         }
 
         // 1. 챌린지 존재 확인
