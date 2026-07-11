@@ -34,9 +34,9 @@ public class DailySmokingPushBatch {
     private final AlertSettingReadService alertSettingReadService;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(cron = "0 0 7,13,19 * * *")
     public void sendDailySmokingFeedback() {
-        log.info("=== 매일 아침 흡연 패턴 피드백 배치 시작 ===");
+        log.info("=== 정기 흡연 패턴 피드백 배치 시작 ===");
 
         try {
             LocalDate yesterday = LocalDate.now().minusDays(1);
@@ -106,7 +106,7 @@ public class DailySmokingPushBatch {
             }
 
         } catch (Exception e) {
-            log.error("매일 아침 흡연 패턴 피드백 배치 실행 중 오류 발생", e);
+            log.error("정기 흡연 패턴 피드백 배치 실행 중 오류 발생", e);
         }
     }
 
