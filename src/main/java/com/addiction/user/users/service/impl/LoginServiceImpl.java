@@ -11,6 +11,7 @@ import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
+import com.addiction.user.users.nickname.RandomNicknameGenerator;
 import com.addiction.user.users.oauth.client.OAuthApiClient;
 import com.addiction.user.users.repository.EmailAuthJpaRepository;
 import com.addiction.user.users.repository.UserRepository;
@@ -60,11 +61,12 @@ public class LoginServiceImpl implements LoginService {
     private final UserRepository userRepository;
     private final EmailAuthJpaRepository emailAuthJpaRepository;
     private final PushRepository pushRepository;
+    private final RandomNicknameGenerator randomNicknameGenerator;
 
     public LoginServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenGenerator jwtTokenGenerator,
                             List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository,
                             JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository,
-                            PushRepository pushRepository) {
+                            PushRepository pushRepository, RandomNicknameGenerator randomNicknameGenerator) {
         this.javaMailSender = javaMailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
@@ -72,6 +74,7 @@ public class LoginServiceImpl implements LoginService {
         this.userReadService = userReadService;
         this.emailAuthJpaRepository = emailAuthJpaRepository;
         this.pushRepository = pushRepository;
+        this.randomNicknameGenerator = randomNicknameGenerator;
         this.clients = clients.stream().collect(
                 Collectors.toUnmodifiableMap(OAuthApiClient::oAuthSnsType, Function.identity())
         );
@@ -110,6 +113,7 @@ public class LoginServiceImpl implements LoginService {
                                 .snsType(snsType)
                                 .role(Role.USER)
                                 .settingStatus(SettingStatus.INCOMPLETE)
+                                .nickName(randomNicknameGenerator.generate())
                                 .build()
                 ));
 

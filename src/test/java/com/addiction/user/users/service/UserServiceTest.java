@@ -57,6 +57,46 @@ public class UserServiceTest extends IntegrationTestSupport {
                 .contains("test@test.com", "123411111", "testUser", Sex.FEMALE);
     }
 
+    @DisplayName("회원가입 시 닉네임이 공백이면 임의의 닉네임을 생성해 저장한다.")
+    @Test
+    void 회원가입시_닉네임이_공백이면_임의의_닉네임을_생성해_저장한다() {
+        //given
+        UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName("\u00A0 \u00A0")
+                .sex(Sex.FEMALE)
+                .build();
+
+        //when
+        userService.save(userSaveServiceRequest);
+
+        //then
+        User savedUser = userRepository.findByEmail("test@test.com").orElseThrow();
+        assertThat(savedUser.getNickName()).isNotBlank();
+        assertThat(savedUser.getNickName()).contains(" ");
+    }
+
+    @DisplayName("회원가입 시 닉네임이 null이면 임의의 닉네임을 생성해 저장한다.")
+    @Test
+    void 회원가입시_닉네임이_null이면_임의의_닉네임을_생성해_저장한다() {
+        //given
+        UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
+                .email("test@test.com")
+                .password("1234")
+                .birthDay("123411111")
+                .nickName(null)
+                .sex(Sex.FEMALE)
+                .build();
+
+        //when
+        userService.save(userSaveServiceRequest);
+
+        //then
+        assertThat(userRepository.findByEmail("test@test.com").orElseThrow().getNickName()).isNotBlank();
+    }
+
     @DisplayName("유저의 정보를 저장할 시 이미 저장된 이메일이라면 예외가 발생한다.")
     @Test
     void 유저의_정보를_저장할_시_이미_저장된_이메일이라면_예외가_발생한다() {

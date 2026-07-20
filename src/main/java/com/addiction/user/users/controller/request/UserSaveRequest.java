@@ -16,7 +16,6 @@ public class UserSaveRequest {
 	private String email;
 	@NotNull(message = "비밀번호는 필수입니다.")
 	private String password;
-	@NotNull(message = "닉네임은 필수입니다.")
 	private String nickName;
     private Sex sex;
     private String birthDay;

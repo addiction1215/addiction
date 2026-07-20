@@ -204,7 +204,8 @@ public class LoginServiceTest extends IntegrationTestSupport {
 		assertAll(
 			() -> assertThat(oAuthLoginResponse.getAccessToken()).isNotNull(),
 			() -> assertThat(oAuthLoginResponse.getRefreshToken()).isNotNull(),
-			() -> assertThat(oAuthLoginResponse.getEmail()).isEqualTo("test@test.com")
+			() -> assertThat(oAuthLoginResponse.getEmail()).isEqualTo("test@test.com"),
+			() -> assertThat(userRepository.findByEmail("test@test.com").orElseThrow().getNickName()).isNotBlank()
 		);
 	}
 }

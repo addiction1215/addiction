@@ -13,6 +13,7 @@ import com.addiction.global.security.SecurityService;
 import com.addiction.survey.surveyAnswer.service.SurveyAnswerReadService;
 import com.addiction.survey.surveyResult.service.SurveyResultReadService;
 import com.addiction.user.users.entity.User;
+import com.addiction.user.users.nickname.RandomNicknameGenerator;
 import com.addiction.user.users.repository.UserRepository;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
 	private final SurveyAnswerReadService surveyAnswerReadService;
 	private final SurveyResultReadService surveyResultReadService;
 	private final UserReadService userReadService;
+    private final RandomNicknameGenerator randomNicknameGenerator;
 
 	private final UserRepository userRepository;
 
@@ -41,7 +43,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserSaveResponse save(UserSaveServiceRequest userSaveServiceRequest) {
         validateDuplicateEmail(userSaveServiceRequest.getEmail());
-		return UserSaveResponse.createResponse(userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder)));
+        String nickName = randomNicknameGenerator.resolve(userSaveServiceRequest.getNickName());
+		return UserSaveResponse.createResponse(userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder, nickName)));
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package com.addiction.user.users.service.request;
 
 import com.addiction.user.users.entity.enums.Sex;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.addiction.user.users.entity.User;
@@ -31,7 +30,7 @@ public class UserSaveServiceRequest {
         this.sex = sex;
     }
 
-    public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder, String nickName) {
         return User.builder()
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
