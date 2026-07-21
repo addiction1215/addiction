@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 매일 7시, 13시, 19시에 전송되는 흡연 패턴 피드백 메시지
+ * 매일 8시 45분, 12시 30분, 18시 30분, 21시에 전송되는 흡연 패턴 피드백 메시지
  * 전날 흡연 데이터(평균 흡연 빈도, 평균 금연 유지 시간)를 기준으로 적절한 메시지를 선택
  */
 @Getter

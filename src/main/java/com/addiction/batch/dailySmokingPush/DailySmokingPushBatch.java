@@ -34,7 +34,9 @@ public class DailySmokingPushBatch {
     private final AlertSettingReadService alertSettingReadService;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Scheduled(cron = "0 0 7,13,19 * * *")
+    @Scheduled(cron = "0 45 8 * * *")
+    @Scheduled(cron = "0 30 12,18 * * *")
+    @Scheduled(cron = "0 0 21 * * *")
     public void sendDailySmokingFeedback() {
         log.info("=== 정기 흡연 패턴 피드백 배치 시작 ===");
 
