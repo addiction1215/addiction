@@ -1,7 +1,7 @@
 package com.addiction.user.users.nickname;
 
-import java.security.SecureRandom;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
@@ -36,8 +36,6 @@ public class RandomNicknameGenerator {
             "단풍", "눈송이", "빗방울", "물결", "풀잎", "씨앗", "새싹", "꽃잎", "조약돌", "등불"
     );
 
-    private final SecureRandom random = new SecureRandom();
-
     public String resolve(String nickname) {
         if (!isBlank(nickname)) {
             return nickname;
@@ -47,9 +45,16 @@ public class RandomNicknameGenerator {
     }
 
     public String generate() {
-        return ADJECTIVES.get(random.nextInt(ADJECTIVES.size()))
+        // 난수 생성 방식 비교
+        // - Random: 단순하고 이해하기 쉽지만, 싱글톤 컴포넌트에서 여러 요청 스레드가 공유하면 경합이 생길 수 있습니다.
+        // - ThreadLocalRandom: 스레드별 난수 생성기를 사용하므로 서버의 동시 요청 환경에 적합하고 빠릅니다.
+        // - SecureRandom: 인증번호, 임시 비밀번호, 토큰처럼 예측되면 안 되는 보안 값에 적합하지만 닉네임 생성에는 과합니다.
+        // - SplittableRandom: 대량 난수 생성과 병렬 처리에 좋지만 thread-safe하지 않아 싱글톤 필드 공유에는 맞지 않습니다.
+        // 현재 기능은 보안 값이 아닌 랜덤 닉네임 생성이고, 이 클래스는 Spring 싱글톤으로 공유될 수 있으므로
+        // ThreadLocalRandom.current().nextInt(size)를 사용합니다. 예: size가 100이면 0~99 중 하나를 반환합니다.
+        return ADJECTIVES.get(ThreadLocalRandom.current().nextInt(ADJECTIVES.size()))
                 + " "
-                + NOUNS.get(random.nextInt(NOUNS.size()));
+                + NOUNS.get(ThreadLocalRandom.current().nextInt(NOUNS.size()));
     }
 
     private boolean isBlank(String nickname) {
