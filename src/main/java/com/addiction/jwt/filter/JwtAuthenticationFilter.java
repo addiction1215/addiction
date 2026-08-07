@@ -49,17 +49,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			// Header에서 토큰 받아옴
 			String token = jwtTokenProvider.resolveToken(request);
 			// 유효한 토큰인지 확인
-			if (token != null && jwtTokenProvider.extractSubject(token)) {
+			if (token != null && jwtTokenProvider.isAccessToken(token)) {
 				// 토큰이 유효하면 토큰으로부터 유저 정보를 세팅
 				Authentication authentication = jwtTokenProvider.getAuthentication(token);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			} else {
-				throw new JwtTokenException("JWT토큰이 수신되지 않았거나 형식이 맞지않습니다.");
+				throw new JwtTokenException("INVALID_ACCESS_TOKEN", "JWT access token이 수신되지 않았거나 형식이 맞지않습니다.");
 			}
 		} catch (ExpiredJwtException e) {
-			throw new JwtTokenException("JWT토큰이 만료되었습니다.", e);
+			throw new JwtTokenException("ACCESS_TOKEN_EXPIRED", "JWT access token이 만료되었습니다.", e);
 		} catch (JwtException | IllegalArgumentException e) {
-			throw new JwtTokenException("JWT토큰이 수신되지 않았거나 형식이 맞지않습니다.", e);
+			throw new JwtTokenException("INVALID_ACCESS_TOKEN", "JWT access token이 수신되지 않았거나 형식이 맞지않습니다.", e);
 		}
 
 		filterChain.doFilter(request, response);

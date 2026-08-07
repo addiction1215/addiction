@@ -6,6 +6,7 @@ import com.addiction.user.users.controller.request.LoginOauthRequest;
 import com.addiction.user.users.controller.request.LoginRequest;
 import com.addiction.user.users.controller.request.SendAuthCodeRequest;
 import com.addiction.user.users.controller.request.UserSaveRequest;
+import com.addiction.user.users.controller.request.TokenRefreshRequest;
 import com.addiction.user.users.controller.request.VerifyAuthCodeRequest;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserService;
@@ -15,6 +16,7 @@ import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
 import com.addiction.user.users.service.response.UserSaveResponse;
 import com.addiction.user.users.service.response.VerifyAuthCodeResponse;
+import com.addiction.jwt.dto.JwtToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,17 @@ public class LoginController {
     @PostMapping("/oauth/login")
     public ApiResponse<OAuthLoginResponse> oauthLogin(@Valid @RequestBody LoginOauthRequest loginOauthRequest) throws JsonProcessingException {
         return ApiResponse.ok(loginService.oauthLogin(loginOauthRequest.toServiceRequest()));
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<JwtToken> refresh(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
+        return ApiResponse.ok(loginService.refresh(tokenRefreshRequest.getRefreshToken(), tokenRefreshRequest.getDeviceId()));
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
+        loginService.logout(tokenRefreshRequest.getRefreshToken(), tokenRefreshRequest.getDeviceId());
+        return ApiResponse.ok(null);
     }
 
     @PostMapping("/join")

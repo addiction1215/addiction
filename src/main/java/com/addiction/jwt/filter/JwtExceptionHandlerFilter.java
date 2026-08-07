@@ -29,11 +29,11 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 		try {
 			filterChain.doFilter(request, response);
 		} catch (JwtTokenException e) {
-			setErrorResponse(response, e.getMessage());
+			setErrorResponse(response, e.getErrorCode(), e.getMessage());
 		}
 	}
 
-	private void setErrorResponse(HttpServletResponse response, String message) {
+	private void setErrorResponse(HttpServletResponse response, String errorCode, String message) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -41,7 +41,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
 		try {
 			response.getWriter().write(objectMapper.writeValueAsString(
-				ApiResponse.of(HttpStatus.UNAUTHORIZED, message, null)));
+				ApiResponse.error(HttpStatus.UNAUTHORIZED, errorCode, message)));
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}

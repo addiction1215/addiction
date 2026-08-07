@@ -49,6 +49,10 @@ public class RefreshToken extends BaseTimeEntity {
 		this.refreshToken = refreshToken;
 	}
 
+	public boolean belongsTo(Long userId) {
+		return user.getId().equals(userId);
+	}
+
 	public void setUser(User user) {
 		this.user = user;
 		user.getRefreshTokens().add(this);

@@ -10,6 +10,7 @@ import com.addiction.user.users.service.response.LoginResponse;
 import com.addiction.user.users.service.response.OAuthLoginResponse;
 import com.addiction.user.users.service.response.SendAuthCodeResponse;
 import com.addiction.user.users.service.response.VerifyAuthCodeResponse;
+import com.addiction.jwt.dto.JwtToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface LoginService {
@@ -24,4 +25,8 @@ public interface LoginService {
     VerifyAuthCodeResponse verifyAuthCode(VerifyAuthCodeServiceRequest verifyAuthCodeServiceRequest);
 
     FindPasswordResponse findPassword(FindPasswordServiceRequest findPasswordServiceRequest);
+
+    JwtToken refresh(String refreshToken, String deviceId);
+
+    void logout(String refreshToken, String deviceId);
 }

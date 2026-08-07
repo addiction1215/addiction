@@ -92,11 +92,7 @@ public class ApiControllerAdvice {
 	@ExceptionHandler(JwtTokenException.class)
 	public ApiResponse<Object> JwtTokenException(JwtTokenException e) {
 		log.error(e.getMessage());
-		return ApiResponse.of(
-			HttpStatus.UNAUTHORIZED,
-			e.getMessage(),
-			null
-		);
+		return ApiResponse.error(HttpStatus.UNAUTHORIZED, e.getErrorCode(), e.getMessage());
 	}
 
 	/**

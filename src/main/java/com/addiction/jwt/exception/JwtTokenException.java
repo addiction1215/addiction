@@ -8,13 +8,25 @@ import lombok.Getter;
 @Getter
 public class JwtTokenException extends RuntimeException {
 	private final String message;
+	private final String errorCode;
 
 	public JwtTokenException(String message, Exception e) {
-		super(message, e);
-		this.message = message;
+		this("INVALID_TOKEN", message, e);
 	}
 
 	public JwtTokenException(String message) {
+		this("INVALID_TOKEN", message);
+	}
+
+	public JwtTokenException(String errorCode, String message, Exception e) {
+		super(message, e);
 		this.message = message;
+		this.errorCode = errorCode;
+	}
+
+	public JwtTokenException(String errorCode, String message) {
+		super(message);
+		this.message = message;
+		this.errorCode = errorCode;
 	}
 }

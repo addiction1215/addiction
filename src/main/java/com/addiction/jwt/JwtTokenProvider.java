@@ -1,6 +1,7 @@
 package com.addiction.jwt;
 
 import java.security.Key;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
 
@@ -18,9 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.WeakKeyException;
 import jakarta.servlet.http.HttpServletRequest;
 
 /*
@@ -28,6 +30,9 @@ import jakarta.servlet.http.HttpServletRequest;
  * */
 @Component
 public class JwtTokenProvider {
+	public static final String TOKEN_TYPE_CLAIM = "tokenType";
+	public static final String ACCESS_TOKEN_TYPE = "ACCESS";
+	public static final String REFRESH_TOKEN_TYPE = "REFRESH";
 
 	private final ObjectMapper objectMapper;
 	private final Key key;
@@ -35,30 +40,58 @@ public class JwtTokenProvider {
 	//키 생성하여 의존성 주입
 	public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-		this.key = Keys.hmacShaKeyFor(keyBytes);
+		this.key = createSigningKey(secretKey);
+	}
+
+	private Key createSigningKey(String secretKey) {
+		try {
+			return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+		} catch (DecodingException | IllegalArgumentException e) {
+			return createRawSigningKey(secretKey);
+		} catch (WeakKeyException e) {
+			return createRawSigningKey(secretKey);
+		}
+	}
+
+	private Key createRawSigningKey(String secretKey) {
+		try {
+			return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+		} catch (WeakKeyException e) {
+			throw new IllegalStateException(
+				"Invalid jwt.secret-key: provide either a Base64-encoded key or a raw UTF-8 secret with at least 32 bytes.",
+				e
+			);
+		}
 	}
 
 	// 토큰 생성
-	public String generate(String subject, Date expiredAt) {
+	public String generate(String subject, Date expiredAt, String tokenType, String tokenId) {
 		return Jwts.builder()
 			.setSubject(subject)
+			.setIssuedAt(new Date())
+			.setId(tokenId)
+			.claim(TOKEN_TYPE_CLAIM, tokenType)
 			.setExpiration(expiredAt)
-			.signWith(key, SignatureAlgorithm.HS512)
+			.signWith(key)
 			.compact();
 	}
 
 	// 토큰 만료여부 체크
-	public boolean extractSubject(String accessToken) {
-		Claims claims = parseClaims(accessToken);
-		return !claims.getExpiration().before(new Date());
+	public boolean isAccessToken(String token) {
+		Claims claims = parseClaims(token);
+		return ACCESS_TOKEN_TYPE.equals(claims.get(TOKEN_TYPE_CLAIM, String.class))
+			&& !claims.getExpiration().before(new Date());
 	}
 
-	private Claims parseClaims(String accessToken) {
+	public Claims getClaims(String token) {
+		return parseClaims(token);
+	}
+
+	private Claims parseClaims(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
 			.build()
-			.parseClaimsJws(accessToken)
+			.parseClaimsJws(token)
 			.getBody();
 	}
 

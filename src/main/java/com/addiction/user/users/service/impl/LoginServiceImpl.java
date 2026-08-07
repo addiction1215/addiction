@@ -6,6 +6,7 @@ import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
 import com.addiction.user.push.entity.Push;
 import com.addiction.user.push.repository.PushRepository;
+import com.addiction.user.refreshToken.service.RefreshTokenService;
 import com.addiction.user.users.entity.EmailAuth;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.Role;
@@ -62,11 +63,13 @@ public class LoginServiceImpl implements LoginService {
     private final EmailAuthJpaRepository emailAuthJpaRepository;
     private final PushRepository pushRepository;
     private final RandomNicknameGenerator randomNicknameGenerator;
+    private final RefreshTokenService refreshTokenService;
 
     public LoginServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenGenerator jwtTokenGenerator,
                             List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository,
                             JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository,
-                            PushRepository pushRepository, RandomNicknameGenerator randomNicknameGenerator) {
+                            PushRepository pushRepository, RandomNicknameGenerator randomNicknameGenerator,
+                            RefreshTokenService refreshTokenService) {
         this.javaMailSender = javaMailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
@@ -75,6 +78,7 @@ public class LoginServiceImpl implements LoginService {
         this.emailAuthJpaRepository = emailAuthJpaRepository;
         this.pushRepository = pushRepository;
         this.randomNicknameGenerator = randomNicknameGenerator;
+        this.refreshTokenService = refreshTokenService;
         this.clients = clients.stream().collect(
                 Collectors.toUnmodifiableMap(OAuthApiClient::oAuthSnsType, Function.identity())
         );
@@ -189,9 +193,19 @@ public class LoginServiceImpl implements LoginService {
     private JwtToken setJwtTokenPushKey(User user, String deviceId, String pushKey) throws JsonProcessingException {
         LoginUserInfo userInfo = LoginUserInfo.of(user.getId());
         JwtToken jwtToken = jwtTokenGenerator.generate(userInfo);
-        user.checkRefreshToken(jwtToken, deviceId);
+        refreshTokenService.register(user, jwtToken, deviceId);
         upsertPushByDeviceId(user, deviceId, pushKey);
         return jwtToken;
+    }
+
+    @Override
+    public JwtToken refresh(String refreshToken, String deviceId) {
+        return refreshTokenService.rotate(refreshToken, deviceId);
+    }
+
+    @Override
+    public void logout(String refreshToken, String deviceId) {
+        refreshTokenService.revoke(refreshToken, deviceId);
     }
 
     private void upsertPushByDeviceId(User user, String deviceId, String pushKey) {
