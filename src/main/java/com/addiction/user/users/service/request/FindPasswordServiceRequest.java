@@ -7,11 +7,9 @@ import lombok.Getter;
 public class FindPasswordServiceRequest {
 
     private final String email;
-    private final String nickName;
 
     @Builder
-    private FindPasswordServiceRequest(String email, String nickName) {
+    private FindPasswordServiceRequest(String email) {
         this.email = email;
-        this.nickName = nickName;
     }
 }

@@ -38,11 +38,6 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public Optional<User> findByEmailAndNickName(String email, String nickName) {
-		return userJpaRepository.findByEmailAndNickName(email, nickName);
-	}
-
-	@Override
 	public Optional<User> findById(Long id) {
 		return userJpaRepository.findById(id);
 	}

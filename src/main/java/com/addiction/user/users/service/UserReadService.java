@@ -13,8 +13,6 @@ public interface UserReadService {
 
 	User findByEmail(String email);
 
-	User findByEmailAndNickName(String email, String nickName);
-
 	User findById(Long id);
 
 	UserStartDateResponse findStartDate();

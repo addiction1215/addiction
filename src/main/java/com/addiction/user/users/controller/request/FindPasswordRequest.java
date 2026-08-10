@@ -15,19 +15,14 @@ public class FindPasswordRequest {
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
-    @NotBlank(message = "닉네임은 필수입니다.")
-    private String nickName;
-
     @Builder
-    private FindPasswordRequest(String email, String nickName) {
+    private FindPasswordRequest(String email) {
         this.email = email;
-        this.nickName = nickName;
     }
 
     public FindPasswordServiceRequest toServiceRequest() {
         return FindPasswordServiceRequest.builder()
                 .email(email)
-                .nickName(nickName)
                 .build();
     }
 }

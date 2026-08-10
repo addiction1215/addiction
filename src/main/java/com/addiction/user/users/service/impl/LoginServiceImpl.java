@@ -223,7 +223,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public FindPasswordResponse findPassword(FindPasswordServiceRequest findPasswordServiceRequest) {
-        User user = userReadService.findByEmailAndNickName(findPasswordServiceRequest.getEmail(), findPasswordServiceRequest.getNickName());
+        User user = userReadService.findByEmail(findPasswordServiceRequest.getEmail());
         
         String tempPassword = generateTempPassword();
         

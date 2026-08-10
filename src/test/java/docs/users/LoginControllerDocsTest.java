@@ -341,7 +341,6 @@ public class LoginControllerDocsTest extends RestDocsSupport {
         // given
         FindPasswordRequest request = FindPasswordRequest.builder()
                 .email("tkdrl8908@naver.com")
-                .nickName("testUser")
                 .build();
 
         given(loginService.findPassword(any(FindPasswordServiceRequest.class)))
@@ -363,9 +362,7 @@ public class LoginControllerDocsTest extends RestDocsSupport {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING)
-                                        .description("이메일"),
-                                fieldWithPath("nickName").type(JsonFieldType.STRING)
-                                        .description("닉네임")
+                                        .description("이메일")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
