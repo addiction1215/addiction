@@ -7,7 +7,6 @@ import com.addiction.global.ApiResponse;
 
 @RestController
 public class HealthCheckController {
-
 	@GetMapping("/health-check")
 	public ApiResponse<String> healthCheck() {
 		return ApiResponse.ok("OK");
