@@ -10,6 +10,8 @@ public interface UserCigaretteRepository {
 
 	UserCigarette save(UserCigarette userCigarette);
 
+	void delete(UserCigarette userCigarette);
+
 	Optional<UserCigarette> findById(Long id);
 
 	Optional<UserCigarette> findByUserId(Long userId);
@@ -28,6 +30,6 @@ public interface UserCigaretteRepository {
 
 	List<UserCigarette> findAllByUserIdAndCreatedDateBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
-	Optional<UserCigarette> findTopByUserIdOrderByCreatedDateDescIdDesc(Long userId);
+	Optional<UserCigarette> findTopByUserIdOrderBySmokeTimeDescIdDesc(Long userId);
 
 }

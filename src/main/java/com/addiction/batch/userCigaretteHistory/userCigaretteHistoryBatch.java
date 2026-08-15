@@ -18,7 +18,6 @@ import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.service.UserReadService;
-import com.addiction.user.users.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,6 @@ public class userCigaretteHistoryBatch {
 	private final UserCigaretteHistoryService userCigaretteHistoryService;
 	private final UserCigaretteReadService userCigaretteReadService;
 	private final UserCigaretteService userCigaretteService;
-	private final UserService userService;
 	private final UserReadService userReadService;
 	private final Clock koreaClock;
 
@@ -62,18 +60,13 @@ public class userCigaretteHistoryBatch {
 				List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
 					.map(c -> CigaretteHistoryDocument.History.builder()
 						.address(c.getAddress())
-						.smokeTime(c.getCreatedDate())
+							.smokeTime(c.getSmokeTime())
 						.smokePatienceTime(c.getSmokePatienceTime())
 						.build())
 					.collect(Collectors.toList());
 
 				userCigaretteHistoryService.save(monthStr, dateStr, userId, smokeCount, avgPatienceTime, historyList);
 
-				// 마지막 흡연 시간으로 startDate 업데이트
-				cigarettes.stream()
-					.map(UserCigarette::getSmokeTime)
-					.max(LocalDateTime::compareTo)
-					.ifPresent(lastSmokeTime -> userService.updateStartDate(userId, lastSmokeTime));
 			} catch (Exception e) {
 				log.error("사용자 {}의 흡연 기록 배치 처리 중 오류 발생 - skip", userId, e);
 			}

@@ -62,6 +62,10 @@ public class User extends BaseTimeEntity {
 
 	private LocalDateTime startDate;
 
+	private LocalDateTime lastSmokeAt;
+
+	private String lastSmokeAddress;
+
 	private LocalDateTime firstSmokingRecordedAt;
 
     private String profileUrl;
@@ -243,6 +247,11 @@ public class User extends BaseTimeEntity {
 
 	public void updateStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
+	}
+
+	public void updateLastSmoking(LocalDateTime lastSmokeAt, String lastSmokeAddress) {
+		this.lastSmokeAt = lastSmokeAt;
+		this.lastSmokeAddress = lastSmokeAddress;
 	}
 
 	private void updateIntroduction(String introduction) {

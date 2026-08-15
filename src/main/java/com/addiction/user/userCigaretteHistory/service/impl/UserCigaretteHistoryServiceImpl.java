@@ -10,6 +10,8 @@ import com.addiction.user.userCigaretteHistory.enums.StatsFeedback;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.*;
+import com.addiction.user.users.entity.User;
+import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     private final SecurityService securityService;
     private final UserCigaretteReadService userCigaretteReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
+    private final UserReadService userReadService;
 
     @Override
     public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
@@ -261,13 +264,26 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public UserCigaretteHistoryLastestResponse findLastestByUserId() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        User user = userReadService.findById(userId);
+        if (user.getLastSmokeAt() != null) {
+            return UserCigaretteHistoryLastestResponse.createResponse(
+                    user.getLastSmokeAt(), user.getLastSmokeAddress());
+        }
+
+        // lastSmokeAt 백필 전 기존 사용자에 대해서만 기존 이력 조회를 fallback으로 사용한다.
         UserCigarette cigarette = userCigaretteReadService.findLatestByUserId(userId);
         if (cigarette == null) {
             CigaretteHistoryDocument doc = userCigaretteHistoryRepository.findLatestByUserId(userId);
-            if (doc != null && !doc.getHistory().isEmpty()) {
+            if (doc != null && doc.getHistory() != null && !doc.getHistory().isEmpty()) {
+                CigaretteHistoryDocument.History latestHistory = doc.getHistory().stream()
+                        .filter(history -> history.getSmokeTime() != null)
+                        .max(java.util.Comparator.comparing(CigaretteHistoryDocument.History::getSmokeTime))
+                        .orElse(null);
+                if (latestHistory == null) {
+                    return UserCigaretteHistoryLastestResponse.createResponse(null, null);
+                }
                 return UserCigaretteHistoryLastestResponse.createResponse(
-                        doc.getHistory().get(doc.getHistory().size() - 1).getSmokeTime(),
-                        doc.getHistory().get(doc.getHistory().size() - 1).getAddress()
+                        latestHistory.getSmokeTime(), latestHistory.getAddress()
                 );
             }
             return UserCigaretteHistoryLastestResponse.createResponse(
