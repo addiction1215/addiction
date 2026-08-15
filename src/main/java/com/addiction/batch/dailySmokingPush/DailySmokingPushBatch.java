@@ -4,7 +4,8 @@ import com.addiction.alertHistory.entity.AlertDestinationType;
 import com.addiction.alertSetting.entity.AlertSetting;
 import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.service.AlertSettingReadService;
-import com.addiction.common.enums.DailySmokingPushMessage;
+import com.addiction.common.enums.DailySmokingFeedbackGrade;
+import com.addiction.common.enums.DailySmokingFeedbackTime;
 import com.addiction.expo.event.PushNotificationEvent;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
@@ -20,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class DailySmokingPushBatch {
     private final UserReadService userReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final AlertSettingReadService alertSettingReadService;
+    private final DailySmokingFeedbackMessageSelector messageSelector;
     private final ApplicationEventPublisher eventPublisher;
 
     @Scheduled(cron = "0 45 8 * * *")
@@ -48,6 +51,7 @@ public class DailySmokingPushBatch {
             log.info("총 {}명의 사용자에게 피드백 전송 시도", users.size());
 
             List<SendFirebaseServiceRequest> allPushRequests = new ArrayList<>();
+            DailySmokingFeedbackTime feedbackTime = DailySmokingFeedbackTime.from(LocalTime.now());
 
             for (User user : users) {
                 try {
@@ -76,8 +80,9 @@ public class DailySmokingPushBatch {
                         avgPatienceTimeRaw = yesterdayData.getAvgPatienceTime() != null ? yesterdayData.getAvgPatienceTime() : 0L;
                     }
 
-                    DailySmokingPushMessage selectedMessage = DailySmokingPushMessage.selectMessage(smokeCount, avgPatienceTimeRaw);
-                    String messageBody = selectedMessage.getMessage();
+                    DailySmokingFeedbackGrade feedbackGrade = DailySmokingFeedbackGrade.from(smokeCount, avgPatienceTimeRaw);
+                    DailySmokingFeedbackContent feedbackContent = messageSelector.select(feedbackGrade, feedbackTime);
+                    String messageBody = feedbackContent.toPushBody();
 
                     SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
                             .alert_destination_type(AlertDestinationType.DAILY_REPORT)
@@ -94,8 +99,8 @@ public class DailySmokingPushBatch {
                                     .build())
                             .forEach(allPushRequests::add);
 
-                    log.debug("사용자 {} 푸시 요청 등록 - 흡연 {}회, 평균 금연 유지 {}시간, 메시지: {}",
-                            user.getId(), smokeCount, avgPatienceTimeRaw, selectedMessage.name());
+                    log.debug("사용자 {} 푸시 요청 등록 - 흡연 {}회, 평균 금연 유지 {}시간, 등급: {}, 시간대: {}",
+                            user.getId(), smokeCount, avgPatienceTimeRaw, feedbackGrade, feedbackTime);
 
                 } catch (Exception e) {
                     log.error("사용자 {}의 피드백 요청 생성 중 오류 발생", user.getId(), e);
