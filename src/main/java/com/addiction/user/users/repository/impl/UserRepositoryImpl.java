@@ -1,6 +1,7 @@
 package com.addiction.user.users.repository.impl;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -41,6 +42,11 @@ public class UserRepositoryImpl implements UserRepository {
 	public Optional<User> findById(Long id) {
 		return userJpaRepository.findById(id);
 	}
+
+    @Override
+    public boolean markFirstSmokingRecorded(Long userId, LocalDateTime recordedAt) {
+        return userJpaRepository.markFirstSmokingRecorded(userId, recordedAt) == 1;
+    }
 
 	@Override
 	public void deleteAllInBatch() {

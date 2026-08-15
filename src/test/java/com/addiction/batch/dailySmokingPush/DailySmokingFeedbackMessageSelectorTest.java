@@ -23,4 +23,16 @@ class DailySmokingFeedbackMessageSelectorTest {
         assertThat(content.actionMessage()).isNotBlank();
         assertThat(content.toPushBody()).contains("\n");
     }
+
+    @Test
+    void 신규_사용자에게는_상태_문구_없이_시간대별_행동_문구를_선택한다() {
+        DailySmokingFeedbackMessageSelector selector = new DailySmokingFeedbackMessageSelector(new ObjectMapper());
+        selector.loadMessagePool();
+
+        DailySmokingFeedbackContent content = selector.selectForNewUser(DailySmokingFeedbackTime.NIGHT);
+
+        assertThat(content.statusMessage()).isNull();
+        assertThat(content.actionMessage()).isNotBlank();
+        assertThat(content.toPushBody()).isEqualTo(content.actionMessage());
+    }
 }

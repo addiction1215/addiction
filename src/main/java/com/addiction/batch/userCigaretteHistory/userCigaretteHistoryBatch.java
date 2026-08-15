@@ -2,6 +2,7 @@ package com.addiction.batch.userCigaretteHistory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,11 @@ public class userCigaretteHistoryBatch {
 	private final UserCigaretteService userCigaretteService;
 	private final UserService userService;
 	private final UserReadService userReadService;
+	private final Clock koreaClock;
 
-	@Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void userCigaretteHistory() {
-		LocalDate yesterday = LocalDate.now().minusDays(1);
+		LocalDate yesterday = LocalDate.now(koreaClock).minusDays(1);
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
 		String monthStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMM")); // yyyyMM
 

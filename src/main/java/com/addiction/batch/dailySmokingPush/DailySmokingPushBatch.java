@@ -21,7 +21,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,22 +37,25 @@ public class DailySmokingPushBatch {
     private final AlertSettingReadService alertSettingReadService;
     private final DailySmokingFeedbackMessageSelector messageSelector;
     private final ApplicationEventPublisher eventPublisher;
+    private final Clock koreaClock;
 
-    @Scheduled(cron = "0 45 8 * * *")
-    @Scheduled(cron = "0 30 12,18 * * *")
-    @Scheduled(cron = "0 0 21 * * *")
+    @Scheduled(cron = "0 45 8 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 30 12,18 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 21 * * *", zone = "Asia/Seoul")
     public void sendDailySmokingFeedback() {
         log.info("=== 정기 흡연 패턴 피드백 배치 시작 ===");
 
         try {
-            LocalDate yesterday = LocalDate.now().minusDays(1);
+            LocalDateTime now = LocalDateTime.now(koreaClock);
+            LocalDate today = now.toLocalDate();
+            LocalDate yesterday = today.minusDays(1);
             String yesterdayStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE);
 
             List<User> users = userReadService.findAllWithPushes();
             log.info("총 {}명의 사용자에게 피드백 전송 시도", users.size());
 
             List<SendFirebaseServiceRequest> allPushRequests = new ArrayList<>();
-            DailySmokingFeedbackTime feedbackTime = DailySmokingFeedbackTime.from(LocalTime.now());
+            DailySmokingFeedbackTime feedbackTime = DailySmokingFeedbackTime.from(now.toLocalTime());
 
             for (User user : users) {
                 try {
@@ -66,22 +70,24 @@ public class DailySmokingPushBatch {
                         continue;
                     }
 
-                    CigaretteHistoryDocument yesterdayData = userCigaretteHistoryRepository
-                            .findByDateAndUserId(yesterdayStr, user.getId());
-
-                    int smokeCount;
-                    long avgPatienceTimeRaw;
-                    if (yesterdayData == null) {
-                        smokeCount = 0;
-                        avgPatienceTimeRaw = 0L;
-                        log.debug("사용자 {}의 전날 흡연 데이터가 없어 기본값으로 처리", user.getId());
+                    DailySmokingFeedbackContent feedbackContent;
+                    if (shouldSendNewUserMessage(user, today)) {
+                        feedbackContent = messageSelector.selectForNewUser(feedbackTime);
+                        log.debug("사용자 {}에게 신규 사용자 행동 문구를 선택 - 시간대: {}", user.getId(), feedbackTime);
                     } else {
-                        smokeCount = yesterdayData.getSmokeCount() != null ? yesterdayData.getSmokeCount() : 0;
-                        avgPatienceTimeRaw = yesterdayData.getAvgPatienceTime() != null ? yesterdayData.getAvgPatienceTime() : 0L;
-                    }
+                        CigaretteHistoryDocument yesterdayData = userCigaretteHistoryRepository
+                                .findByDateAndUserId(yesterdayStr, user.getId());
 
-                    DailySmokingFeedbackGrade feedbackGrade = DailySmokingFeedbackGrade.from(smokeCount, avgPatienceTimeRaw);
-                    DailySmokingFeedbackContent feedbackContent = messageSelector.select(feedbackGrade, feedbackTime);
+                        int smokeCount = yesterdayData != null && yesterdayData.getSmokeCount() != null
+                                ? yesterdayData.getSmokeCount() : 0;
+                        long avgPatienceTimeRaw = yesterdayData != null && yesterdayData.getAvgPatienceTime() != null
+                                ? yesterdayData.getAvgPatienceTime() : 0L;
+
+                        DailySmokingFeedbackGrade feedbackGrade = DailySmokingFeedbackGrade.from(smokeCount, avgPatienceTimeRaw);
+                        feedbackContent = messageSelector.select(feedbackGrade, feedbackTime);
+                        log.debug("사용자 {} 푸시 요청 등록 - 흡연 {}회, 평균 금연 유지 {}시간, 등급: {}, 시간대: {}",
+                                user.getId(), smokeCount, avgPatienceTimeRaw, feedbackGrade, feedbackTime);
+                    }
                     String messageBody = feedbackContent.toPushBody();
 
                     SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
@@ -99,9 +105,6 @@ public class DailySmokingPushBatch {
                                     .build())
                             .forEach(allPushRequests::add);
 
-                    log.debug("사용자 {} 푸시 요청 등록 - 흡연 {}회, 평균 금연 유지 {}시간, 등급: {}, 시간대: {}",
-                            user.getId(), smokeCount, avgPatienceTimeRaw, feedbackGrade, feedbackTime);
-
                 } catch (Exception e) {
                     log.error("사용자 {}의 피드백 요청 생성 중 오류 발생", user.getId(), e);
                 }
@@ -115,6 +118,11 @@ public class DailySmokingPushBatch {
         } catch (Exception e) {
             log.error("정기 흡연 패턴 피드백 배치 실행 중 오류 발생", e);
         }
+    }
+
+    private boolean shouldSendNewUserMessage(User user, LocalDate today) {
+        return user.getFirstSmokingRecordedAt() == null
+                || user.getFirstSmokingRecordedAt().toLocalDate().isEqual(today);
     }
 
     private boolean shouldSendPush(User user) {

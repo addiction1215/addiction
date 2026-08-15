@@ -8,6 +8,7 @@ import java.util.Map;
 
 public record DailySmokingFeedbackMessagePool(
         Map<DailySmokingFeedbackGrade, List<String>> statusMessages,
-        Map<DailySmokingFeedbackGrade, Map<DailySmokingFeedbackTime, List<String>>> actionMessages
+        Map<DailySmokingFeedbackGrade, Map<DailySmokingFeedbackTime, List<String>>> actionMessages,
+        Map<DailySmokingFeedbackTime, List<String>> newUserActionMessages
 ) {
 }

@@ -8,12 +8,14 @@ import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigarette.service.request.ChangeType;
 import com.addiction.user.userCigarette.service.request.UserCigaretteChangeServiceRequest;
 import com.addiction.user.users.entity.User;
+import com.addiction.user.users.repository.UserRepository;
 import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,11 +29,14 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
     private final UserReadService userReadService;
 
     private final UserCigaretteRepository userCigaretteRepository;
+    private final UserRepository userRepository;
+    private final Clock koreaClock;
 
     @Override
     public Long changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest) {
         User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
         if (userCigaretteChangeServiceRequest.getChangeType().equals(ChangeType.ADD)) {
+            LocalDateTime now = LocalDateTime.now(koreaClock);
             // 바로 전 흡연 기록 조회 (최신 1건)
             UserCigarette lastCigarette = userCigaretteReadService.findLatestByUserId(user.getId());
 
@@ -39,13 +44,14 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
 
             if (lastCigarette != null) {
                 intervalMinutes = Duration.between(
-                        lastCigarette.getCreatedDate(), LocalDateTime.now()
+                        lastCigarette.getCreatedDate(), now
                 ).toMinutes();
             }
             UserCigarette userCigarette = UserCigarette.createEntity(
-                    user, userCigaretteChangeServiceRequest.getAddress(), intervalMinutes
+                    user, userCigaretteChangeServiceRequest.getAddress(), intervalMinutes, now
             );
             userCigaretteRepository.save(userCigarette);
+            userRepository.markFirstSmokingRecorded(user.getId(), now);
             return user.getId();
         }
         userCigaretteRepository.deleteLastest(user.getId());

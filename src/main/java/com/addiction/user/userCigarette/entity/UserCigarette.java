@@ -44,9 +44,14 @@ public class UserCigarette extends BaseTimeEntity {
 	}
 
 	public static UserCigarette createEntity(User user, String address, Long smokePatienceTime) {
+		return createEntity(user, address, smokePatienceTime, LocalDateTime.now());
+	}
+
+	public static UserCigarette createEntity(User user, String address, Long smokePatienceTime,
+		LocalDateTime smokeTime) {
 		return UserCigarette.builder()
 				.user(user)
-				.smokeTime(LocalDateTime.now())
+				.smokeTime(smokeTime)
 				.address(address)
 				.smokePatienceTime(smokePatienceTime)
 				.build();

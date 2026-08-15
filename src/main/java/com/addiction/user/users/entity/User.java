@@ -62,6 +62,8 @@ public class User extends BaseTimeEntity {
 
 	private LocalDateTime startDate;
 
+	private LocalDateTime firstSmokingRecordedAt;
+
     private String profileUrl;
 
 	@Enumerated(EnumType.STRING)

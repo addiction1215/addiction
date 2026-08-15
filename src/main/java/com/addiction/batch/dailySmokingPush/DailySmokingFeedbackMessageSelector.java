@@ -38,12 +38,21 @@ public class DailySmokingFeedbackMessageSelector {
         return new DailySmokingFeedbackContent(selectOne(statusMessages), selectOne(actionMessages));
     }
 
+    public DailySmokingFeedbackContent selectForNewUser(DailySmokingFeedbackTime time) {
+        return DailySmokingFeedbackContent.onboarding(
+                selectOne(messagePool.newUserActionMessages().get(time))
+        );
+    }
+
     private void validateMessagePool() {
         for (DailySmokingFeedbackGrade grade : DailySmokingFeedbackGrade.values()) {
             validate(messagePool.statusMessages().get(grade), grade + " 상태");
             for (DailySmokingFeedbackTime time : DailySmokingFeedbackTime.values()) {
                 validate(messagePool.actionMessages().get(grade).get(time), grade + " " + time + " 행동");
             }
+        }
+        for (DailySmokingFeedbackTime time : DailySmokingFeedbackTime.values()) {
+            validate(messagePool.newUserActionMessages().get(time), "신규 사용자 " + time + " 행동");
         }
     }
 
