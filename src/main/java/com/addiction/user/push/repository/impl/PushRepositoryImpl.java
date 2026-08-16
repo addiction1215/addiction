@@ -33,11 +33,6 @@ public class PushRepositoryImpl implements PushRepository {
 	}
 
 	@Override
-	public Optional<Push> findByDeviceId(String deviceId) {
-		return pushJpaRepository.findByDeviceId(deviceId);
-	}
-
-	@Override
 	public void upsertByDeviceId(String deviceId, Long userId, String pushToken) {
 		pushJpaRepository.upsertByDeviceId(deviceId, userId, pushToken);
 	}
