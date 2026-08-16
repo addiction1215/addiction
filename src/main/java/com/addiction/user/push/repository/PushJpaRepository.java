@@ -19,10 +19,10 @@ public interface PushJpaRepository extends JpaRepository<Push, Long> {
     @Modifying
     @Query(value = """
         INSERT INTO push (device_id, user_id, push_token, created_date, updated_date)
-        VALUES (:deviceId, :userId, :pushToken, NOW(6), NOW(6)) AS new
+        VALUES (:deviceId, :userId, :pushToken, NOW(6), NOW(6))
         ON DUPLICATE KEY UPDATE
-            user_id = new.user_id,
-            push_token = new.push_token,
+            user_id = VALUES(user_id),
+            push_token = VALUES(push_token),
             updated_date = NOW(6)
         """, nativeQuery = true)
     void upsertByDeviceId(@Param("deviceId") String deviceId,
