@@ -4,7 +4,6 @@ import com.addiction.global.exception.AddictionException;
 import com.addiction.jwt.JwtTokenGenerator;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
-import com.addiction.user.push.entity.Push;
 import com.addiction.user.push.repository.PushRepository;
 import com.addiction.user.refreshToken.service.RefreshTokenService;
 import com.addiction.user.users.entity.EmailAuth;
@@ -209,15 +208,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private void upsertPushByDeviceId(User user, String deviceId, String pushKey) {
-        pushRepository.findByDeviceId(deviceId).ifPresentOrElse(
-                existPush -> {
-                    existPush.updatePushToken(pushKey);
-                    if (!existPush.getUser().getId().equals(user.getId())) {
-                        existPush.updateUser(user);
-                    }
-                },
-                () -> pushRepository.save(Push.of(deviceId, user, pushKey))
-        );
+        pushRepository.upsertByDeviceId(deviceId, user.getId(), pushKey);
     }
 
 

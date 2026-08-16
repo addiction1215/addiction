@@ -10,5 +10,5 @@ public interface PushRepository {
 	void deleteAllInBatch();
 	Push save(Push push);
 	void saveAll(List<Push> pushes);
-	Optional<Push> findByDeviceId(String deviceId);
+	void upsertByDeviceId(String deviceId, Long userId, String pushToken);
 }
