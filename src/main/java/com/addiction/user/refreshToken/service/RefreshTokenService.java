@@ -28,11 +28,7 @@ public class RefreshTokenService {
 	/** 로그인 및 재발급 시에는 원문 대신 SHA-256 해시만 저장한다. */
 	public void register(User user, JwtToken jwtToken, String deviceId) {
 		String tokenHash = hash(jwtToken.getRefreshToken());
-		refreshTokenJpaRepository.findByUserIdAndDeviceId(user.getId(), deviceId)
-			.ifPresentOrElse(
-				existing -> existing.updateRefreshToken(tokenHash),
-				() -> refreshTokenJpaRepository.save(RefreshToken.of(user, tokenHash, deviceId))
-			);
+		refreshTokenJpaRepository.upsertByUserIdAndDeviceId(user.getId(), deviceId, tokenHash);
 	}
 
 	public JwtToken rotate(String refreshToken, String deviceId) {

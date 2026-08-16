@@ -4,10 +4,25 @@ import com.addiction.user.refreshToken.entity.RefreshToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import jakarta.persistence.LockModeType;
 
 public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Long> {
 	Optional<RefreshToken> findByUserIdAndDeviceId(Long userId, String deviceId);
+
+	@Modifying
+	@Query(value = """
+		INSERT INTO refresh_token (user_id, device_id, refresh_token, created_date, updated_date)
+		VALUES (:userId, :deviceId, :refreshToken, NOW(6), NOW(6)) AS new
+		ON DUPLICATE KEY UPDATE
+			refresh_token = new.refresh_token,
+			updated_date = NOW(6)
+		""", nativeQuery = true)
+	void upsertByUserIdAndDeviceId(@Param("userId") Long userId,
+		@Param("deviceId") String deviceId,
+		@Param("refreshToken") String refreshToken);
 
 	/**
 	 * 같은 refresh token으로 동시에 재발급을 요청하는 경우를 직렬화한다.
