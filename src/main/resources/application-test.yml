@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:~/addction;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:~/addiction;MODE=MySQL;DATABASE_TO_LOWER=TRUE;NON_KEYWORDS=USER;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -11,7 +11,7 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect
         jdbc:
           exception-handling: ignore
   autoconfigure:
@@ -66,11 +66,11 @@ log-agent:
   server-ip: 172.0.0.1
 
 aws:
-  access-key: testaccesskey  # AWS IAM Access Key
-  secret-key: testsecretkey  # AWS IAM Secret Key
+  access-key: testaccesskey
+  secret-key: testsecretkey
   s3:
-    region: ap-northeast-2  # Seoul Region
+    region: ap-northeast-2
     bucket:
-      user: testuserbucket  # 사용자 관련 파일 버킷
-      challenge: testchallengebucket  # 챌린지 관련 파일 버킷
-      challenge-badge: testchallengebadgebucket  # 챌린지 배지 관련 파일 버킷
+      user: testuserbucket
+      challenge: testchallengebucket
+      challenge-badge: testchallengebadgebucket
