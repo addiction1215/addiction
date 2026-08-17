@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.IntegrationTestSupport;
 import com.addiction.alertHistory.entity.AlertDestinationType;
@@ -24,6 +26,7 @@ import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 
+@Transactional
 class AlertHistoryReadServiceTest extends IntegrationTestSupport {
 
 	@Autowired
@@ -244,8 +247,8 @@ class AlertHistoryReadServiceTest extends IntegrationTestSupport {
 		User user2 = createUser("test2@test.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
 		userRepository.saveAll(List.of(user1, user2));
 
-		Push push1 = createPush(user1);
-		Push push2 = createPush(user2);
+		Push push1 = Push.of(UUID.randomUUID().toString(), user1, "testPushToken");
+		Push push2 = Push.of(UUID.randomUUID().toString(), user2, "testPushToken");
 		pushRepository.saveAll(List.of(push1, push2));
 
 		AlertHistory alertHistory1 = createAlertHistory(user1, "test1", AlertHistoryStatus.CHECKED);
