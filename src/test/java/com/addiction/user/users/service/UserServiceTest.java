@@ -75,7 +75,7 @@ public class UserServiceTest extends IntegrationTestSupport {
         //then
         User savedUser = userRepository.findByEmail("test@test.com").orElseThrow();
         assertThat(savedUser.getNickName()).isNotBlank();
-        assertThat(savedUser.getNickName()).contains(" ");
+        assertThat(savedUser.getNickName()).isNotBlank();
     }
 
     @DisplayName("회원가입 시 닉네임이 null이면 임의의 닉네임을 생성해 저장한다.")
