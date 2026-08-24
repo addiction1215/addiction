@@ -9,4 +9,6 @@ public interface AlertSettingReadService {
 	AlertSettingResponse getAlertSetting();
 
 	AlertSetting findByUserOrCreateDefault(User user);
+
+	boolean isReportPushEnabled(User user);
 }

@@ -18,6 +18,6 @@ public class PushNotificationEventListener {
     @EventListener
     public void handlePushNotification(PushNotificationEvent event) {
         log.info("푸시 알림 이벤트 수신 - 건수: {}", event.getRequests().size());
-        expoNotiService.sendBatchPushNotification(event.getRequests());
+        expoNotiService.sendBatchPushNotificationSafely(event.getRequests());
     }
 }

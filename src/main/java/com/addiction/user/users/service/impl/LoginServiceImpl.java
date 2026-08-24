@@ -1,6 +1,7 @@
 package com.addiction.user.users.service.impl;
 
 import com.addiction.global.exception.AddictionException;
+import com.addiction.dailySmokingPush.service.DailySmokingPushScheduleService;
 import com.addiction.jwt.JwtTokenGenerator;
 import com.addiction.jwt.dto.JwtToken;
 import com.addiction.jwt.dto.LoginUserInfo;
@@ -63,12 +64,14 @@ public class LoginServiceImpl implements LoginService {
     private final PushRepository pushRepository;
     private final RandomNicknameGenerator randomNicknameGenerator;
     private final RefreshTokenService refreshTokenService;
+    private final DailySmokingPushScheduleService dailySmokingPushScheduleService;
 
     public LoginServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenGenerator jwtTokenGenerator,
                             List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository,
                             JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository,
                             PushRepository pushRepository, RandomNicknameGenerator randomNicknameGenerator,
-                            RefreshTokenService refreshTokenService) {
+                            RefreshTokenService refreshTokenService,
+                            DailySmokingPushScheduleService dailySmokingPushScheduleService) {
         this.javaMailSender = javaMailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
@@ -78,6 +81,7 @@ public class LoginServiceImpl implements LoginService {
         this.pushRepository = pushRepository;
         this.randomNicknameGenerator = randomNicknameGenerator;
         this.refreshTokenService = refreshTokenService;
+        this.dailySmokingPushScheduleService = dailySmokingPushScheduleService;
         this.clients = clients.stream().collect(
                 Collectors.toUnmodifiableMap(OAuthApiClient::oAuthSnsType, Function.identity())
         );
@@ -109,16 +113,17 @@ public class LoginServiceImpl implements LoginService {
         String email = client.getEmail(oAuthLoginServiceRequest.getToken());
 
         // Optional을 사용하여 트랜잭션 문제 해결
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> userRepository.save(
-                        User.builder()
-                                .email(email)
-                                .snsType(snsType)
-                                .role(Role.USER)
-                                .settingStatus(SettingStatus.INCOMPLETE)
-                                .nickName(randomNicknameGenerator.generate())
-                                .build()
-                ));
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            user = userRepository.save(User.builder()
+                    .email(email)
+                    .snsType(snsType)
+                    .role(Role.USER)
+                    .settingStatus(SettingStatus.INCOMPLETE)
+                    .nickName(randomNicknameGenerator.generate())
+                    .build());
+            dailySmokingPushScheduleService.createDefaults(user);
+        }
 
         user.checkSnsType(snsType);              //SNS가입여부확인
 

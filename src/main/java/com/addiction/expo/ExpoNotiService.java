@@ -31,7 +31,34 @@ public class ExpoNotiService {
     private final AlertHistoryService alertHistoryService;
     private final ObjectMapper objectMapper;
 
-    public void sendBatchPushNotification(List<SendFirebaseServiceRequest> requests) {
+    /**
+     * 일반 푸시용 전송 메서드입니다.
+     *
+     * <p>친구 요청처럼 재시도 대상을 DB에 별도로 보관하지 않는 푸시는 전송 실패를 로그로만 남기고,
+     * 호출 흐름이 실패하지 않도록 합니다.</p>
+     */
+    public void sendBatchPushNotificationSafely(List<SendFirebaseServiceRequest> requests) {
+        try {
+            sendBatchPushNotification(requests);
+        } catch (Exception e) {
+            log.error("Expo 푸시 전송 실패 - message: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Outbox 워커 전용 전송 메서드입니다.
+     *
+     * <p>전송 실패를 호출자에게 전달해야 Outbox를 {@code RETRY}/{@code FAILED}로 변경할 수 있으므로,
+     * 예외를 잡지 않습니다.</p>
+     */
+    public void sendBatchPushNotificationForOutbox(List<SendFirebaseServiceRequest> requests) {
+        sendBatchPushNotification(requests);
+    }
+
+    /**
+     * Expo 전송이 성공한 경우에만 앱 내 알림 이력을 생성합니다.
+     */
+    private void sendBatchPushNotification(List<SendFirebaseServiceRequest> requests) {
         if (requests.isEmpty()) return;
 
         List<Map<String, Object>> bodies = requests.stream()
@@ -39,10 +66,8 @@ public class ExpoNotiService {
                 .map(this::toPushBody)
                 .toList();
 
-        if (!bodies.isEmpty()) {
-            callExpoApi(bodies);
-        }
-
+        if (bodies.isEmpty()) return;
+        sendToExpo(bodies);
         requests.stream()
                 .filter(r -> r.getPush() != null)
                 .collect(Collectors.toMap(
@@ -66,18 +91,17 @@ public class ExpoNotiService {
         );
     }
 
-    private void callExpoApi(List<Map<String, Object>> bodies) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Accept", "application/json");
-            headers.set("Accept-Encoding", "gzip, deflate");
+    /**
+     * Expo HTTP 호출 자체만 담당합니다. 실패 예외는 정책을 결정하는 상위 메서드로 전달합니다.
+     */
+    private void sendToExpo(List<Map<String, Object>> bodies) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Accept", "application/json");
+        headers.set("Accept-Encoding", "gzip, deflate");
 
-            HttpEntity<List<Map<String, Object>>> entity = new HttpEntity<>(bodies, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(EXPO_PUSH_URL, entity, String.class);
-            log.info("Expo 푸시 전송 성공 - 건수: {}, status: {}", bodies.size(), response.getStatusCode());
-        } catch (Exception e) {
-            log.error("Expo 푸시 전송 실패 - message: {}", e.getMessage());
-        }
+        HttpEntity<List<Map<String, Object>>> entity = new HttpEntity<>(bodies, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(EXPO_PUSH_URL, entity, String.class);
+        log.info("Expo 푸시 전송 성공 - 건수: {}, status: {}", bodies.size(), response.getStatusCode());
     }
 }

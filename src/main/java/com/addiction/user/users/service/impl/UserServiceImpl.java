@@ -3,6 +3,7 @@ package com.addiction.user.users.service.impl;
 import java.time.LocalDateTime;
 
 import com.addiction.global.exception.AddictionException;
+import com.addiction.dailySmokingPush.service.DailySmokingPushScheduleService;
 import com.addiction.user.users.service.request.*;
 import com.addiction.user.users.service.response.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final RandomNicknameGenerator randomNicknameGenerator;
 
 	private final UserRepository userRepository;
+	private final DailySmokingPushScheduleService dailySmokingPushScheduleService;
 
 	@Override
 	public User save(User user) {
@@ -44,7 +46,9 @@ public class UserServiceImpl implements UserService {
 	public UserSaveResponse save(UserSaveServiceRequest userSaveServiceRequest) {
         validateDuplicateEmail(userSaveServiceRequest.getEmail());
         String nickName = randomNicknameGenerator.resolve(userSaveServiceRequest.getNickName());
-		return UserSaveResponse.createResponse(userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder, nickName)));
+		User savedUser = userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder, nickName));
+		dailySmokingPushScheduleService.createDefaults(savedUser);
+		return UserSaveResponse.createResponse(savedUser);
 	}
 
 	@Override

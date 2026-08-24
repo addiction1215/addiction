@@ -1,22 +1,16 @@
 package com.addiction.batch.dailySmokingPush;
 
 import com.addiction.alertHistory.entity.AlertDestinationType;
-import com.addiction.alertSetting.entity.AlertSetting;
-import com.addiction.alertSetting.entity.enums.AlertType;
-import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.common.enums.DailySmokingFeedbackGrade;
-import com.addiction.common.enums.DailySmokingFeedbackTime;
-import com.addiction.expo.event.PushNotificationEvent;
-import com.addiction.firebase.request.SendFirebaseDataDto;
-import com.addiction.firebase.request.SendFirebaseServiceRequest;
-import com.addiction.user.push.entity.Push;
+import com.addiction.alertSetting.service.AlertSettingReadService;
+import com.addiction.dailySmokingPush.entity.DailySmokingPushSchedule;
+import com.addiction.dailySmokingPush.repository.DailySmokingPushScheduleJpaRepository;
+import com.addiction.pushOutbox.service.PushOutboxService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
 import com.addiction.user.users.entity.User;
-import com.addiction.user.users.service.UserReadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +18,6 @@ import java.time.LocalDate;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,48 +25,45 @@ import java.util.List;
 @Slf4j
 public class DailySmokingPushBatch {
 
-    private final UserReadService userReadService;
+    private final DailySmokingPushScheduleJpaRepository scheduleRepository;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final AlertSettingReadService alertSettingReadService;
     private final DailySmokingFeedbackMessageSelector messageSelector;
-    private final ApplicationEventPublisher eventPublisher;
+    private final PushOutboxService pushOutboxService;
     private final Clock koreaClock;
 
-    @Scheduled(cron = "0 45 8 * * *", zone = "Asia/Seoul")
-    @Scheduled(cron = "0 30 12,18 * * *", zone = "Asia/Seoul")
-    @Scheduled(cron = "0 0 21 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul")
     public void sendDailySmokingFeedback() {
-        log.info("=== 정기 흡연 패턴 피드백 배치 시작 ===");
+        log.info("=== 정기 흡연 패턴 피드백 Outbox 생성 시작 ===");
 
         try {
-            LocalDateTime now = LocalDateTime.now(koreaClock);
+            // DB의 send_time은 분 단위(예: 12:30:00)이므로, 배치 실행 시각의 초/나노초를 제거해 정확히 비교한다.
+            LocalDateTime now = LocalDateTime.now(koreaClock).withSecond(0).withNano(0);
             LocalDate today = now.toLocalDate();
             LocalDate yesterday = today.minusDays(1);
             String yesterdayStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE);
 
-            List<User> users = userReadService.findAllWithPushes();
-            log.info("총 {}명의 사용자에게 피드백 전송 시도", users.size());
+            List<DailySmokingPushSchedule> schedules = scheduleRepository.findEnabledDueAt(now.toLocalTime());
+            log.info("발송 시각이 된 사용자별 피드백 설정 {}건 조회", schedules.size());
 
-            List<SendFirebaseServiceRequest> allPushRequests = new ArrayList<>();
-            DailySmokingFeedbackTime feedbackTime = DailySmokingFeedbackTime.from(now.toLocalTime());
-
-            for (User user : users) {
+            int createdCount = 0;
+            for (DailySmokingPushSchedule schedule : schedules) {
+                User user = schedule.getUser();
                 try {
                     if (!shouldSendPush(user)) {
                         log.debug("사용자 {}는 알림 설정이 OFF 상태로 skip", user.getId());
                         continue;
                     }
 
-                    List<Push> pushes = getPushToken(user);
-                    if (pushes.isEmpty()) {
+                    if (user.getPushes() == null || user.getPushes().isEmpty()) {
                         log.debug("사용자 {}는 Push 토큰이 없어 skip", user.getId());
                         continue;
                     }
 
                     DailySmokingFeedbackContent feedbackContent;
                     if (shouldSendNewUserMessage(user, today)) {
-                        feedbackContent = messageSelector.selectForNewUser(feedbackTime);
-                        log.debug("사용자 {}에게 신규 사용자 행동 문구를 선택 - 시간대: {}", user.getId(), feedbackTime);
+                        feedbackContent = messageSelector.selectForNewUser(schedule.getSlot());
+                        log.debug("사용자 {}에게 신규 사용자 행동 문구를 선택 - 시간대: {}", user.getId(), schedule.getSlot());
                     } else {
                         CigaretteHistoryDocument yesterdayData = userCigaretteHistoryRepository
                                 .findByDateAndUserId(yesterdayStr, user.getId());
@@ -84,36 +74,23 @@ public class DailySmokingPushBatch {
                                 ? yesterdayData.getAvgPatienceTime() : 0L;
 
                         DailySmokingFeedbackGrade feedbackGrade = DailySmokingFeedbackGrade.from(smokeCount, avgPatienceTimeRaw);
-                        feedbackContent = messageSelector.select(feedbackGrade, feedbackTime);
+                        feedbackContent = messageSelector.select(feedbackGrade, schedule.getSlot());
                         log.debug("사용자 {} 푸시 요청 등록 - 흡연 {}회, 평균 금연 유지 {}시간, 등급: {}, 시간대: {}",
-                                user.getId(), smokeCount, avgPatienceTimeRaw, feedbackGrade, feedbackTime);
+                                user.getId(), smokeCount, avgPatienceTimeRaw, feedbackGrade, schedule.getSlot());
                     }
                     String messageBody = feedbackContent.toPushBody();
 
-                    SendFirebaseDataDto dataDto = SendFirebaseDataDto.builder()
-                            .alert_destination_type(AlertDestinationType.DAILY_REPORT)
-                            .alert_destination_info("데일리 리포트")
-                            .build();
-
-                    pushes.stream()
-                            .filter(push -> push != null)
-                            .map(push -> SendFirebaseServiceRequest.builder()
-                                    .push(push)
-                                    .body(messageBody)
-                                    .sound("default")
-                                    .sendFirebaseDataDto(dataDto)
-                                    .build())
-                            .forEach(allPushRequests::add);
+                    if (pushOutboxService.createPendingIfAbsent(
+                            schedule, today, messageBody, AlertDestinationType.DAILY_REPORT, "데일리 리포트", now)) {
+                        createdCount++;
+                    }
 
                 } catch (Exception e) {
                     log.error("사용자 {}의 피드백 요청 생성 중 오류 발생", user.getId(), e);
                 }
             }
 
-            if (!allPushRequests.isEmpty()) {
-                eventPublisher.publishEvent(new PushNotificationEvent(allPushRequests));
-                log.info("=== 흡연 패턴 피드백 배치 완료 - 이벤트 발행 건수: {} ===", allPushRequests.size());
-            }
+            log.info("=== 흡연 패턴 피드백 Outbox 생성 완료 - 생성 건수: {} ===", createdCount);
 
         } catch (Exception e) {
             log.error("정기 흡연 패턴 피드백 배치 실행 중 오류 발생", e);
@@ -126,13 +103,6 @@ public class DailySmokingPushBatch {
     }
 
     private boolean shouldSendPush(User user) {
-        AlertSetting alertSetting = alertSettingReadService.findByUserOrCreateDefault(user);
-        if (alertSetting == null) return false;
-        if (alertSetting.getAll() == AlertType.OFF) return false;
-        return alertSetting.getReport() != AlertType.OFF;
-    }
-
-    private List<Push> getPushToken(User user) {
-        return user.getPushes() != null ? user.getPushes() : List.of();
+        return alertSettingReadService.isReportPushEnabled(user);
     }
 }

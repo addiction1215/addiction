@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.alertSetting.entity.AlertSetting;
+import com.addiction.alertSetting.entity.enums.AlertType;
 import com.addiction.alertSetting.repository.AlertSettingRepository;
 import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.alertSetting.service.response.AlertSettingResponse;
@@ -33,6 +34,14 @@ public class AlertSettingReadServiceImpl implements AlertSettingReadService {
 	public AlertSetting findByUserOrCreateDefault(User user) {
 		return alertSettingRepository.findByUser(user)
 			.orElseGet(() -> alertSettingRepository.save(AlertSetting.createDefault(user)));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public boolean isReportPushEnabled(User user) {
+		return alertSettingRepository.findByUser(user)
+			.map(setting -> setting.getAll() != AlertType.OFF && setting.getReport() != AlertType.OFF)
+			.orElse(true);
 	}
 
 }
