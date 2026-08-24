@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RandomNicknameGenerator {
 
+    // 형용사 110개 × 명사 110개 = 12,100가지뿐이라 가입자가 130명만 넘어도 중복 쌍이 생길 확률이 50%입니다.
+    // 뒤에 4자리 숫자를 붙여 조합 수를 1.2억가지로 늘려 중복 가능성을 낮춥니다.
+    private static final int SUFFIX_BOUND = 10_000;
+
     private static final List<String> ADJECTIVES = List.of(
             "건강한", "결심한", "단단한", "맑은", "활기찬", "따뜻한", "차분한", "용감한", "성실한", "부지런한",
             "밝은", "고요한", "상냥한", "든든한", "꾸준한", "씩씩한", "새로운", "푸른", "선명한", "다정한",
@@ -52,9 +56,11 @@ public class RandomNicknameGenerator {
         // - SplittableRandom: 대량 난수 생성과 병렬 처리에 좋지만 thread-safe하지 않아 싱글톤 필드 공유에는 맞지 않습니다.
         // 현재 기능은 보안 값이 아닌 랜덤 닉네임 생성이고, 이 클래스는 Spring 싱글톤으로 공유될 수 있으므로
         // ThreadLocalRandom.current().nextInt(size)를 사용합니다. 예: size가 100이면 0~99 중 하나를 반환합니다.
+        // 닉네임은 띄어쓰기 없이 형용사 + 명사 + 4자리 숫자를 그대로 붙여서 생성합니다. 예: 건강한쿼카4821
+        // 숫자는 0으로 채워 항상 4자리로 맞춥니다. 예: 37 -> 0037
         return ADJECTIVES.get(ThreadLocalRandom.current().nextInt(ADJECTIVES.size()))
-                + " "
-                + NOUNS.get(ThreadLocalRandom.current().nextInt(NOUNS.size()));
+                + NOUNS.get(ThreadLocalRandom.current().nextInt(NOUNS.size()))
+                + String.format("%04d", ThreadLocalRandom.current().nextInt(SUFFIX_BOUND));
     }
 
     private boolean isBlank(String nickname) {
