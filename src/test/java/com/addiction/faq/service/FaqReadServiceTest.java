@@ -7,7 +7,6 @@ import com.addiction.faq.repository.FaqJpaRepository;
 import com.addiction.faq.service.request.FaqListServiceRequest;
 import com.addiction.faq.service.response.FaqListResponse;
 import com.addiction.global.page.response.PageCustom;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,6 @@ class FaqReadServiceTest extends IntegrationTestSupport {
     private FaqReadService faqReadService;
     @Autowired
     private FaqJpaRepository faqJpaRepository;
-
-    @AfterEach
-    void tearDownFaq() {
-        faqJpaRepository.deleteAllInBatch();
-    }
 
     @DisplayName("FAQ 목록 조회 시 useYn이 Y인 데이터만 반환한다.")
     @Test

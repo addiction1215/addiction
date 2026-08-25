@@ -112,23 +112,12 @@ public abstract class IntegrationTestSupport {
     protected MissionHistoryRepository missionHistoryRepository;
     @Autowired
     protected MissionHistoryJpaRepository missionHistoryJpaRepository;
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
 
     @AfterEach
     public void tearDown() {
-        missionHistoryJpaRepository.deleteAllInBatch();
-        challengeHistoryJpaRepository.deleteAllInBatch();
-        missionJpaRepository.deleteAllInBatch();
-        cChallengeJpaRepository.deleteAllInBatch();
-        alertHistoryRepository.deleteAllInBatch();
-        alertSettingRepository.deleteAllInBatch();
-        surveyResultDescriptionRepository.deleteAllInBatch();
-        surveyResultRepository.deleteAllInBatch();
-        surveyAnswerRepository.deleteAllInBatch();
-        surveyQuestionRepository.deleteAllInBatch();
-        refreshTokenRepository.deleteAllInBatch();
-        pushRepository.deleteAllInBatch();
-        userCigaretteRepository.deleteAllInBatch();
-        userRepository.deleteAllInBatch();
+        databaseCleaner.clean();
     }
 
     protected User createUser(String email, String password, SnsType snsType, SettingStatus settingStatus) {

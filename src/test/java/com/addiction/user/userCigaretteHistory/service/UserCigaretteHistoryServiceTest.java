@@ -15,7 +15,6 @@ import com.addiction.user.userCigaretteHistory.service.response.UserCigaretteHis
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +35,6 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
     private UserCigaretteService userCigaretteService;
     @Autowired
     private UserCigaretteHistoryService userCigaretteHistoryService;
-
-    @AfterEach
-    public void tearDown() {
-        userCigaretteRepository.deleteAllInBatch();
-    }
 
     @DisplayName("유저의 마지막 흡연 기록을 조회한다.")
     @Test

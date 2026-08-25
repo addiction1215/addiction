@@ -6,7 +6,6 @@ import com.addiction.friend.repository.response.FriendProfileDto;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +23,6 @@ class FriendQueryRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private FriendJpaRepository friendJpaRepository;
-
-    @AfterEach
-    void deleteFriends() {
-        friendJpaRepository.deleteAllInBatch();
-    }
 
     @DisplayName("친구 추가 가능 유저 검색 시 탈퇴 유저는 제외한다.")
     @Test
