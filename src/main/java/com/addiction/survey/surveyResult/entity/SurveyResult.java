@@ -34,6 +34,10 @@ public class SurveyResult extends BaseTimeEntity {
         this.title = title;
         this.score = score;
         this.status = status;
-        this.descriptions = descriptions;
+        this.descriptions = descriptions == null ? new ArrayList<>() : descriptions;
+    }
+
+    public void addDescription(SurveyResultDescription description) {
+        descriptions.add(description);
     }
 }

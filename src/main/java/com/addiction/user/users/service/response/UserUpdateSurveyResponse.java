@@ -5,6 +5,7 @@ import com.addiction.survey.surveyResultDescription.entity.SurveyResultDescripti
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -28,7 +29,11 @@ public class UserUpdateSurveyResponse {
                 .resultStatus(surveyResult.getStatus())
                 .score(score)
                 .result(
-                        surveyResult.getDescriptions().stream().map(SurveyResultDescription::getDescription).toList()
+                        surveyResult.getDescriptions() == null
+                                ? Collections.emptyList()
+                                : surveyResult.getDescriptions().stream()
+                                        .map(SurveyResultDescription::getDescription)
+                                        .toList()
                 )
                 .build();
     }

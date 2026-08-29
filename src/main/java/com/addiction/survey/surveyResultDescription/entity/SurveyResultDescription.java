@@ -32,5 +32,8 @@ public class SurveyResultDescription extends BaseTimeEntity {
 		this.id = id;
 		this.surveyResult = surveyResult;
 		this.description = description;
+		if (surveyResult != null) {
+			surveyResult.addDescription(this);
+		}
 	}
 }
