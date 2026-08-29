@@ -280,7 +280,7 @@ public class UserControllerTest extends ControllerTestSupport {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value("400"))
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("담배 가격은 0원 초과이어야 합니다."));
+                .andExpect(jsonPath("$.message").value("담배 가격은 필수입니다."));
     }
 
 

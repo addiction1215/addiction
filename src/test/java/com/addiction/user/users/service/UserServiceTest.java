@@ -19,11 +19,13 @@ import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateServiceRequest;
 import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
 import com.addiction.user.users.service.response.UserUpdateSurveyResponse;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.beans.Transient;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -288,6 +290,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName("유저의 설문조사 결과를 저장한다.")
     @Test
+    @Transactional
     void 유저의_설문조사_결과를_저장한다() {
         //given
         User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
