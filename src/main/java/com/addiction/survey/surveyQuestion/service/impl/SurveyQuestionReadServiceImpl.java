@@ -5,10 +5,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindListServiceResponse;
 import com.addiction.survey.surveyQuestion.service.response.SurveyQuestionFindServiceResponse;
+import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
+import com.addiction.survey.surveyQuestion.enums.SurveyType;
 import com.addiction.survey.surveyQuestion.repository.SurveyQuestionRepository;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +27,15 @@ public class SurveyQuestionReadServiceImpl implements SurveyQuestionReadService 
 			surveyQuestionRepository.findAllByOrderBySortAsc().stream().map(SurveyQuestionFindServiceResponse::createResponse).toList()
 		);
 	}
+
+    @Override
+    public List<SurveyQuestion> findAllBySurveyTypeOrderBySortAsc(SurveyType surveyType) {
+        return surveyQuestionRepository.findAllBySurveyTypeOrderBySortAsc(surveyType);
+    }
+
+    @Override
+    public long count() {
+        return surveyQuestionRepository.count();
+    }
 
 }

@@ -7,6 +7,6 @@ public enum SurveyType {
 
 	RADIO,
 	CHECKBOX,
-    TEXT
+    NUMBER
 
 }

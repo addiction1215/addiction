@@ -25,10 +25,10 @@ public class UserController {
         return ApiResponse.ok(userService.update(userUpdateRequest.toServiceRequest()));
     }
 
-    @PatchMapping("/survey")
-    public ApiResponse<UserUpdateSurveyResponse> updateSurvey(
+    @PostMapping("/survey-responses")
+    public ApiResponse<UserUpdateSurveyResponse> submitSurvey(
             @RequestBody @Valid UserUpdateSurveyRequest userUpdateSurveyRequest) {
-        return ApiResponse.ok(userService.updateSurvey(userUpdateSurveyRequest.toServiceRequest()));
+        return ApiResponse.ok(userService.submitSurvey(userUpdateSurveyRequest.toServiceRequest()));
     }
 
     @GetMapping("/startDate")

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
+import com.addiction.survey.surveyQuestion.enums.SurveyType;
 import com.addiction.survey.surveyQuestion.repository.SurveyQuestionJpaRepository;
 import com.addiction.survey.surveyQuestion.repository.SurveyQuestionRepository;
 
@@ -25,6 +26,16 @@ public class SurveyQuestionRepositoryImpl implements SurveyQuestionRepository {
 	public List<SurveyQuestion> findAllByOrderBySortAsc() {
 		return surveyQuestionJpaRepository.findAllByOrderBySortAsc();
 	}
+
+    @Override
+    public List<SurveyQuestion> findAllBySurveyTypeOrderBySortAsc(SurveyType surveyType) {
+        return surveyQuestionJpaRepository.findAllBySurveyTypeOrderBySortAsc(surveyType);
+    }
+
+    @Override
+    public long count() {
+        return surveyQuestionJpaRepository.count();
+    }
 
 	@Override
 	public void deleteAllInBatch() {

@@ -27,6 +27,11 @@ public class SurveyAnswerReadServiceImpl implements SurveyAnswerReadService {
 			.orElseThrow(() -> new AddictionException(UNKNOWN_SURVEY_ANSWER));
 	}
 
+    @Override
+    public List<SurveyAnswer> findAllByIdInWithSurveyQuestion(List<Long> answerIds) {
+        return surveyAnswerRepository.findAllByIdInWithSurveyQuestion(answerIds);
+    }
+
 	@Override
 	public int findScoreById(Long answerId) {
 		return findById(answerId).getScore();

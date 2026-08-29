@@ -11,18 +11,18 @@ include::{snippets}/user-update/request-fields.adoc[]
 include::{snippets}/user-update/http-response.adoc[]
 include::{snippets}/user-update/response-fields.adoc[]
 
-[[user-survey-update]]
-=== 회원 설문조사 결과 저장
+[[user-survey-submit]]
+=== 회원 설문조사 제출
 
 ==== HTTP Request
 
-include::{snippets}/user-survey-update/http-request.adoc[]
-include::{snippets}/user-survey-update/request-fields.adoc[]
+include::{snippets}/user-survey-submit/http-request.adoc[]
+include::{snippets}/user-survey-submit/request-fields.adoc[]
 
 ==== HTTP Response
 
-include::{snippets}/user-survey-update/http-response.adoc[]
-include::{snippets}/user-survey-update/response-fields.adoc[]
+include::{snippets}/user-survey-submit/http-response.adoc[]
+include::{snippets}/user-survey-submit/response-fields.adoc[]
 
 [[user-find-startDate]]
 === 회원 금연 시작 날짜 조회

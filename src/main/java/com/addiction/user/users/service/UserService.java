@@ -14,7 +14,7 @@ public interface UserService {
 
 	UserUpdateResponse update(UserUpdateServiceRequest userUpdateServiceRequest);
 
-	UserUpdateSurveyResponse updateSurvey(UserUpdateSurveyServiceRequest userUpdateSurveyServiceRequest);
+	UserUpdateSurveyResponse submitSurvey(UserUpdateSurveyServiceRequest userUpdateSurveyServiceRequest);
 
 	UserUpdatePurposeResponse updatePurpose(UserUpdatePurposeServiceRequest userUpdatePurposeServiceRequest);
 

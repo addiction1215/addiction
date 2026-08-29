@@ -1,8 +1,8 @@
 package com.addiction.user.users.controller.request;
 
 import com.addiction.user.users.service.request.UserUpdateSurveyServiceRequest;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +16,18 @@ public class UserUpdateSurveyRequest {
     @NotNull(message = "답변 ID 목록은 필수입니다.")
     @Size(min = 1, message = "답변 ID 목록은 최소 1개 이상이어야 합니다.")
     private List<Long> answerId;
+
     @NotNull(message = "금연 목표는 필수입니다.")
     private String purpose;
-    @NotNull(message = "담배 가격은 0원 초과이어야 합니다.")
+
+    // @NotNull은 누락을, @Positive는 0 이하 값을 검증한다.
+    @NotNull(message = "담배 가격은 필수입니다.")
+    @Positive(message = "담배 가격은 0원 초과이어야 합니다.")
     private Integer cigarettePrice;
-    @NotNull(message = "담배 개비는 0개 초과이어야 합니다.")
+
+    // @NotNull은 누락을, @Positive는 0 이하 값을 검증한다.
+    @NotNull(message = "담배 개비는 필수입니다.")
+    @Positive(message = "담배 개비는 0개 초과이어야 합니다.")
     private Integer cigaretteCount;
 
     @Builder

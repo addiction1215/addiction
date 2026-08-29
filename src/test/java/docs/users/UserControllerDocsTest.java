@@ -27,6 +27,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -102,7 +103,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .cigaretteCount(10)
                 .build();
 
-        given(userService.updateSurvey(any(UserUpdateSurveyServiceRequest.class)))
+        given(userService.submitSurvey(any(UserUpdateSurveyServiceRequest.class)))
                 .willReturn(UserUpdateSurveyResponse.builder()
                         .resultTitle("라이트 스모커")
                         .resultStatus("GOOD")
@@ -116,13 +117,13 @@ public class UserControllerDocsTest extends RestDocsSupport {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/user/survey")
+                        post("/api/v1/user/survey-responses")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("user-survey-update",
+                .andDo(document("user-survey-submit",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(

@@ -1,10 +1,10 @@
 package com.addiction.survey.surveyAnswer.repository.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.addiction.global.exception.AddictionException;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyAnswer.repository.SurveyAnswerJpaRepository;
 import com.addiction.survey.surveyAnswer.repository.SurveyAnswerRepository;
@@ -26,6 +26,11 @@ public class SurveyAnswerRepositoryImpl implements SurveyAnswerRepository {
 	public Optional<SurveyAnswer> findById(Long id) {
 		return surveyAnswerJpaRepository.findById(id);
 	}
+
+    @Override
+    public List<SurveyAnswer> findAllByIdInWithSurveyQuestion(List<Long> ids) {
+        return surveyAnswerJpaRepository.findAllByIdInWithSurveyQuestion(ids);
+    }
 
 	@Override
 	public void deleteAllInBatch() {

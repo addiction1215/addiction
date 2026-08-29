@@ -196,7 +196,7 @@ public class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/user/survey")
+                        post("/api/v1/user/survey-responses")
                                 .content(objectMapper.writeValueAsString(userUpdateSurveyRequest))
                                 .contentType(APPLICATION_JSON)
                                 .with(csrf())
@@ -221,7 +221,7 @@ public class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/user/survey")
+                        post("/api/v1/user/survey-responses")
                                 .content(objectMapper.writeValueAsString(userUpdateSurveyRequest))
                                 .contentType(APPLICATION_JSON)
                                 .with(csrf())
@@ -246,7 +246,7 @@ public class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/user/survey")
+                        post("/api/v1/user/survey-responses")
                                 .content(objectMapper.writeValueAsString(userUpdateSurveyRequest))
                                 .contentType(APPLICATION_JSON)
                                 .with(csrf())
@@ -271,7 +271,7 @@ public class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/v1/user/survey")
+                        post("/api/v1/user/survey-responses")
                                 .content(objectMapper.writeValueAsString(userUpdateSurveyRequest))
                                 .contentType(APPLICATION_JSON)
                                 .with(csrf())

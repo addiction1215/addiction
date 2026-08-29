@@ -4,7 +4,10 @@ import com.addiction.IntegrationTestSupport;
 import com.addiction.global.exception.AddictionException;
 import com.addiction.survey.surveyAnswer.entity.SurveyAnswer;
 import com.addiction.survey.surveyQuestion.entity.SurveyQuestion;
+import com.addiction.survey.surveyQuestion.enums.SurveyType;
 import com.addiction.survey.surveyResult.entity.SurveyResult;
+import com.addiction.survey.userSurveyAnswer.repository.UserSurveyAnswerJpaRepository;
+import com.addiction.survey.userSurveyResponse.repository.UserSurveyResponseJpaRepository;
 import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.Sex;
@@ -35,6 +38,10 @@ public class UserServiceTest extends IntegrationTestSupport {
     private UserReadService userReadService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private UserSurveyResponseJpaRepository userSurveyResponseJpaRepository;
+    @Autowired
+    private UserSurveyAnswerJpaRepository userSurveyAnswerJpaRepository;
 
     @DisplayName("유저의 정보를 저장한다.")
     @Test
@@ -294,6 +301,19 @@ public class UserServiceTest extends IntegrationTestSupport {
         SurveyQuestion surveyQuestion = createSurveyQuestion("현재 흡연 여부를 선택해주세요");
         surveyQuestionRepository.save(surveyQuestion);
 
+        SurveyQuestion cigarettePriceQuestion = SurveyQuestion.builder()
+                .question("평균적으로 하루에 담배에 얼마 지불하시나요?")
+                .surveyType(SurveyType.NUMBER)
+                .sort(1)
+                .build();
+        SurveyQuestion cigaretteCountQuestion = SurveyQuestion.builder()
+                .question("평균적으로 하루 담배를 몇 개비 흡연하시나요?")
+                .surveyType(SurveyType.NUMBER)
+                .sort(2)
+                .build();
+        surveyQuestionRepository.save(cigarettePriceQuestion);
+        surveyQuestionRepository.save(cigaretteCountQuestion);
+
         SurveyAnswer surveyAnswer1 = createSurveyAnswer(surveyQuestion, "현재 흡연 중이며, 이제 금연하고 싶어요.", 3);
         SurveyAnswer surveyAnswer2 = createSurveyAnswer(surveyQuestion, "현재 금연 중이며, 계속 유지하고 싶어요.", 2);
 
@@ -310,17 +330,25 @@ public class UserServiceTest extends IntegrationTestSupport {
         UserUpdateSurveyServiceRequest userUpdateSurveyServiceRequest = UserUpdateSurveyServiceRequest.builder()
                 .answerId(List.of(surveyAnswer1.getId()))
                 .cigarettePrice(5000)
+                .cigaretteCount(10)
                 .purpose("금연 화이팅")
                 .build();
 
         //when
-        UserUpdateSurveyResponse userUpdateSurveyResponse = userService.updateSurvey(userUpdateSurveyServiceRequest);
+        UserUpdateSurveyResponse userUpdateSurveyResponse = userService.submitSurvey(userUpdateSurveyServiceRequest);
 
         //then
         assertAll(
                 () -> assertThat(userUpdateSurveyResponse).extracting("resultTitle").isEqualTo("라이트 스모커"),
                 () -> assertThat(userUpdateSurveyResponse.getResult()).isEqualTo(
-                        List.of("지금이 가장 좋은 기회입니다.", "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다."))
+                        List.of("지금이 가장 좋은 기회입니다.", "아직 니코틴 의존도가 낮아 비교적 수월하게 금연할 수 있는 단계지만, 방심은 금물입니다.")),
+                () -> assertThat(userSurveyResponseJpaRepository.count()).isEqualTo(1),
+                () -> assertThat(userSurveyAnswerJpaRepository.count()).isEqualTo(3),
+                () -> assertThat(userSurveyAnswerJpaRepository.findAll())
+                        .filteredOn(answer -> answer.getSurveyQuestion().getSurveyType() == SurveyType.NUMBER)
+                        .extracting("numericValue")
+                        .containsExactlyInAnyOrder(5000, 10),
+                () -> assertThat(userRepository.findById(savedUser.getId()).orElseThrow().getTotalScore()).isEqualTo(3)
         );
     }
 
