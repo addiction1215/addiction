@@ -166,6 +166,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             String label = day.getDayOfWeek().toString().substring(0, 3);
             CigaretteHistoryDocument doc = docMap.get(day.format(BASIC_ISO_DATE));
             countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, doc != null ? doc.getSmokeCount() : 0));
+            // [평균 참은 시간 계산 3/4] 주간 그래프는 날짜별 avgPatienceTime을 각 구간 값으로 사용한다.
+            // 기록이 없는 날짜(미래 요일 포함)는 0초로 표시한다.
             patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, doc != null ? doc.getAvgPatienceTime() : 0));
         }
 
@@ -198,6 +200,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             }
 
             long totalCount = docs.stream().mapToLong(CigaretteHistoryDocument::getSmokeCount).sum();
+            // [평균 참은 시간 계산 3/4] 기간 버킷(주/월)에 포함된 일별 avgPatienceTime을 평균 내어
+            // 그래프의 각 구간 값(patient.date[].value)을 만든다. 소수점 이하는 버린다.
             long avgPatience = (long) docs.stream().mapToLong(CigaretteHistoryDocument::getAvgPatienceTime).average().orElse(0);
 
             countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, totalCount));
@@ -232,6 +236,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             }
 
             long totalCount = docs.stream().mapToLong(CigaretteHistoryDocument::getSmokeCount).sum();
+            // [평균 참은 시간 계산 3/4] 기간 버킷(주/월)에 포함된 일별 avgPatienceTime을 평균 내어
+            // 그래프의 각 구간 값(patient.date[].value)을 만든다. 소수점 이하는 버린다.
             long avgPatience = (long) docs.stream().mapToLong(CigaretteHistoryDocument::getAvgPatienceTime).average().orElse(0);
 
             countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, totalCount));
@@ -253,6 +259,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             List<UserCigaretteHistoryGraphDateResponse> patientList) {
         int avgCount = countList.isEmpty() ? 0 : (int) Math.round(
                 countList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
+        // [평균 참은 시간 계산 4/4] 그래프에 표시할 모든 구간 값을 단순 평균한 뒤 반올림하여
+        // 대표값 avgSmokePatientTime으로 반환한다. 즉 전체 흡연 간격의 가중 평균은 아니다.
         long avgPatience = patientList.isEmpty() ? 0 : Math.round(
                 patientList.stream().mapToLong(UserCigaretteHistoryGraphDateResponse::getValue).average().orElse(0));
         return UserCigaretteHistoryGraphResponse.createResponse(
