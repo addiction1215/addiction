@@ -1,6 +1,7 @@
 package com.addiction.user.users.nickname;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
@@ -8,9 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RandomNicknameGenerator {
 
-    // 형용사 110개 × 명사 110개 = 12,100가지뿐이라 가입자가 130명만 넘어도 중복 쌍이 생길 확률이 50%입니다.
-    // 뒤에 4자리 숫자를 붙여 조합 수를 1.2억가지로 늘려 중복 가능성을 낮춥니다.
-    private static final int SUFFIX_BOUND = 10_000;
+    private static final int UUID_SUFFIX_LENGTH = 12;
 
     private static final List<String> ADJECTIVES = List.of(
             "건강한", "결심한", "단단한", "맑은", "활기찬", "따뜻한", "차분한", "용감한", "성실한", "부지런한",
@@ -40,40 +39,10 @@ public class RandomNicknameGenerator {
             "단풍", "눈송이", "빗방울", "물결", "풀잎", "씨앗", "새싹", "꽃잎", "조약돌", "등불"
     );
 
-    public String resolve(String nickname) {
-        if (!isBlank(nickname)) {
-            return nickname;
-        }
-
-        return generate();
-    }
-
     public String generate() {
-        // 난수 생성 방식 비교
-        // - Random: 단순하고 이해하기 쉽지만, 싱글톤 컴포넌트에서 여러 요청 스레드가 공유하면 경합이 생길 수 있습니다.
-        // - ThreadLocalRandom: 스레드별 난수 생성기를 사용하므로 서버의 동시 요청 환경에 적합하고 빠릅니다.
-        // - SecureRandom: 인증번호, 임시 비밀번호, 토큰처럼 예측되면 안 되는 보안 값에 적합하지만 닉네임 생성에는 과합니다.
-        // - SplittableRandom: 대량 난수 생성과 병렬 처리에 좋지만 thread-safe하지 않아 싱글톤 필드 공유에는 맞지 않습니다.
-        // 현재 기능은 보안 값이 아닌 랜덤 닉네임 생성이고, 이 클래스는 Spring 싱글톤으로 공유될 수 있으므로
-        // ThreadLocalRandom.current().nextInt(size)를 사용합니다. 예: size가 100이면 0~99 중 하나를 반환합니다.
-        // 닉네임은 띄어쓰기 없이 형용사 + 명사 + 4자리 숫자를 그대로 붙여서 생성합니다. 예: 건강한쿼카4821
-        // 숫자는 0으로 채워 항상 4자리로 맞춥니다. 예: 37 -> 0037
         return ADJECTIVES.get(ThreadLocalRandom.current().nextInt(ADJECTIVES.size()))
                 + NOUNS.get(ThreadLocalRandom.current().nextInt(NOUNS.size()))
-                + String.format("%04d", ThreadLocalRandom.current().nextInt(SUFFIX_BOUND));
-    }
-
-    private boolean isBlank(String nickname) {
-        if (nickname == null) {
-            return true;
-        }
-
-        for (int i = 0; i < nickname.length(); i++) {
-            char value = nickname.charAt(i);
-            if (!Character.isWhitespace(value) && !Character.isSpaceChar(value)) {
-                return false;
-            }
-        }
-        return true;
+                + "_"
+                + UUID.randomUUID().toString().replace("-", "").substring(0, UUID_SUFFIX_LENGTH);
     }
 }

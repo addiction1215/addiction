@@ -24,4 +24,6 @@ public interface UserRepository {
 	void saveAll(List<User> users);
 
     boolean existsByEmail(String email);
+
+    boolean existsByNickName(String nickName);
 }

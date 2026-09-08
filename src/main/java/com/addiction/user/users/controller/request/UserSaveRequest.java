@@ -16,15 +16,13 @@ public class UserSaveRequest {
 	private String email;
 	@NotNull(message = "비밀번호는 필수입니다.")
 	private String password;
-	private String nickName;
     private Sex sex;
     private String birthDay;
 
     @Builder
-    public UserSaveRequest(String birthDay, String email, String nickName, String password, Sex sex) {
+    public UserSaveRequest(String birthDay, String email, String password, Sex sex) {
         this.birthDay = birthDay;
         this.email = email;
-        this.nickName = nickName;
         this.password = password;
         this.sex = sex;
     }
@@ -33,7 +31,6 @@ public class UserSaveRequest {
         return UserSaveServiceRequest.builder()
                 .birthDay(birthDay)
                 .email(email)
-                .nickName(nickName)
                 .password(password)
                 .sex(sex)
                 .build();
