@@ -651,15 +651,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
         given(userReadService.findSmokingTendency())
                 .willReturn(UserSmokingTendencyResponse.builder()
                         .hasSurvey(true)
-                        .hasComparison(true)
                         .rawScore(53)
                         .quitMateScore(59)
                         .level(SmokingTendencyLevel.MODERATE)
-                        .previousQuitMateScore(52)
-                        .comparisonStatus(SmokingTendencyComparisonStatus.SCORE_INCREASED)
-                        .scoreChange(7)
-                        .levelChange(0)
-                        .lastSurveyedAt(LocalDateTime.of(2026, 9, 17, 14, 30))
                         .build());
 
         // when // then
@@ -679,24 +673,12 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.hasSurvey").type(JsonFieldType.BOOLEAN)
                                         .description("설문 이력 존재 여부"),
-                                fieldWithPath("data.hasComparison").type(JsonFieldType.BOOLEAN)
-                                        .description("직전 설문과 비교 가능 여부"),
                                 fieldWithPath("data.rawScore").type(JsonFieldType.NUMBER)
                                         .description("최근 설문 원점수"),
                                 fieldWithPath("data.quitMateScore").type(JsonFieldType.NUMBER)
                                         .description("원점수를 0~100점으로 역정규화한 QuitMate Score"),
                                 fieldWithPath("data.level").type(JsonFieldType.STRING)
-                                        .description("흡연 성향 단계: SEVERE, MODERATE, MILD"),
-                                fieldWithPath("data.previousQuitMateScore").type(JsonFieldType.NUMBER)
-                                        .description("직전 설문의 QuitMate Score"),
-                                fieldWithPath("data.comparisonStatus").type(JsonFieldType.STRING)
-                                        .description("비교 상태: LEVEL_IMPROVED, SCORE_INCREASED, UNCHANGED, SCORE_DECREASED, LEVEL_WORSENED, NOT_AVAILABLE"),
-                                fieldWithPath("data.scoreChange").type(JsonFieldType.NUMBER)
-                                        .description("최근 점수에서 직전 점수를 뺀 값"),
-                                fieldWithPath("data.levelChange").type(JsonFieldType.NUMBER)
-                                        .description("최근 단계에서 직전 단계를 뺀 값. 양수면 좋아짐"),
-                                fieldWithPath("data.lastSurveyedAt").type(JsonFieldType.STRING)
-                                        .description("최근 설문 제출 시각")
+                                        .description("흡연 성향 단계: SEVERE, MODERATE, MILD")
                         )
                 ));
     }

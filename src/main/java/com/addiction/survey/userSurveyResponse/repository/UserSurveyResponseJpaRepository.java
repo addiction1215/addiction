@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.addiction.survey.userSurveyResponse.entity.UserSurveyResponse;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface UserSurveyResponseJpaRepository extends JpaRepository<UserSurveyResponse, Long> {
-    List<UserSurveyResponse> findTop2ByUserIdOrderBySubmittedAtDescIdDesc(Long userId);
+    Optional<UserSurveyResponse> findTopByUserIdOrderBySubmittedAtDescIdDesc(Long userId);
 }
