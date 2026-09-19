@@ -6,6 +6,7 @@ import com.addiction.survey.userSurveyResponse.entity.UserSurveyResponse;
 import com.addiction.survey.userSurveyResponse.repository.UserSurveyResponseRepository;
 import com.addiction.user.users.service.response.UserInfoResponse;
 import com.addiction.user.users.service.response.UserProfileResponse;
+import com.addiction.user.users.service.response.SmokingTendencyComparisonStatus;
 import com.addiction.user.users.service.response.SmokingTendencyLevel;
 import com.addiction.user.users.service.response.UserSmokingTendencyResponse;
 import org.springframework.stereotype.Service;
@@ -102,17 +103,37 @@ public class UserReadServiceImpl implements UserReadService {
     @Override
     public UserSmokingTendencyResponse findSmokingTendency() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        return userSurveyResponseRepository.findLatestByUserId(userId)
-                .map(latest -> {
-                    int currentScore = calculateQuitMateScore(latest.getTotalScore());
-                    return UserSmokingTendencyResponse.builder()
-                            .hasSurvey(true)
-                            .rawScore(latest.getTotalScore())
-                            .quitMateScore(currentScore)
-                            .level(determineLevel(currentScore))
-                            .build();
-                })
-                .orElseGet(UserSmokingTendencyResponse::noSurvey);
+        List<UserSurveyResponse> responses = userSurveyResponseRepository.findLatestTwoByUserId(userId);
+
+        if (responses.isEmpty()) {
+            return UserSmokingTendencyResponse.noSurvey();
+        }
+
+        UserSurveyResponse latest = responses.get(0);
+        int currentScore = calculateQuitMateScore(latest.getTotalScore());
+        SmokingTendencyLevel currentLevel = determineLevel(currentScore);
+
+        if (responses.size() == 1) {
+            return UserSmokingTendencyResponse.builder()
+                    .hasSurvey(true)
+                    .quitMateScore(currentScore)
+                    .level(currentLevel)
+                    .comparisonStatus(SmokingTendencyComparisonStatus.NOT_AVAILABLE)
+                    .build();
+        }
+
+        UserSurveyResponse previous = responses.get(1);
+        int previousScore = calculateQuitMateScore(previous.getTotalScore());
+        SmokingTendencyLevel previousLevel = determineLevel(previousScore);
+
+        return UserSmokingTendencyResponse.builder()
+                .hasSurvey(true)
+                .quitMateScore(currentScore)
+                .level(currentLevel)
+                .comparisonStatus(determineComparisonStatus(
+                        currentLevel.getRank() - previousLevel.getRank(),
+                        currentScore - previousScore))
+                .build();
     }
 
     private int calculateQuitMateScore(int rawScore) {
@@ -127,6 +148,22 @@ public class UserReadServiceImpl implements UserReadService {
             return SmokingTendencyLevel.MODERATE;
         }
         return SmokingTendencyLevel.MILD;
+    }
+
+    private SmokingTendencyComparisonStatus determineComparisonStatus(int levelChange, int scoreChange) {
+        if (levelChange > 0) {
+            return SmokingTendencyComparisonStatus.LEVEL_IMPROVED;
+        }
+        if (levelChange < 0) {
+            return SmokingTendencyComparisonStatus.LEVEL_WORSENED;
+        }
+        if (scoreChange > 0) {
+            return SmokingTendencyComparisonStatus.SCORE_INCREASED;
+        }
+        if (scoreChange < 0) {
+            return SmokingTendencyComparisonStatus.SCORE_DECREASED;
+        }
+        return SmokingTendencyComparisonStatus.UNCHANGED;
     }
 
 }

@@ -8,7 +8,7 @@ import com.addiction.survey.userSurveyResponse.repository.UserSurveyResponseRepo
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class UserSurveyResponseRepositoryImpl implements UserSurveyResponseRepos
     }
 
     @Override
-    public Optional<UserSurveyResponse> findLatestByUserId(Long userId) {
-        return userSurveyResponseJpaRepository.findTopByUserIdOrderBySubmittedAtDescIdDesc(userId);
+    public List<UserSurveyResponse> findLatestTwoByUserId(Long userId) {
+        return userSurveyResponseJpaRepository.findTop2ByUserIdOrderBySubmittedAtDescIdDesc(userId);
     }
 }

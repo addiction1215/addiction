@@ -651,9 +651,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
         given(userReadService.findSmokingTendency())
                 .willReturn(UserSmokingTendencyResponse.builder()
                         .hasSurvey(true)
-                        .rawScore(53)
                         .quitMateScore(59)
                         .level(SmokingTendencyLevel.MODERATE)
+                        .comparisonStatus(SmokingTendencyComparisonStatus.SCORE_INCREASED)
                         .build());
 
         // when // then
@@ -673,12 +673,12 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .description("응답 데이터"),
                                 fieldWithPath("data.hasSurvey").type(JsonFieldType.BOOLEAN)
                                         .description("설문 이력 존재 여부"),
-                                fieldWithPath("data.rawScore").type(JsonFieldType.NUMBER)
-                                        .description("최근 설문 원점수"),
                                 fieldWithPath("data.quitMateScore").type(JsonFieldType.NUMBER)
                                         .description("원점수를 0~100점으로 역정규화한 QuitMate Score"),
                                 fieldWithPath("data.level").type(JsonFieldType.STRING)
-                                        .description("흡연 성향 단계: SEVERE, MODERATE, MILD")
+                                        .description("흡연 성향 단계: SEVERE, MODERATE, MILD"),
+                                fieldWithPath("data.comparisonStatus").type(JsonFieldType.STRING)
+                                        .description("비교 멘트 상태: LEVEL_IMPROVED, SCORE_INCREASED, UNCHANGED, SCORE_DECREASED, LEVEL_WORSENED, NOT_AVAILABLE")
                         )
                 ));
     }

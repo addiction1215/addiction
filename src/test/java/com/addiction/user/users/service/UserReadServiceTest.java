@@ -10,6 +10,7 @@ import com.addiction.user.users.entity.User;
 import com.addiction.user.users.entity.enums.SettingStatus;
 import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.repository.UserRepository;
+import com.addiction.user.users.service.response.SmokingTendencyComparisonStatus;
 import com.addiction.user.users.service.response.SmokingTendencyLevel;
 import com.addiction.user.users.service.response.UserSimpleProfileResponse;
 import com.addiction.user.users.service.response.UserSmokingTendencyResponse;
@@ -65,6 +66,7 @@ class UserReadServiceTest extends IntegrationTestSupport {
         UserSmokingTendencyResponse response = userReadService.findSmokingTendency();
 
         assertThat(response.isHasSurvey()).isFalse();
+        assertThat(response.getComparisonStatus()).isEqualTo(SmokingTendencyComparisonStatus.NOT_AVAILABLE);
     }
 
     @DisplayName("최근 설문 결과로 흡연 성향을 조회한다.")
@@ -78,8 +80,22 @@ class UserReadServiceTest extends IntegrationTestSupport {
         UserSmokingTendencyResponse response = userReadService.findSmokingTendency();
 
         assertThat(response.isHasSurvey()).isTrue();
-        assertThat(response.getRawScore()).isEqualTo(53);
         assertThat(response.getQuitMateScore()).isEqualTo(59);
         assertThat(response.getLevel()).isEqualTo(SmokingTendencyLevel.MODERATE);
+        assertThat(response.getComparisonStatus()).isEqualTo(SmokingTendencyComparisonStatus.NOT_AVAILABLE);
+    }
+
+    @DisplayName("최근 설문과 직전 설문을 비교해 멘트 상태를 조회한다.")
+    @Test
+    void 최근_설문과_직전_설문을_비교해_멘트_상태를_조회한다() {
+        User user = userRepository.save(createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.COMPLETE));
+        userSurveyResponseJpaRepository.save(UserSurveyResponse.create(user, 60));
+        userSurveyResponseJpaRepository.save(UserSurveyResponse.create(user, 53));
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(user.getId()));
+
+        UserSmokingTendencyResponse response = userReadService.findSmokingTendency();
+
+        assertThat(response.getComparisonStatus()).isEqualTo(SmokingTendencyComparisonStatus.SCORE_INCREASED);
     }
 }

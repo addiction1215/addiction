@@ -7,26 +7,27 @@ import lombok.Getter;
 public class UserSmokingTendencyResponse {
 
     private final boolean hasSurvey;
-    private final Integer rawScore;
     private final Integer quitMateScore;
     private final SmokingTendencyLevel level;
+    private final SmokingTendencyComparisonStatus comparisonStatus;
 
     @Builder
     public UserSmokingTendencyResponse(
             boolean hasSurvey,
-            Integer rawScore,
             Integer quitMateScore,
-            SmokingTendencyLevel level
+            SmokingTendencyLevel level,
+            SmokingTendencyComparisonStatus comparisonStatus
     ) {
         this.hasSurvey = hasSurvey;
-        this.rawScore = rawScore;
         this.quitMateScore = quitMateScore;
         this.level = level;
+        this.comparisonStatus = comparisonStatus;
     }
 
     public static UserSmokingTendencyResponse noSurvey() {
         return UserSmokingTendencyResponse.builder()
                 .hasSurvey(false)
+                .comparisonStatus(SmokingTendencyComparisonStatus.NOT_AVAILABLE)
                 .build();
     }
 }

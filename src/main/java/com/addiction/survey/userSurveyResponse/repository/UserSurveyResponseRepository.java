@@ -2,10 +2,10 @@ package com.addiction.survey.userSurveyResponse.repository;
 
 import com.addiction.survey.userSurveyResponse.entity.UserSurveyResponse;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserSurveyResponseRepository {
     UserSurveyResponse save(UserSurveyResponse userSurveyResponse);
 
-    Optional<UserSurveyResponse> findLatestByUserId(Long userId);
+    List<UserSurveyResponse> findLatestTwoByUserId(Long userId);
 }
