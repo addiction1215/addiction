@@ -125,6 +125,7 @@ public class UserReadServiceImpl implements UserReadService {
         UserSurveyResponse previous = responses.get(1);
         int previousScore = calculateQuitMateScore(previous.getTotalScore());
         SmokingTendencyLevel previousLevel = determineLevel(previousScore);
+        int scoreChange = currentScore - previousScore;
 
         return UserSmokingTendencyResponse.builder()
                 .hasSurvey(true)
@@ -132,7 +133,8 @@ public class UserReadServiceImpl implements UserReadService {
                 .level(currentLevel)
                 .comparisonStatus(determineComparisonStatus(
                         currentLevel.getRank() - previousLevel.getRank(),
-                        currentScore - previousScore))
+                        scoreChange))
+                .scoreChange(scoreChange)
                 .build();
     }
 

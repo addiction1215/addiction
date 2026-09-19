@@ -97,5 +97,6 @@ class UserReadServiceTest extends IntegrationTestSupport {
         UserSmokingTendencyResponse response = userReadService.findSmokingTendency();
 
         assertThat(response.getComparisonStatus()).isEqualTo(SmokingTendencyComparisonStatus.SCORE_INCREASED);
+        assertThat(response.getScoreChange()).isEqualTo(9);
     }
 }

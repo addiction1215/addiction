@@ -654,6 +654,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                         .quitMateScore(59)
                         .level(SmokingTendencyLevel.MODERATE)
                         .comparisonStatus(SmokingTendencyComparisonStatus.SCORE_INCREASED)
+                        .scoreChange(7)
                         .build());
 
         // when // then
@@ -678,7 +679,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.level").type(JsonFieldType.STRING)
                                         .description("흡연 성향 단계: SEVERE, MODERATE, MILD"),
                                 fieldWithPath("data.comparisonStatus").type(JsonFieldType.STRING)
-                                        .description("비교 멘트 상태: LEVEL_IMPROVED, SCORE_INCREASED, UNCHANGED, SCORE_DECREASED, LEVEL_WORSENED, NOT_AVAILABLE")
+                                        .description("비교 멘트 상태: LEVEL_IMPROVED, SCORE_INCREASED, UNCHANGED, SCORE_DECREASED, LEVEL_WORSENED, NOT_AVAILABLE"),
+                                fieldWithPath("data.scoreChange").type(JsonFieldType.NUMBER)
+                                        .description("최근 QuitMate Score에서 직전 점수를 뺀 값. 비교 불가 시 null")
                         )
                 ));
     }
