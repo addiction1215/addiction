@@ -199,3 +199,27 @@ include::{snippets}/user-find-benefit/http-request.adoc[]
 
 include::{snippets}/user-find-benefit/http-response.adoc[]
 include::{snippets}/user-find-benefit/response-fields.adoc[]
+
+[[user-find-smoking-tendency]]
+=== 나의 흡연 성향 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-smoking-tendency/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-smoking-tendency/http-response.adoc[]
+include::{snippets}/user-find-smoking-tendency/response-fields.adoc[]
+
+[[user-find-cumulative-change]]
+=== 누적 변화 조회
+
+==== HTTP Request
+
+include::{snippets}/user-find-cumulative-change/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/user-find-cumulative-change/http-response.adoc[]
+include::{snippets}/user-find-cumulative-change/response-fields.adoc[]
