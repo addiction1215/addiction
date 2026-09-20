@@ -10,23 +10,20 @@ import com.addiction.user.users.entity.enums.SnsType;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class UserSaveServiceRequest {
 
     private final String email;
     private final String password;
-    private final String nickName;
     private final Sex sex;
     private final String birthDay;
 
     @Builder
-    public UserSaveServiceRequest(String birthDay, String email, String password, String nickName, Sex sex) {
+    public UserSaveServiceRequest(String birthDay, String email, String password, Sex sex) {
         this.birthDay = birthDay;
         this.email = email;
         this.password = password;
-        this.nickName = nickName;
         this.sex = sex;
     }
 

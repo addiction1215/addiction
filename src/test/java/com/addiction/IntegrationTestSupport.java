@@ -124,7 +124,7 @@ public abstract class IntegrationTestSupport {
         return User.builder()
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
-                .nickName("테스트 닉네임")
+                .nickName("테스트닉네임_" + email)
                 .phoneNumber("010-1234-1234")
                 .sex(Sex.MALE)
                 .role(Role.USER)

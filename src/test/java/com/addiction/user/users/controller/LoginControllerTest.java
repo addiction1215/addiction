@@ -232,7 +232,6 @@ public class LoginControllerTest extends ControllerTestSupport {
 			.email("test@test.com")
 			.password("1234")
 			.birthDay("123411111")
-			.nickName("testUser")
             .sex(Sex.FEMALE)
 			.build();
 
@@ -258,7 +257,6 @@ public class LoginControllerTest extends ControllerTestSupport {
 		UserSaveRequest request = UserSaveRequest.builder()
             .password("1234")
             .birthDay("123411111")
-            .nickName("testUser")
             .sex(Sex.FEMALE)
 			.build();
 
@@ -284,7 +282,6 @@ public class LoginControllerTest extends ControllerTestSupport {
 		UserSaveRequest request = UserSaveRequest.builder()
             .email("test@test.com")
             .birthDay("123411111")
-            .nickName("testUser")
             .sex(Sex.FEMALE)
 			.build();
 

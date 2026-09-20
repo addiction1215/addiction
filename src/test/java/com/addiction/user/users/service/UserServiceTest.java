@@ -53,28 +53,6 @@ public class UserServiceTest extends IntegrationTestSupport {
                 .email("test@test.com")
                 .password("1234")
                 .birthDay("123411111")
-                .nickName("testUser")
-                .sex(Sex.FEMALE)
-                .build();
-
-        //when
-        userService.save(userSaveServiceRequest);
-
-        //then
-        assertThat(userRepository.findByEmail("test@test.com").get())
-                .extracting("email", "birthDay", "nickName", "sex")
-                .contains("test@test.com", "123411111", "testUser", Sex.FEMALE);
-    }
-
-    @DisplayName("회원가입 시 닉네임이 공백이면 임의의 닉네임을 생성해 저장한다.")
-    @Test
-    void 회원가입시_닉네임이_공백이면_임의의_닉네임을_생성해_저장한다() {
-        //given
-        UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
-                .email("test@test.com")
-                .password("1234")
-                .birthDay("123411111")
-                .nickName("\u00A0 \u00A0")
                 .sex(Sex.FEMALE)
                 .build();
 
@@ -83,27 +61,12 @@ public class UserServiceTest extends IntegrationTestSupport {
 
         //then
         User savedUser = userRepository.findByEmail("test@test.com").orElseThrow();
-        assertThat(savedUser.getNickName()).isNotBlank();
-        assertThat(savedUser.getNickName()).isNotBlank();
-    }
-
-    @DisplayName("회원가입 시 닉네임이 null이면 임의의 닉네임을 생성해 저장한다.")
-    @Test
-    void 회원가입시_닉네임이_null이면_임의의_닉네임을_생성해_저장한다() {
-        //given
-        UserSaveServiceRequest userSaveServiceRequest = UserSaveServiceRequest.builder()
-                .email("test@test.com")
-                .password("1234")
-                .birthDay("123411111")
-                .nickName(null)
-                .sex(Sex.FEMALE)
-                .build();
-
-        //when
-        userService.save(userSaveServiceRequest);
-
-        //then
-        assertThat(userRepository.findByEmail("test@test.com").orElseThrow().getNickName()).isNotBlank();
+        assertAll(
+                () -> assertThat(savedUser.getEmail()).isEqualTo("test@test.com"),
+                () -> assertThat(savedUser.getBirthDay()).isEqualTo("123411111"),
+                () -> assertThat(savedUser.getNickName()).isNotBlank(),
+                () -> assertThat(savedUser.getSex()).isEqualTo(Sex.FEMALE)
+        );
     }
 
     @DisplayName("유저의 정보를 저장할 시 이미 저장된 이메일이라면 예외가 발생한다.")
@@ -114,7 +77,6 @@ public class UserServiceTest extends IntegrationTestSupport {
                 .email("test@test.com")
                 .password("1234")
                 .birthDay("123411111")
-                .nickName("testUser")
                 .sex(Sex.FEMALE)
                 .build();
 
@@ -215,6 +177,43 @@ public class UserServiceTest extends IntegrationTestSupport {
                 .nickName("새닉네임")
                 .profileUrl("https://example.com/new-profile.jpg")
                 .resetProfileImage(true)
+                .build();
+
+        // when // then
+        assertThrows(AddictionException.class, () -> userService.updateProfile(request));
+    }
+
+    @DisplayName("유저의 프로필 수정시 닉네임이 공백이면 예외가 발생한다.")
+    @Test
+    void 유저의_프로필_수정시_닉네임이_공백이면_예외가_발생한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User savedUser = userRepository.save(user);
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(savedUser.getId()));
+
+        UserUpdateProfileServiceRequest request = UserUpdateProfileServiceRequest.builder()
+                .nickName("\u00A0 \u00A0")
+                .build();
+
+        // when // then
+        assertThrows(AddictionException.class, () -> userService.updateProfile(request));
+    }
+
+    @DisplayName("유저의 프로필 수정시 이미 사용 중인 닉네임이면 예외가 발생한다.")
+    @Test
+    void 유저의_프로필_수정시_이미_사용_중인_닉네임이면_예외가_발생한다() {
+        // given
+        User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        User otherUser = createUser("other@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        userRepository.saveAll(List.of(user, otherUser));
+
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(user.getId()));
+
+        UserUpdateProfileServiceRequest request = UserUpdateProfileServiceRequest.builder()
+                .nickName(otherUser.getNickName())
                 .build();
 
         // when // then
@@ -409,7 +408,6 @@ public class UserServiceTest extends IntegrationTestSupport {
                 .email("test@test.com")
                 .password("1234")
                 .birthDay("123411111")
-                .nickName("testUser")
                 .sex(Sex.FEMALE)
                 .build();
 
