@@ -190,7 +190,6 @@ public class LoginControllerDocsTest extends RestDocsSupport {
                 .email("test@test.com")
                 .password("1234")
                 .birthDay("123411111")
-                .nickName("testUser")
                 .sex(Sex.FEMALE)
                 .build();
 
@@ -198,7 +197,7 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 			.willReturn(UserSaveResponse.builder()
                 .email("test@test.com")
                 .birthDay("123411111")
-                .nickName("testUser")
+                .nickName("건강한하늘_7f3a9c1b2d4e")
                 .sex(Sex.FEMALE)
 				.build()
 			);
@@ -221,8 +220,6 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 						.description("비밀번호"),
 					fieldWithPath("birthDay").type(JsonFieldType.STRING)
 						.description("생년월일 (YYYYMMDD)"),
-					fieldWithPath("nickName").type(JsonFieldType.STRING)
-						.description("닉네임"),
                     fieldWithPath("sex").type(JsonFieldType.STRING)
                             .description("성별 가능한값: " + Arrays.toString(Sex.values()))
 				),
@@ -240,7 +237,7 @@ public class LoginControllerDocsTest extends RestDocsSupport {
 					fieldWithPath("data.birthDay").type(JsonFieldType.STRING)
 						.description("생년월일"),
 					fieldWithPath("data.nickName").type(JsonFieldType.STRING)
-						.description("닉네임"),
+						.description("서버에서 생성된 닉네임"),
                     fieldWithPath("data.sex").type(JsonFieldType.STRING)
                             .description("성별")
 				)

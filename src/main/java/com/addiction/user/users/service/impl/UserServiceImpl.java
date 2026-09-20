@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserSaveResponse save(UserSaveServiceRequest userSaveServiceRequest) {
         validateDuplicateEmail(userSaveServiceRequest.getEmail());
-        String nickName = randomNicknameGenerator.resolve(userSaveServiceRequest.getNickName());
+        String nickName = randomNicknameGenerator.generate();
 		User savedUser = userRepository.save(userSaveServiceRequest.toEntity(bCryptPasswordEncoder, nickName));
 		dailySmokingPushScheduleService.createDefaults(savedUser);
 		return UserSaveResponse.createResponse(savedUser);
@@ -207,6 +207,7 @@ public class UserServiceImpl implements UserService {
 	public UserUpdateProfileResponse updateProfile(UserUpdateProfileServiceRequest userUpdateProfileServiceRequest) {
         validateProfileImageUpdateRequest(userUpdateProfileServiceRequest);
 		User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
+        validateNickNameForUpdate(user, userUpdateProfileServiceRequest.getNickName());
 		user.updateProfile(
 				userUpdateProfileServiceRequest.getNickName(),
 				userUpdateProfileServiceRequest.getIntroduction(),
@@ -263,6 +264,30 @@ public class UserServiceImpl implements UserService {
                 && userUpdateProfileServiceRequest.getProfileUrl() != null) {
             throw new AddictionException("프로필 이미지 변경과 초기화는 동시에 요청할 수 없습니다.");
         }
+    }
+
+    private void validateNickNameForUpdate(User user, String nickName) {
+        if (isBlank(nickName)) {
+            throw new AddictionException("닉네임은 필수입니다.");
+        }
+
+        if (!nickName.equals(user.getNickName()) && userRepository.existsByNickName(nickName)) {
+            throw new AddictionException("이미 사용 중인 닉네임입니다.");
+        }
+    }
+
+    private boolean isBlank(String value) {
+        if (value == null) {
+            return true;
+        }
+
+        for (int i = 0; i < value.length(); i++) {
+            char current = value.charAt(i);
+            if (!Character.isWhitespace(current) && !Character.isSpaceChar(current)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void validateCurrentPassword(User user, String currentPassword) {

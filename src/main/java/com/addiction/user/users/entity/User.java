@@ -15,6 +15,7 @@ import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.entity.enums.SnsType;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -44,6 +45,7 @@ public class User extends BaseTimeEntity {
 
 	private String password;
 
+	@Column(name = "nick_name", nullable = false, unique = true)
 	private String nickName;
 
 	private String phoneNumber;
@@ -118,11 +120,16 @@ public class User extends BaseTimeEntity {
 
 	public void withdraw() {
 		this.email = createWithdrawnEmail();
+		this.nickName = createWithdrawnNickName();
 		this.useYn = "N";
 	}
 
 	private String createWithdrawnEmail() {
 		return "deleted+" + UUID.randomUUID() + "@withdrawn.local";
+	}
+
+	private String createWithdrawnNickName() {
+		return "deleted+" + UUID.randomUUID();
 	}
 
     public void updateProfileUrl(String profileUrl) {
