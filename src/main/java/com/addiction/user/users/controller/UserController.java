@@ -1,6 +1,7 @@
 package com.addiction.user.users.controller;
 
 import com.addiction.user.users.service.BenefitService;
+import com.addiction.user.users.service.CumulativeChangeService;
 import com.addiction.user.users.service.response.BenefitResponse;
 import com.addiction.global.ApiResponse;
 import com.addiction.user.users.controller.request.*;
@@ -19,6 +20,7 @@ public class UserController {
     private final UserService userService;
     private final UserReadService userReadService;
     private final BenefitService benefitService;
+    private final CumulativeChangeService cumulativeChangeService;
 
     @PatchMapping
     public ApiResponse<UserUpdateResponse> update(@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
@@ -76,6 +78,11 @@ public class UserController {
         return ApiResponse.ok(userReadService.findSimpleProfile());
     }
 
+    @GetMapping("/smoking-tendency")
+    public ApiResponse<UserSmokingTendencyResponse> findSmokingTendency() {
+        return ApiResponse.ok(userReadService.findSmokingTendency());
+    }
+
     @DeleteMapping
     public ApiResponse<Boolean> withdraw() {
         return ApiResponse.ok(userService.withdraw());
@@ -84,6 +91,11 @@ public class UserController {
     @GetMapping("/benefit")
     public ApiResponse<BenefitResponse> findMyBenefit() {
         return ApiResponse.ok(benefitService.findMyBenefit());
+    }
+
+    @GetMapping("/cumulative-change")
+    public ApiResponse<CumulativeChangeResponse> findCumulativeChange() {
+        return ApiResponse.ok(cumulativeChangeService.findCumulativeChange());
     }
 
 }

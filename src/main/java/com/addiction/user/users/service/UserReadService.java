@@ -24,4 +24,6 @@ public interface UserReadService {
 	UserInfoResponse findUserInfo();
 
 	UserSimpleProfileResponse findSimpleProfile();
+
+    UserSmokingTendencyResponse findSmokingTendency();
 }

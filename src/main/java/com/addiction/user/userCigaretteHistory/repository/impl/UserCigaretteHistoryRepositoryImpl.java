@@ -109,6 +109,22 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
         return aggregateSingleAvg(userId, "avgPatienceTime");
     }
 
+    @Override
+    public Long findMaxSmokePatienceTimeByUserId(Long userId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userId").is(userId)),
+                Aggregation.unwind("history"),
+                Aggregation.match(Criteria.where("history.smokePatienceTime").gt(0)),
+                Aggregation.group().max("history.smokePatienceTime").as("maxValue")
+        );
+        AggregationResults<Document> results = mongoTemplate.aggregate(
+                aggregation, MongoConfig.COLLECTION_NAME, Document.class);
+        Document result = results.getUniqueMappedResult();
+        if (result == null) return null;
+        Object maxValue = result.get("maxValue");
+        return maxValue instanceof Number ? ((Number) maxValue).longValue() : null;
+    }
+
     private double aggregateSingleAvg(Long userId, String field) {
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.match(Criteria.where("userId").is(userId)),

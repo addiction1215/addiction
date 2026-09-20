@@ -4,6 +4,7 @@ import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.controller.request.*;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.service.BenefitService;
+import com.addiction.user.users.service.CumulativeChangeService;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.user.users.service.UserService;
 import com.addiction.user.users.service.request.UserUpdatePurposeServiceRequest;
@@ -36,10 +37,11 @@ public class UserControllerDocsTest extends RestDocsSupport {
     private final UserService userService = mock(UserService.class);
     private final UserReadService userReadService = mock(UserReadService.class);
     private final BenefitService benefitService = mock(BenefitService.class);
+    private final CumulativeChangeService cumulativeChangeService = mock(CumulativeChangeService.class);
 
     @Override
     protected Object initController() {
-        return new UserController(userService, userReadService, benefitService);
+        return new UserController(userService, userReadService, benefitService, cumulativeChangeService);
     }
 
     @DisplayName("사용자 초기정보 수정 API")
@@ -600,6 +602,86 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                         .description("총 절약액 (원)"),
                                 fieldWithPath("data.dailySavedMoney").type(JsonFieldType.NUMBER)
                                         .description("하루 절약액 (원)")
+                        )
+                ));
+    }
+
+    @DisplayName("누적 변화 조회 API")
+    @Test
+    void 누적_변화_조회_API() throws Exception {
+        // given
+        given(cumulativeChangeService.findCumulativeChange())
+                .willReturn(CumulativeChangeResponse.builder()
+                        .savedMoney(14400L)
+                        .reducedCigaretteCount(32L)
+                        .longestAbstinenceSeconds(111600L)
+                        .build());
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/user/cumulative-change")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-find-cumulative-change",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.savedMoney").type(JsonFieldType.NUMBER)
+                                        .description("현재 금연 연속 기간의 절약 금액(원)"),
+                                fieldWithPath("data.reducedCigaretteCount").type(JsonFieldType.NUMBER)
+                                        .description("현재 금연 연속 기간에 덜 피운 담배 개비 수"),
+                                fieldWithPath("data.longestAbstinenceSeconds").type(JsonFieldType.NUMBER)
+                                        .description("기록된 흡연 간격 중 최장 금연 시간(초)")
+                        )
+                ));
+    }
+
+    @DisplayName("나의 흡연 성향 조회 API")
+    @Test
+    void 나의_흡연_성향_조회_API() throws Exception {
+        // given
+        given(userReadService.findSmokingTendency())
+                .willReturn(UserSmokingTendencyResponse.builder()
+                        .hasSurvey(true)
+                        .quitMateScore(59)
+                        .level(SmokingTendencyLevel.MODERATE)
+                        .comparisonStatus(SmokingTendencyComparisonStatus.SCORE_INCREASED)
+                        .scoreChange(7)
+                        .build());
+
+        // when // then
+        mockMvc.perform(get("/api/v1/user/smoking-tendency"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-find-smoking-tendency",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메세지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.hasSurvey").type(JsonFieldType.BOOLEAN)
+                                        .description("설문 이력 존재 여부"),
+                                fieldWithPath("data.quitMateScore").type(JsonFieldType.NUMBER)
+                                        .description("원점수를 0~100점으로 역정규화한 QuitMate Score"),
+                                fieldWithPath("data.level").type(JsonFieldType.STRING)
+                                        .description("흡연 성향 단계: SEVERE, MODERATE, MILD"),
+                                fieldWithPath("data.comparisonStatus").type(JsonFieldType.STRING)
+                                        .description("비교 멘트 상태: LEVEL_IMPROVED, SCORE_INCREASED, UNCHANGED, SCORE_DECREASED, LEVEL_WORSENED, NOT_AVAILABLE"),
+                                fieldWithPath("data.scoreChange").type(JsonFieldType.NUMBER)
+                                        .description("최근 QuitMate Score에서 직전 점수를 뺀 값. 비교 불가 시 null")
                         )
                 ));
     }

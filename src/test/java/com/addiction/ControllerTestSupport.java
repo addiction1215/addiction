@@ -26,6 +26,7 @@ import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryServi
 import com.addiction.user.users.controller.LoginController;
 import com.addiction.user.users.controller.UserController;
 import com.addiction.user.users.service.BenefitService;
+import com.addiction.user.users.service.CumulativeChangeService;
 import com.addiction.user.users.service.LoginService;
 import com.addiction.user.users.service.UserReadService;
 import com.addiction.global.logagent.LogAgentWebhookService;
@@ -72,6 +73,9 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected BenefitService benefitService;
+
+    @MockitoBean
+    protected CumulativeChangeService cumulativeChangeService;
 
     @MockitoBean
     protected SurveyQuestionReadService surveyQuestionReadService;
