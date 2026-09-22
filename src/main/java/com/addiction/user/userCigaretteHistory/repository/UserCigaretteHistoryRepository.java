@@ -20,4 +20,6 @@ public interface UserCigaretteHistoryRepository {
     double findAverageSmokeCountByUserId(Long userId);
 
     double findAverageAvgPatienceTimeByUserId(Long userId);
+
+    Long findMaxSmokePatienceTimeByUserId(Long userId);
 }

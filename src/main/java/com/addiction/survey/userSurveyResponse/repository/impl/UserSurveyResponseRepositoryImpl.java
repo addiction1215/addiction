@@ -8,6 +8,8 @@ import com.addiction.survey.userSurveyResponse.repository.UserSurveyResponseRepo
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class UserSurveyResponseRepositoryImpl implements UserSurveyResponseRepository {
@@ -16,5 +18,10 @@ public class UserSurveyResponseRepositoryImpl implements UserSurveyResponseRepos
     @Override
     public UserSurveyResponse save(UserSurveyResponse userSurveyResponse) {
         return userSurveyResponseJpaRepository.save(userSurveyResponse);
+    }
+
+    @Override
+    public List<UserSurveyResponse> findLatestTwoByUserId(Long userId) {
+        return userSurveyResponseJpaRepository.findTop2ByUserIdOrderBySubmittedAtDescIdDesc(userId);
     }
 }
