@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,13 +27,16 @@ class CravingSessionServiceTest extends IntegrationTestSupport {
     @Autowired
     private CravingSessionRepository cravingSessionRepository;
 
+    @Autowired
+    private Clock koreaClock;
+
     @DisplayName("30초가 지난 갈망 대응을 완료하면 오늘 완료 횟수를 반환한다")
     @Test
     void completeSession() {
         User user = userRepository.save(createUser("craving@test.com", "password", SnsType.NORMAL, SettingStatus.COMPLETE));
         given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(user.getId()));
         CravingSession session = cravingSessionRepository.save(
-                CravingSession.start(user, LocalDateTime.now().minusSeconds(31))
+                CravingSession.start(user, LocalDateTime.now(koreaClock).minusSeconds(31))
         );
 
         CravingSessionCompleteResponse response = cravingSessionService.complete(session.getId());
@@ -49,7 +53,8 @@ class CravingSessionServiceTest extends IntegrationTestSupport {
         User user = userRepository.save(createUser("craving-early@test.com", "password", SnsType.NORMAL, SettingStatus.COMPLETE));
         given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(user.getId()));
         CravingSession session = cravingSessionRepository.save(
-                CravingSession.start(user, LocalDateTime.now().minusSeconds(29))
+                // 세션이 1초 전에 시작된 것으로 설정해 30초 미만 완료를 검증한다.
+                CravingSession.start(user, LocalDateTime.now(koreaClock).minusSeconds(1))
         );
 
         assertThatThrownBy(() -> cravingSessionService.complete(session.getId()))

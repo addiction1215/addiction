@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,7 +31,8 @@ class CravingSessionControllerTest extends ControllerTestSupport {
                         .build()
         );
 
-        mockMvc.perform(post("/api/v1/craving-sessions"))
+        mockMvc.perform(post("/api/v1/craving-sessions")
+                        .with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.durationSeconds").value(30));
@@ -62,7 +64,8 @@ class CravingSessionControllerTest extends ControllerTestSupport {
                         .build()
         );
 
-        mockMvc.perform(post("/api/v1/craving-sessions/{sessionId}/complete", 1L))
+        mockMvc.perform(post("/api/v1/craving-sessions/{sessionId}/complete", 1L)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.todayCompletedCount").value(1));
