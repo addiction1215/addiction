@@ -1,0 +1,14 @@
+[[smoke-free-confirmation]]
+=== 금연일 확정
+
+사용자가 흡연 기록이 없는 날짜를 금연일로 확정합니다.
+
+==== HTTP Request
+
+include::{snippets}/smoke-free-confirmation/http-request.adoc[]
+include::{snippets}/smoke-free-confirmation/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/smoke-free-confirmation/http-response.adoc[]
+include::{snippets}/smoke-free-confirmation/response-fields.adoc[]

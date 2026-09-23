@@ -1,6 +1,7 @@
 package docs.users;
 
 import com.addiction.user.userCigaretteHistory.controller.UserCigaretteHistoryController;
+import com.addiction.user.userCigaretteHistory.enums.CalendarSmokingStatus;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.service.UserCigaretteHistoryService;
 import com.addiction.user.userCigaretteHistory.service.response.*;
@@ -41,6 +42,7 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                 UserCigaretteHistoryCalenderResponse.builder()
                         .date("2024-06-01")
                         .count(5)
+                        .status(CalendarSmokingStatus.SMOKED)
                         .build()
         );
         given(userCigaretteHistoryService.findCalendarByDate(any()))
@@ -65,7 +67,8 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("월별 캘린더 흡연기록 목록"),
                                 fieldWithPath("data[].date").type(JsonFieldType.STRING).description("날짜"),
-                                fieldWithPath("data[].count").type(JsonFieldType.NUMBER).description("흡연 개수")
+                                fieldWithPath("data[].count").type(JsonFieldType.NUMBER).description("흡연 개수"),
+                                fieldWithPath("data[].status").type(JsonFieldType.STRING).description("캘린더 상태 (SMOKED, SMOKE_FREE, UNLOGGED)")
                         )
                 ));
     }

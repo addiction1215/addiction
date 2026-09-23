@@ -18,6 +18,8 @@ import com.addiction.challenge.missionhistory.service.MissionHistoryReadService;
 import com.addiction.challenge.missionhistory.service.MissionHistoryService;
 import com.addiction.craving.controller.CravingSessionController;
 import com.addiction.craving.service.CravingSessionService;
+import com.addiction.smokefree.controller.SmokeFreeConfirmationController;
+import com.addiction.smokefree.service.SmokeFreeConfirmationService;
 import com.addiction.survey.surveyQuestion.controller.SurveyQuestionController;
 import com.addiction.survey.surveyQuestion.service.SurveyQuestionReadService;
 import com.addiction.user.userCigarette.controller.UserCigaretteController;
@@ -56,6 +58,7 @@ import org.springframework.test.web.servlet.MockMvc;
         MissionController.class,
         MissionHistoryController.class,
         CravingSessionController.class,
+        SmokeFreeConfirmationController.class,
 })
 public abstract class ControllerTestSupport {
 
@@ -127,6 +130,9 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected CravingSessionService cravingSessionService;
+
+    @MockitoBean
+    protected SmokeFreeConfirmationService smokeFreeConfirmationService;
 
     @MockitoBean
     protected SlackService slackService;

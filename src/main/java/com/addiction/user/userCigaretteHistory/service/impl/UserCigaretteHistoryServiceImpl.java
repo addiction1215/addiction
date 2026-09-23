@@ -1,9 +1,11 @@
 package com.addiction.user.userCigaretteHistory.service.impl;
 
 import com.addiction.global.security.SecurityService;
+import com.addiction.smokefree.service.SmokeFreeConfirmationReadService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
+import com.addiction.user.userCigaretteHistory.enums.CalendarSmokingStatus;
 import com.addiction.user.userCigaretteHistory.enums.PeriodType;
 import com.addiction.user.userCigaretteHistory.enums.SmokingFeedback;
 import com.addiction.user.userCigaretteHistory.enums.StatsFeedback;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,6 +56,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     private final UserCigaretteReadService userCigaretteReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final UserReadService userReadService;
+    private final SmokeFreeConfirmationReadService smokeFreeConfirmationReadService;
+    private final Clock koreaClock;
 
     @Override
     public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
@@ -74,22 +79,48 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public List<UserCigaretteHistoryCalenderResponse> findCalendarByDate(String month) {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
+        // BASIC_ISO_DATE(yyyyMMdd) 형식으로 파싱하기 위해 요청 월(yyyyMM)에 01일을 붙인다.
+        // 예: 20260901 -> 2026-09-01
+        LocalDate firstDay = LocalDate.parse(month + "01", BASIC_ISO_DATE);
+        
+        // lengthOfMonth()는 해당 월의 총 일수(2월은 윤년 여부 포함)를 반환한다.
+        // 그 일 수를 일자로 설정해 해당 월의 마지막 날을 구한다. 예: 2026-02-01 -> 2026-02-28
+        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+        var confirmedDates = smokeFreeConfirmationReadService.findConfirmedDates(userId, firstDay, lastDay);
         List<UserCigaretteHistoryCalenderResponse> results = userCigaretteHistoryRepository.findByMonthAndUserId(month, userId).stream()
-                .map(doc -> UserCigaretteHistoryCalenderResponse.createResponse(doc.getDate(), doc.getSmokeCount()))
+                .map(doc -> {
+                    LocalDate date = LocalDate.parse(doc.getDate(), BASIC_ISO_DATE);
+                    CalendarSmokingStatus status = doc.getSmokeCount() > 0
+                            ? CalendarSmokingStatus.SMOKED
+                            : confirmedDates.contains(date)
+                                    ? CalendarSmokingStatus.SMOKE_FREE
+                                    : CalendarSmokingStatus.UNLOGGED;
+                    return UserCigaretteHistoryCalenderResponse.createResponse(
+                            doc.getDate(),
+                            doc.getSmokeCount(),
+                            status
+                    );
+                })
                 .collect(Collectors.toList());
 
         // 당일 데이터 추가 (RDBMS에서 조회)
-        String today = LocalDate.now().format(BASIC_ISO_DATE);
-        String todayMonth = LocalDate.now().format(MONTH_FORMATTER);
+        LocalDate currentDate = LocalDate.now(koreaClock);
+        String today = currentDate.format(BASIC_ISO_DATE);
+        String todayMonth = currentDate.format(MONTH_FORMATTER);
 
         if (month.equals(todayMonth)) {
-            LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-            LocalDateTime endOfDay = LocalDate.now().plusDays(ONE_DAY).atStartOfDay();
+            LocalDateTime startOfDay = currentDate.atStartOfDay();
+            LocalDateTime endOfDay = currentDate.plusDays(ONE_DAY).atStartOfDay();
 
             List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
 
             if (!todayCigarettes.isEmpty()) {
-                results.add(UserCigaretteHistoryCalenderResponse.createResponse(today, todayCigarettes.size()));
+                results.add(UserCigaretteHistoryCalenderResponse.createResponse(
+                        today,
+                        todayCigarettes.size(),
+                        CalendarSmokingStatus.SMOKED
+                ));
             }
         }
 
