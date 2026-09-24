@@ -13,6 +13,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -42,8 +44,8 @@ class SmokeFreeConfirmationControllerDocsTest extends RestDocsSupport {
                                 """))
                 .andExpect(status().isOk())
                 .andDo(document("smoke-free-confirmation",
-                        prettyPrint(),
-                        prettyPrint(),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("date").type(JsonFieldType.STRING).description("확정할 금연 날짜 (yyyyMMdd)")
                         ),
