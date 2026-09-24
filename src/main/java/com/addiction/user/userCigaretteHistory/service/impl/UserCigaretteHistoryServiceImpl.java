@@ -173,12 +173,12 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildWeeklyGraph(Long userId) {
-        LocalDate today = LocalDate.now();
-        LocalDate monday = today.with(DayOfWeek.MONDAY);
+        LocalDate today = LocalDate.now(koreaClock);
+        LocalDate startDate = today.minusDays(DAYS_IN_WEEK - 1L);
 
         Map<String, CigaretteHistoryDocument> docMap = new HashMap<>();
-        if (today.isAfter(monday)) {
-            String start = monday.format(BASIC_ISO_DATE);
+        if (today.isAfter(startDate)) {
+            String start = startDate.format(BASIC_ISO_DATE);
             String end = today.minusDays(ONE_DAY).format(BASIC_ISO_DATE);
             userCigaretteHistoryRepository.findByUserIdAndDateBetween(userId, start, end)
                     .forEach(d -> docMap.put(d.getDate(), d));
@@ -193,12 +193,12 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
 
         for (int i = 0; i < DAYS_IN_WEEK; i++) {
-            LocalDate day = monday.plusDays(i);
-            String label = day.getDayOfWeek().toString().substring(0, 3);
+            LocalDate day = startDate.plusDays(i);
+            String label = day.toString();
             CigaretteHistoryDocument doc = docMap.get(day.format(BASIC_ISO_DATE));
             countList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, doc != null ? doc.getSmokeCount() : 0));
-            // [평균 참은 시간 계산 3/4] 주간 그래프는 날짜별 avgPatienceTime을 각 구간 값으로 사용한다.
-            // 기록이 없는 날짜(미래 요일 포함)는 0초로 표시한다.
+            // 주간 그래프는 최근 7일의 날짜별 avgPatienceTime을 각 구간 값으로 사용한다.
+            // 기록이 없는 날짜는 0초로 표시한다.
             patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, doc != null ? doc.getAvgPatienceTime() : 0));
         }
 

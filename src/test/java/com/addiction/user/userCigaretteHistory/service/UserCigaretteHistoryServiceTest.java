@@ -253,11 +253,13 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         assertThat(results.getCigarette()).isNotNull();
         assertThat(results.getPatient()).isNotNull();
 
-        // WEEKLY는 항상 7개 (월~일)
+        // WEEKLY는 오늘을 포함한 최근 7일이다.
         assertThat(results.getCigarette().getDate()).hasSize(7);
+        assertThat(results.getCigarette().getDate().get(0).getDate())
+                .isEqualTo(LocalDate.now().minusDays(6).toString());
 
-        // 오늘 요일 라벨로 당일 데이터 확인
-        String todayLabel = LocalDate.now().getDayOfWeek().toString().substring(0, 3);
+        // 오늘 날짜 라벨로 당일 데이터 확인
+        String todayLabel = LocalDate.now().toString();
         assertThat(results.getCigarette().getDate())
                 .filteredOn(d -> d.getDate().equals(todayLabel))
                 .hasSize(1)
@@ -293,11 +295,13 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(results).isNotNull();
-        // WEEKLY는 항상 7개 (월~일)
+        // WEEKLY는 오늘을 포함한 최근 7일이다.
         assertThat(results.getCigarette().getDate()).hasSize(7);
+        assertThat(results.getCigarette().getDate().get(0).getDate())
+                .isEqualTo(LocalDate.now().minusDays(6).toString());
 
-        // 오늘 요일 라벨로 당일 3개 데이터 확인
-        String todayLabel = LocalDate.now().getDayOfWeek().toString().substring(0, 3);
+        // 오늘 날짜 라벨로 당일 3개 데이터 확인
+        String todayLabel = LocalDate.now().toString();
         assertThat(results.getCigarette().getDate())
                 .filteredOn(d -> d.getDate().equals(todayLabel))
                 .hasSize(1)
