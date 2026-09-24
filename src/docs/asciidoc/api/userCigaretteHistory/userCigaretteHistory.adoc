@@ -26,7 +26,7 @@ include::{snippets}/user-cigarette-history-history/response-fields.adoc[]
 
 [[user-cigarette-history-graph-weekly]]
 === 흡연기록 그래프 조회 - 주간 (WEEKLY)
-이번 주 월~일 요일별 일별 집계 (7개 데이터)
+오늘을 포함한 최근 7일 일별 집계 (7개 데이터)
 
 ==== HTTP Request
 
