@@ -215,6 +215,10 @@ include::{snippets}/user-find-smoking-tendency/response-fields.adoc[]
 [[user-find-cumulative-change]]
 === 누적 변화 조회
 
+`nonSmokingDays`는 마지막 흡연 날짜부터 오늘까지의 날짜 차이입니다.
+흡연 기록이 없으면 금연 시작 날짜를 기준으로 계산합니다.
+오늘 흡연하면 0일이며, 캘린더의 누적 금연 성공일 수나 24시간 단위의 경과 일수가 아닙니다.
+
 ==== HTTP Request
 
 include::{snippets}/user-find-cumulative-change/http-request.adoc[]

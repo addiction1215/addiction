@@ -8,6 +8,7 @@ import com.addiction.user.users.controller.request.UserUpdateRequest;
 import com.addiction.user.users.controller.request.UserUpdateSurveyRequest;
 import com.addiction.user.users.entity.enums.Sex;
 import com.addiction.user.users.service.response.BenefitResponse;
+import com.addiction.user.users.service.response.CumulativeChangeResponse;
 import com.addiction.user.users.service.response.UserUpdateProfileResponse;
 
 import static org.mockito.BDDMockito.given;
@@ -425,6 +426,26 @@ public class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.statusCode").value("200"))
                 .andExpect(jsonPath("$.httpStatus").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("누적 변화에 연속 금연 일수를 포함하여 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER")
+    void 누적_변화의_연속_금연_일수를_조회한다() throws Exception {
+        given(cumulativeChangeService.findCumulativeChange())
+                .willReturn(CumulativeChangeResponse.builder()
+                        .savedMoney(16000L)
+                        .reducedCigaretteCount(80L)
+                        .nonSmokingDays(8L)
+                        .longestAbstinenceSeconds(111600L)
+                        .build());
+
+        mockMvc.perform(get("/api/v1/user/cumulative-change"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.nonSmokingDays").value(8))
+                .andExpect(jsonPath("$.data.savedMoney").value(16000))
+                .andExpect(jsonPath("$.data.reducedCigaretteCount").value(80))
+                .andExpect(jsonPath("$.data.longestAbstinenceSeconds").value(111600));
     }
 
     @DisplayName("회원 탈퇴를 한다.")

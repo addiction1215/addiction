@@ -24,15 +24,16 @@ class CumulativeChangeServiceTest extends IntegrationTestSupport {
     @Test
     void 절약_금액과_덜_피운_담배_개비_수를_조회한다() {
         User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
-        user.updateSurvey("금연 화이팅", 10, 5000, 20, LocalDateTime.now().minusDays(3));
+        user.updateSurvey("금연 화이팅", 10, 2000, 10, LocalDateTime.now().minusDays(3));
         userRepository.save(user);
         given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(user.getId()));
         given(userCigaretteHistoryRepository.findMaxSmokePatienceTimeByUserId(user.getId())).willReturn(7200L);
 
         CumulativeChangeResponse response = cumulativeChangeService.findCumulativeChange();
 
-        assertThat(response.getSavedMoney()).isEqualTo(15000L);
-        assertThat(response.getReducedCigaretteCount()).isEqualTo(60L);
+        assertThat(response.getSavedMoney()).isEqualTo(6000L);
+        assertThat(response.getReducedCigaretteCount()).isEqualTo(30L);
+        assertThat(response.getNonSmokingDays()).isEqualTo(3L);
         assertThat(response.getLongestAbstinenceSeconds()).isEqualTo(7200L);
     }
 
@@ -51,6 +52,7 @@ class CumulativeChangeServiceTest extends IntegrationTestSupport {
 
         assertThat(response.getSavedMoney()).isZero();
         assertThat(response.getReducedCigaretteCount()).isZero();
+        assertThat(response.getNonSmokingDays()).isZero();
         assertThat(response.getLongestAbstinenceSeconds()).isEqualTo(14400L);
     }
 
@@ -66,5 +68,21 @@ class CumulativeChangeServiceTest extends IntegrationTestSupport {
         CumulativeChangeResponse response = cumulativeChangeService.findCumulativeChange();
 
         assertThat(response.getLongestAbstinenceSeconds()).isNull();
+    }
+
+    @DisplayName("마지막 흡연 날짜를 금연 시작 날짜보다 우선하여 연속 금연 일수를 조회한다.")
+    @Test
+    void 마지막_흡연_날짜로_연속_금연_일수를_조회한다() {
+        User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
+        user.updateSurvey("금연 화이팅", 10, 2000, 10, LocalDateTime.now().minusDays(30));
+        user.updateLastSmoking(LocalDateTime.now().minusDays(8), "테스트 주소");
+        userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(user.getId()));
+
+        CumulativeChangeResponse response = cumulativeChangeService.findCumulativeChange();
+
+        assertThat(response.getNonSmokingDays()).isEqualTo(8L);
+        assertThat(response.getSavedMoney()).isEqualTo(16000L);
+        assertThat(response.getReducedCigaretteCount()).isEqualTo(80L);
     }
 }
