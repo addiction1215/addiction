@@ -3,7 +3,7 @@ name: ✋ Test
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-    branches: ["main", "dev"]
+    branches: ["main", "dev", "prod"]
 
 permissions:
   contents: read
