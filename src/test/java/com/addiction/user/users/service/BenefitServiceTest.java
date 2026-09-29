@@ -8,6 +8,8 @@ import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.service.response.BenefitResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -63,12 +65,13 @@ public class BenefitServiceTest extends IntegrationTestSupport {
         assertThat(response.getSavedMoney()).isEqualTo(150000L);
     }
 
-    @DisplayName("하루 절약액은 (하루 흡연 개피수 × 담배 1갑 가격 / 20)으로 계산한다.")
-    @Test
-    void 하루_절약액_계산식을_검증한다() {
-        // given - 하루 10개피, 1갑 4500원 → 하루 절약액 = 10 * 4500 / 20 = 2250원
+    @DisplayName("하루 절약액은 흡연량과 무관하게 설문에서 입력한 하루 지출액이다.")
+    @ParameterizedTest
+    @ValueSource(ints = {10, 20, 40})
+    void 하루_절약액은_설문의_하루_지출액이다(int cigaretteCount) {
+        // given - 하루 지출액 2000원, 금연 8일 → 절약액 16000원
         User user = createUser("test@test.com", "1234", SnsType.NORMAL, SettingStatus.COMPLETE);
-        user.updateSurvey("금연 화이팅", 10, 4500, 10, LocalDateTime.now().minusDays(10));
+        user.updateSurvey("금연 화이팅", 10, 2000, cigaretteCount, LocalDateTime.now().minusDays(8));
         userRepository.save(user);
 
         given(securityService.getCurrentLoginUserInfo())
@@ -78,8 +81,8 @@ public class BenefitServiceTest extends IntegrationTestSupport {
         BenefitResponse response = benefitService.findMyBenefit();
 
         // then
-        assertThat(response.getDailySavedMoney()).isEqualTo(2250L);
-        assertThat(response.getNonSmokingDays()).isEqualTo(10L);
-        assertThat(response.getSavedMoney()).isEqualTo(22500L);
+        assertThat(response.getDailySavedMoney()).isEqualTo(2000L);
+        assertThat(response.getNonSmokingDays()).isEqualTo(8L);
+        assertThat(response.getSavedMoney()).isEqualTo(16000L);
     }
 }

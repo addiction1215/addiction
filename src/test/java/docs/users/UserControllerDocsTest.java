@@ -134,9 +134,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("purpose").type(JsonFieldType.STRING)
                                         .description("금연목표"),
                                 fieldWithPath("cigarettePrice").type(JsonFieldType.NUMBER)
-                                        .description("담배가격"),
+                                        .description("하루 평균 담배 지출액(원)"),
                                 fieldWithPath("cigaretteCount").type(JsonFieldType.NUMBER)
-                                        .description("담배 개피 수")
+                                        .description("하루 평균 흡연 개비 수")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER)
@@ -614,6 +614,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .willReturn(CumulativeChangeResponse.builder()
                         .savedMoney(14400L)
                         .reducedCigaretteCount(32L)
+                        .nonSmokingDays(8L)
                         .longestAbstinenceSeconds(111600L)
                         .build());
 
@@ -639,7 +640,9 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data.reducedCigaretteCount").type(JsonFieldType.NUMBER)
                                         .description("현재 금연 연속 기간에 덜 피운 담배 개비 수"),
                                 fieldWithPath("data.longestAbstinenceSeconds").type(JsonFieldType.NUMBER)
-                                        .description("기록된 흡연 간격 중 최장 금연 시간(초)")
+                                        .description("기록된 흡연 간격 중 최장 금연 시간(초)"),
+                                fieldWithPath("data.nonSmokingDays").type(JsonFieldType.NUMBER)
+                                        .description("마지막 흡연 날짜부터 오늘까지의 연속 금연 일수. 흡연 기록이 없으면 금연 시작 날짜 기준")
                         )
                 ));
     }

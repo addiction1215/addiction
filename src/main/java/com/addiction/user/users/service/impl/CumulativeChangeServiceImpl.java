@@ -42,6 +42,7 @@ public class CumulativeChangeServiceImpl implements CumulativeChangeService {
         return CumulativeChangeResponse.builder()
                 .savedMoney(benefit.getSavedMoney())
                 .reducedCigaretteCount((long) user.getCigaretteCount() * benefit.getNonSmokingDays())
+                .nonSmokingDays(benefit.getNonSmokingDays())
                 .longestAbstinenceSeconds(findLongestAbstinenceSeconds(userId))
                 .build();
     }

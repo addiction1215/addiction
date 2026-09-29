@@ -20,8 +20,6 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class BenefitServiceImpl implements BenefitService {
 
-    private static final int CIGARETTES_PER_PACK = 20;
-
     private final SecurityService securityService;
     private final UserReadService userReadService;
     private final UserCigaretteReadService userCigaretteReadService;
@@ -35,7 +33,8 @@ public class BenefitServiceImpl implements BenefitService {
         LocalDate lastSmokeDate = findLastSmokeDate(userId, user);
         long nonSmokingDays = ChronoUnit.DAYS.between(lastSmokeDate, LocalDate.now(koreaClock));
 
-        long dailySavedMoney = (long) user.getCigaretteCount() * user.getCigarettePrice() / CIGARETTES_PER_PACK;
+        // 설문 1번은 한 갑 가격이 아니라 하루 평균 담배 지출액이다.
+        long dailySavedMoney = user.getCigarettePrice();
         long savedMoney = nonSmokingDays * dailySavedMoney;
 
         return BenefitResponse.createResponse(nonSmokingDays, savedMoney, dailySavedMoney);
