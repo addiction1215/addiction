@@ -1,6 +1,7 @@
 package com.addiction.user.users.service.impl;
 
 import com.addiction.global.security.SecurityService;
+import com.addiction.smokefree.service.SmokeFreeConfirmationReadService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
@@ -31,6 +32,7 @@ public class CumulativeChangeServiceImpl implements CumulativeChangeService {
     private final BenefitService benefitService;
     private final UserCigaretteReadService userCigaretteReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
+    private final SmokeFreeConfirmationReadService smokeFreeConfirmationReadService;
     private final Clock koreaClock;
 
     @Override
@@ -38,11 +40,14 @@ public class CumulativeChangeServiceImpl implements CumulativeChangeService {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
         User user = userReadService.findById(userId);
         BenefitResponse benefit = benefitService.findMyBenefit();
+        long totalSmokeFreeDays = smokeFreeConfirmationReadService.findSuccessfulDates(
+                userId, user.getCreatedDate().toLocalDate(), LocalDate.now(koreaClock)).size();
 
         return CumulativeChangeResponse.builder()
-                .savedMoney(benefit.getSavedMoney())
-                .reducedCigaretteCount((long) user.getCigaretteCount() * benefit.getNonSmokingDays())
+                .savedMoney((long) user.getCigarettePrice() * totalSmokeFreeDays)
+                .reducedCigaretteCount((long) user.getCigaretteCount() * totalSmokeFreeDays)
                 .nonSmokingDays(benefit.getNonSmokingDays())
+                .totalSmokeFreeDays(totalSmokeFreeDays)
                 .longestAbstinenceSeconds(findLongestAbstinenceSeconds(userId))
                 .build();
     }

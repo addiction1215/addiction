@@ -615,6 +615,7 @@ public class UserControllerDocsTest extends RestDocsSupport {
                         .savedMoney(14400L)
                         .reducedCigaretteCount(32L)
                         .nonSmokingDays(8L)
+                        .totalSmokeFreeDays(8L)
                         .longestAbstinenceSeconds(111600L)
                         .build());
 
@@ -636,13 +637,15 @@ public class UserControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT)
                                         .description("응답 데이터"),
                                 fieldWithPath("data.savedMoney").type(JsonFieldType.NUMBER)
-                                        .description("현재 금연 연속 기간의 절약 금액(원)"),
+                                        .description("가입일부터 누적 금연 성공일에 현재 설문의 하루 지출액을 곱한 예상 절약 금액(원)"),
                                 fieldWithPath("data.reducedCigaretteCount").type(JsonFieldType.NUMBER)
-                                        .description("현재 금연 연속 기간에 덜 피운 담배 개비 수"),
+                                        .description("가입일부터 누적 금연 성공일에 현재 설문의 하루 흡연량을 곱한 개비 수"),
                                 fieldWithPath("data.longestAbstinenceSeconds").type(JsonFieldType.NUMBER)
                                         .description("기록된 흡연 간격 중 최장 금연 시간(초)"),
                                 fieldWithPath("data.nonSmokingDays").type(JsonFieldType.NUMBER)
-                                        .description("마지막 흡연 날짜부터 오늘까지의 연속 금연 일수. 흡연 기록이 없으면 금연 시작 날짜 기준")
+                                        .description("마지막 흡연 날짜부터 오늘까지의 연속 금연 일수. 흡연 기록이 없으면 금연 시작 날짜 기준"),
+                                fieldWithPath("data.totalSmokeFreeDays").type(JsonFieldType.NUMBER)
+                                        .description("가입일부터 오늘까지 캘린더에서 금연 성공으로 확인된 날짜 수")
                         )
                 ));
     }
