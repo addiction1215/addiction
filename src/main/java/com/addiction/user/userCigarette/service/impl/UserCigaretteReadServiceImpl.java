@@ -51,4 +51,9 @@ public class UserCigaretteReadServiceImpl implements UserCigaretteReadService {
 		return userCigaretteRepository.findTopByUserIdOrderBySmokeTimeDescIdDesc(userId)
 			.orElse(null);
 	}
+
+	@Override
+	public List<LocalDateTime> findSmokeTimesByUserIdAndPeriod(Long userId, LocalDateTime start, LocalDateTime end) {
+		return userCigaretteRepository.findSmokeTimesByUserIdAndPeriod(userId, start, end);
+	}
 }

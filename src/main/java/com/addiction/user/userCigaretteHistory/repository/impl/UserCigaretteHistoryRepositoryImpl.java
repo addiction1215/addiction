@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -75,6 +77,20 @@ public class UserCigaretteHistoryRepositoryImpl implements UserCigaretteHistoryR
                 CigaretteHistoryDocument.class,
                 MongoConfig.COLLECTION_NAME
         );
+    }
+
+    @Override
+    public Set<LocalDate> findSmokedDatesByUserIdAndDateBetween(Long userId, LocalDate startDate, LocalDate endDate) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userId").is(userId)
+                        .and("smokeDate").gte(startDate.atStartOfDay()).lt(endDate.plusDays(1).atStartOfDay())
+                        .and("smokeCount").gt(0)),
+                Aggregation.group("date")
+        );
+        return mongoTemplate.aggregate(aggregation, MongoConfig.COLLECTION_NAME, Document.class)
+                .getMappedResults().stream()
+                .map(result -> LocalDate.parse(result.getString("_id"), DATE_FORMAT))
+                .collect(Collectors.toSet());
     }
 
     @Override

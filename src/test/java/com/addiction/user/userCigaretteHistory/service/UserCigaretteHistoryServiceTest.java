@@ -2,6 +2,9 @@
 package com.addiction.user.userCigaretteHistory.service;
 
 import com.addiction.IntegrationTestSupport;
+import com.addiction.smokefree.entity.SmokeFreeConfirmation;
+import com.addiction.smokefree.repository.SmokeFreeConfirmationRepository;
+import com.addiction.user.userCigaretteHistory.enums.CalendarSmokingStatus;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigarette.service.request.ChangeType;
@@ -18,6 +21,7 @@ import com.addiction.user.users.entity.enums.SnsType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.time.Clock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +34,35 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
+
+    @Autowired
+    private SmokeFreeConfirmationRepository smokeFreeConfirmationRepository;
+
+    @Autowired
+    private Clock koreaClock;
+
+    @DisplayName("일별 문서가 없는 금연 확정일도 캘린더에 표시하고 흡연 기록이 생기면 제외한다.")
+    @Test
+    void 금연_확정일과_흡연일을_캘린더에_반영한다() {
+        User user = userRepository.save(createUser("calendar@test.com", "password", SnsType.NORMAL, SettingStatus.COMPLETE));
+        LocalDate today = LocalDate.now(koreaClock);
+        smokeFreeConfirmationRepository.save(SmokeFreeConfirmation.confirm(user, today));
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(user.getId()));
+        String month = today.format(DateTimeFormatter.ofPattern("yyyyMM"));
+
+        assertThat(userCigaretteHistoryService.findCalendarByDate(month))
+                .filteredOn(result -> result.getDate().equals(today.format(DateTimeFormatter.BASIC_ISO_DATE)))
+                .singleElement()
+                .extracting(UserCigaretteHistoryCalenderResponse::getStatus)
+                .isEqualTo(CalendarSmokingStatus.SMOKE_FREE);
+
+        userCigaretteRepository.save(UserCigarette.createEntity(user, "테스트 주소", 0L, today.atTime(12, 0)));
+        assertThat(userCigaretteHistoryService.findCalendarByDate(month))
+                .filteredOn(result -> result.getDate().equals(today.format(DateTimeFormatter.BASIC_ISO_DATE)))
+                .singleElement()
+                .extracting(UserCigaretteHistoryCalenderResponse::getStatus)
+                .isEqualTo(CalendarSmokingStatus.SMOKED);
+    }
 
     @Autowired
     private UserCigaretteService userCigaretteService;

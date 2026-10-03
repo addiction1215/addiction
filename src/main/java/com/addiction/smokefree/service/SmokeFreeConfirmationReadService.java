@@ -6,4 +6,6 @@ import java.util.Set;
 public interface SmokeFreeConfirmationReadService {
 
     Set<LocalDate> findConfirmedDates(Long userId, LocalDate startDate, LocalDate endDate);
+
+    Set<LocalDate> findSuccessfulDates(Long userId, LocalDate startDate, LocalDate endDate);
 }
