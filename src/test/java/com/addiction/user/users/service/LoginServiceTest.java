@@ -24,6 +24,7 @@ import com.addiction.user.users.entity.enums.SnsType;
 import com.addiction.user.users.oauth.feign.google.response.GoogleUserInfoResponse;
 import com.addiction.user.users.oauth.feign.kakao.response.KakaoUserInfoResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.time.LocalDateTime;
 
 public class LoginServiceTest extends IntegrationTestSupport {
 
@@ -35,6 +36,8 @@ public class LoginServiceTest extends IntegrationTestSupport {
 	void normalLoginIfUserExist() throws JsonProcessingException {
 		// given
 		User user = createUser("tkdrl8908@naver.com", "1234", SnsType.NORMAL, SettingStatus.INCOMPLETE);
+		LocalDateTime previousLoginAt = LocalDateTime.of(2024, 1, 1, 10, 0);
+		user.recordLogin(previousLoginAt);
 
 		User savedUser = userRepository.save(user);
 
@@ -51,6 +54,8 @@ public class LoginServiceTest extends IntegrationTestSupport {
 		assertThat(loginResponse.getAccessToken()).isNotNull();
 		assertThat(loginResponse.getRefreshToken()).isNotNull();
 		assertThat(loginResponse.getEmail()).isEqualTo(savedUser.getEmail());
+		assertThat(userRepository.findByEmail(savedUser.getEmail()).orElseThrow().getLastLoginAt())
+			.isAfter(previousLoginAt);
 	}
 
 	@DisplayName("SNS로 등록된 사용자가 있을 경우 일반 로그인이 되지 않는다.")
@@ -72,6 +77,7 @@ public class LoginServiceTest extends IntegrationTestSupport {
 		assertThrows(AddictionException.class, () -> {
 			loginService.normalLogin(request);
 		});
+		assertThat(userRepository.findByEmail(user.getEmail()).orElseThrow().getLastLoginAt()).isNull();
 	}
 
 	@DisplayName("등록된 사용자가 없을 경우 일반 로그인을 할 시 예외를 발생시킨다.")
@@ -110,6 +116,7 @@ public class LoginServiceTest extends IntegrationTestSupport {
 		assertThrows(AddictionException.class, () -> {
 			loginService.normalLogin(request);
 		});
+		assertThat(userRepository.findByEmail(user.getEmail()).orElseThrow().getLastLoginAt()).isNull();
 	}
 
 	@DisplayName("카카오 로그인을 한다.")
@@ -142,7 +149,8 @@ public class LoginServiceTest extends IntegrationTestSupport {
 		assertAll(
 			() -> assertThat(oAuthLoginResponse.getAccessToken()).isNotNull(),
 			() -> assertThat(oAuthLoginResponse.getRefreshToken()).isNotNull(),
-			() -> assertThat(oAuthLoginResponse.getEmail()).isEqualTo("test@test.com")
+			() -> assertThat(oAuthLoginResponse.getEmail()).isEqualTo("test@test.com"),
+			() -> assertThat(user.getLastLoginAt()).isNotNull()
 		);
 	}
 
@@ -205,7 +213,8 @@ public class LoginServiceTest extends IntegrationTestSupport {
 			() -> assertThat(oAuthLoginResponse.getAccessToken()).isNotNull(),
 			() -> assertThat(oAuthLoginResponse.getRefreshToken()).isNotNull(),
 			() -> assertThat(oAuthLoginResponse.getEmail()).isEqualTo("test@test.com"),
-			() -> assertThat(userRepository.findByEmail("test@test.com").orElseThrow().getNickName()).isNotBlank()
+			() -> assertThat(userRepository.findByEmail("test@test.com").orElseThrow().getNickName()).isNotBlank(),
+			() -> assertThat(userRepository.findByEmail("test@test.com").orElseThrow().getLastLoginAt()).isNotNull()
 		);
 	}
 }
