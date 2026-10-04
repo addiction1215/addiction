@@ -64,6 +64,8 @@ public class User extends BaseTimeEntity {
 
 	private LocalDateTime startDate;
 
+	private LocalDateTime lastLoginAt;
+
 	private LocalDateTime lastSmokeAt;
 
 	private String lastSmokeAddress;
@@ -116,6 +118,10 @@ public class User extends BaseTimeEntity {
 
 	public void updateRole(Role role) {
 		this.role = role;
+	}
+
+	public void recordLogin(LocalDateTime loginAt) {
+		this.lastLoginAt = loginAt;
 	}
 
 	public void withdraw() {

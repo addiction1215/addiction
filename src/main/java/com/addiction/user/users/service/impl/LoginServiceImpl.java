@@ -40,6 +40,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,13 +67,14 @@ public class LoginServiceImpl implements LoginService {
     private final RandomNicknameGenerator randomNicknameGenerator;
     private final RefreshTokenService refreshTokenService;
     private final DailySmokingPushScheduleService dailySmokingPushScheduleService;
+    private final Clock koreaClock;
 
     public LoginServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenGenerator jwtTokenGenerator,
                             List<OAuthApiClient> clients, UserReadService userReadService, UserRepository userRepository,
                             JavaMailSender javaMailSender, EmailAuthJpaRepository emailAuthJpaRepository,
                             PushRepository pushRepository, RandomNicknameGenerator randomNicknameGenerator,
                             RefreshTokenService refreshTokenService,
-                            DailySmokingPushScheduleService dailySmokingPushScheduleService) {
+                            DailySmokingPushScheduleService dailySmokingPushScheduleService, Clock koreaClock) {
         this.javaMailSender = javaMailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
@@ -82,6 +85,7 @@ public class LoginServiceImpl implements LoginService {
         this.randomNicknameGenerator = randomNicknameGenerator;
         this.refreshTokenService = refreshTokenService;
         this.dailySmokingPushScheduleService = dailySmokingPushScheduleService;
+        this.koreaClock = koreaClock;
         this.clients = clients.stream().collect(
                 Collectors.toUnmodifiableMap(OAuthApiClient::oAuthSnsType, Function.identity())
         );
@@ -98,6 +102,7 @@ public class LoginServiceImpl implements LoginService {
 
         JwtToken jwtToken = setJwtTokenPushKey(user, loginServiceRequest.getDeviceId(),
                 loginServiceRequest.getPushKey());
+        user.recordLogin(LocalDateTime.now(koreaClock));
 
         return LoginResponse.of(user, jwtToken);
     }
@@ -129,6 +134,7 @@ public class LoginServiceImpl implements LoginService {
 
         JwtToken jwtToken = setJwtTokenPushKey(user, oAuthLoginServiceRequest.getDeviceId(),
                 oAuthLoginServiceRequest.getPushKey());
+        user.recordLogin(LocalDateTime.now(koreaClock));
 
         return OAuthLoginResponse.of(user, jwtToken);
     }
