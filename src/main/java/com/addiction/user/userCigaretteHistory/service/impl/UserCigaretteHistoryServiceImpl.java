@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,13 +88,13 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         // 그 일 수를 일자로 설정해 해당 월의 마지막 날을 구한다. 예: 2026-02-01 -> 2026-02-28
         LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
 
-        var confirmedDates = smokeFreeConfirmationReadService.findConfirmedDates(userId, firstDay, lastDay);
+        Set<LocalDate> successfulDates = smokeFreeConfirmationReadService.findSuccessfulDates(userId, firstDay, lastDay);
         List<UserCigaretteHistoryCalenderResponse> results = userCigaretteHistoryRepository.findByMonthAndUserId(month, userId).stream()
                 .map(doc -> {
                     LocalDate date = LocalDate.parse(doc.getDate(), BASIC_ISO_DATE);
                     CalendarSmokingStatus status = doc.getSmokeCount() > 0
                             ? CalendarSmokingStatus.SMOKED
-                            : confirmedDates.contains(date)
+                            : successfulDates.contains(date)
                                     ? CalendarSmokingStatus.SMOKE_FREE
                                     : CalendarSmokingStatus.UNLOGGED;
                     return UserCigaretteHistoryCalenderResponse.createResponse(
@@ -103,6 +104,18 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
                     );
                 })
                 .collect(Collectors.toList());
+
+        // 금연 확정일에 MongoDB 일별 문서가 없어도 캘린더에 성공일로 표시한다.
+        Set<String> recordedDates = results.stream()
+                .map(UserCigaretteHistoryCalenderResponse::getDate)
+                .collect(Collectors.toSet());
+        for (LocalDate successfulDate : successfulDates) {
+            String date = successfulDate.format(BASIC_ISO_DATE);
+            if (recordedDates.add(date)) {
+                results.add(UserCigaretteHistoryCalenderResponse.createResponse(
+                        date, 0, CalendarSmokingStatus.SMOKE_FREE));
+            }
+        }
 
         // 당일 데이터 추가 (RDBMS에서 조회)
         LocalDate currentDate = LocalDate.now(koreaClock);
@@ -116,6 +129,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
 
             if (!todayCigarettes.isEmpty()) {
+                results.removeIf(result -> result.getDate().equals(today));
                 results.add(UserCigaretteHistoryCalenderResponse.createResponse(
                         today,
                         todayCigarettes.size(),

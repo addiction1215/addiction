@@ -10,5 +10,6 @@ public class CumulativeChangeResponse {
     private final long savedMoney;
     private final long reducedCigaretteCount;
     private final long nonSmokingDays;
+    private final long totalSmokeFreeDays;
     private final Long longestAbstinenceSeconds;
 }
