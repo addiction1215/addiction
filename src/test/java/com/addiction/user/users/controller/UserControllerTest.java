@@ -428,7 +428,7 @@ public class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
-    @DisplayName("누적 변화에 연속 금연 일수를 포함하여 조회한다.")
+    @DisplayName("누적 변화에 연속 금연 일수와 누적 금연 성공일을 포함하여 조회한다.")
     @Test
     @WithMockUser(roles = "USER")
     void 누적_변화의_연속_금연_일수를_조회한다() throws Exception {
@@ -437,12 +437,14 @@ public class UserControllerTest extends ControllerTestSupport {
                         .savedMoney(16000L)
                         .reducedCigaretteCount(80L)
                         .nonSmokingDays(8L)
+                        .totalSmokeFreeDays(8L)
                         .longestAbstinenceSeconds(111600L)
                         .build());
 
         mockMvc.perform(get("/api/v1/user/cumulative-change"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.nonSmokingDays").value(8))
+                .andExpect(jsonPath("$.data.totalSmokeFreeDays").value(8))
                 .andExpect(jsonPath("$.data.savedMoney").value(16000))
                 .andExpect(jsonPath("$.data.reducedCigaretteCount").value(80))
                 .andExpect(jsonPath("$.data.longestAbstinenceSeconds").value(111600));

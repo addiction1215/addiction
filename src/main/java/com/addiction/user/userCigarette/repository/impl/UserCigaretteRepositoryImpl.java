@@ -77,4 +77,9 @@ public class UserCigaretteRepositoryImpl implements UserCigaretteRepository {
 	public Optional<UserCigarette> findTopByUserIdOrderBySmokeTimeDescIdDesc(Long userId) {
 		return userCigaretteJpaRepository.findTopByUserIdOrderBySmokeTimeDescIdDesc(userId);
 	}
+
+	@Override
+	public List<LocalDateTime> findSmokeTimesByUserIdAndPeriod(Long userId, LocalDateTime start, LocalDateTime end) {
+		return userCigaretteJpaRepository.findSmokeTimesByUserIdAndPeriod(userId, start, end);
+	}
 }
