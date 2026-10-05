@@ -152,7 +152,7 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("periodType").description("기간 타입 (WEEKLY: 오늘을 포함한 최근 7일 일별 집계)")
+                                parameterWithName("periodType").description("기간 타입 (WEEKLY: 어제를 포함한 최근 7일 일별 집계)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),

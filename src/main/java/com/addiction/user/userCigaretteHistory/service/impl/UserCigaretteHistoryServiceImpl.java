@@ -187,21 +187,15 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildWeeklyGraph(Long userId) {
-        LocalDate today = LocalDate.now(koreaClock);
-        LocalDate startDate = today.minusDays(DAYS_IN_WEEK - 1L);
+        LocalDate endDate = LocalDate.now(koreaClock).minusDays(ONE_DAY);
+        LocalDate startDate = endDate.minusDays(DAYS_IN_WEEK - 1L);
 
         Map<String, CigaretteHistoryDocument> docMap = new HashMap<>();
-        if (today.isAfter(startDate)) {
-            String start = startDate.format(BASIC_ISO_DATE);
-            String end = today.minusDays(ONE_DAY).format(BASIC_ISO_DATE);
-            userCigaretteHistoryRepository.findByUserIdAndDateBetween(userId, start, end)
-                    .forEach(d -> docMap.put(d.getDate(), d));
-        }
-
-        CigaretteHistoryDocument todayDoc = buildTodayDocument(userId, today);
-        if (todayDoc != null) {
-            docMap.put(today.format(BASIC_ISO_DATE), todayDoc);
-        }
+        userCigaretteHistoryRepository.findByUserIdAndDateBetween(
+                        userId,
+                        startDate.format(BASIC_ISO_DATE),
+                        endDate.format(BASIC_ISO_DATE))
+                .forEach(d -> docMap.put(d.getDate(), d));
 
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
         List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
