@@ -291,7 +291,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(ONE_DAY).atStartOfDay();
         List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
-        return todayCigarettes.isEmpty() ? null : convertToCigaretteHistoryDocument(todayCigarettes, userId);
+        return todayCigarettes.isEmpty() ? null : convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
     }
 
     private UserCigaretteHistoryGraphResponse buildGraphResponse(
@@ -430,7 +430,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
         // 오늘 데이터를 Document로 변환하여 추가
         if (!todayCigarettes.isEmpty()) {
-            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId);
+            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
             thisWeekDocs.add(todayDoc);
         }
 
@@ -442,11 +442,12 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      *
      * @param cigarettes 담배 흡연 기록 리스트
      * @param userId     사용자 ID
+     * @param today      호출한 쪽에서 확정한 기준 날짜(한국 시간).
+     *                   자정 경계에서 호출부와 날짜가 어긋나지 않도록 여기서 다시 읽지 않고 전달받는다.
      * @return 변환된 CigaretteHistoryDocument
      */
-    private CigaretteHistoryDocument convertToCigaretteHistoryDocument(List<UserCigarette> cigarettes, Long userId) {
-        LocalDate today = LocalDate.now(koreaClock);
-
+    private CigaretteHistoryDocument convertToCigaretteHistoryDocument(List<UserCigarette> cigarettes, Long userId,
+                                                                      LocalDate today) {
         // UserCigarette -> History 변환
         List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
                 .map(c -> CigaretteHistoryDocument.History.builder()
@@ -501,7 +502,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         );
 
         if (!todayCigarettes.isEmpty()) {
-            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId);
+            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
             weekDocs.add(todayDoc);
         }
 
