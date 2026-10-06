@@ -2,6 +2,9 @@
 package com.addiction.user.userCigaretteHistory.service;
 
 import com.addiction.IntegrationTestSupport;
+import com.addiction.smokefree.entity.SmokeFreeConfirmation;
+import com.addiction.smokefree.repository.SmokeFreeConfirmationRepository;
+import com.addiction.user.userCigaretteHistory.enums.CalendarSmokingStatus;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteService;
 import com.addiction.user.userCigarette.service.request.ChangeType;
@@ -18,6 +21,7 @@ import com.addiction.user.users.entity.enums.SnsType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.time.Clock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +34,35 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
+
+    @Autowired
+    private SmokeFreeConfirmationRepository smokeFreeConfirmationRepository;
+
+    @Autowired
+    private Clock koreaClock;
+
+    @DisplayName("일별 문서가 없는 금연 확정일도 캘린더에 표시하고 흡연 기록이 생기면 제외한다.")
+    @Test
+    void 금연_확정일과_흡연일을_캘린더에_반영한다() {
+        User user = userRepository.save(createUser("calendar@test.com", "password", SnsType.NORMAL, SettingStatus.COMPLETE));
+        LocalDate today = LocalDate.now(koreaClock);
+        smokeFreeConfirmationRepository.save(SmokeFreeConfirmation.confirm(user, today));
+        given(securityService.getCurrentLoginUserInfo()).willReturn(createLoginUserInfo(user.getId()));
+        String month = today.format(DateTimeFormatter.ofPattern("yyyyMM"));
+
+        assertThat(userCigaretteHistoryService.findCalendarByDate(month))
+                .filteredOn(result -> result.getDate().equals(today.format(DateTimeFormatter.BASIC_ISO_DATE)))
+                .singleElement()
+                .extracting(UserCigaretteHistoryCalenderResponse::getStatus)
+                .isEqualTo(CalendarSmokingStatus.SMOKE_FREE);
+
+        userCigaretteRepository.save(UserCigarette.createEntity(user, "테스트 주소", 0L, today.atTime(12, 0)));
+        assertThat(userCigaretteHistoryService.findCalendarByDate(month))
+                .filteredOn(result -> result.getDate().equals(today.format(DateTimeFormatter.BASIC_ISO_DATE)))
+                .singleElement()
+                .extracting(UserCigaretteHistoryCalenderResponse::getStatus)
+                .isEqualTo(CalendarSmokingStatus.SMOKED);
+    }
 
     @Autowired
     private UserCigaretteService userCigaretteService;
@@ -219,9 +252,9 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
                 .containsExactly("서울시 강남구", "서울시 송파구");
     }
 
-    @DisplayName("기간별 그래프 데이터를 조회한다 - 당일 데이터 포함")
+    @DisplayName("주간 그래프는 당일 기록을 제외하고 어제까지의 완료된 7일을 조회한다")
     @Test
-    void 기간별_그래프_데이터를_조회한다_당일_데이터_포함() {
+    void 주간_그래프는_당일_기록을_제외한다() {
         // given
         User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
         userRepository.save(user);
@@ -250,27 +283,21 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(results).isNotNull();
-        assertThat(results.getCigarette()).isNotNull();
-        assertThat(results.getPatient()).isNotNull();
-
-        // WEEKLY는 오늘을 포함한 최근 7일이다.
         assertThat(results.getCigarette().getDate()).hasSize(7);
         assertThat(results.getCigarette().getDate().get(0).getDate())
-                .isEqualTo(LocalDate.now().minusDays(6).toString());
+                .isEqualTo(LocalDate.now(koreaClock).minusDays(7).toString());
+        assertThat(results.getCigarette().getDate().get(6).getDate())
+                .isEqualTo(LocalDate.now(koreaClock).minusDays(1).toString());
 
-        // 오늘 날짜 라벨로 당일 데이터 확인
-        String todayLabel = LocalDate.now().toString();
+        String todayLabel = LocalDate.now(koreaClock).toString();
         assertThat(results.getCigarette().getDate())
                 .filteredOn(d -> d.getDate().equals(todayLabel))
-                .hasSize(1)
-                .first()
-                .extracting("value")
-                .isEqualTo(2L);
+                .isEmpty();
     }
 
-    @DisplayName("기간별 그래프 데이터를 조회한다 - 당일 데이터만 있는 경우")
+    @DisplayName("주간 그래프는 완료된 기간의 일별 통계를 포함한다")
     @Test
-    void 기간별_그래프_데이터를_조회한다_당일_데이터만_있는_경우() {
+    void 주간_그래프는_완료된_기간의_일별_통계를_포함한다() {
         // given
         User user = createUser("test@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
         userRepository.save(user);
@@ -278,32 +305,23 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
         given(securityService.getCurrentLoginUserInfo())
                 .willReturn(createLoginUserInfo(user.getId()));
 
+        LocalDate yesterday = LocalDate.now(koreaClock).minusDays(1);
+        CigaretteHistoryDocument yesterdayDocument = CigaretteHistoryDocument.builder()
+                .date(yesterday.format(DateTimeFormatter.BASIC_ISO_DATE))
+                .userId(user.getId())
+                .smokeCount(3)
+                .avgPatienceTime(3600L)
+                .build();
         given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(anyLong(), anyString(), anyString()))
-                .willReturn(List.of());
-
-        // 당일 데이터만 추가
-        for (int i = 0; i < 3; i++) {
-            UserCigaretteChangeServiceRequest request = UserCigaretteChangeServiceRequest.builder()
-                    .changeType(ChangeType.ADD)
-                    .address("서울시 강남구")
-                    .build();
-            userCigaretteService.changeCigarette(request);
-        }
+                .willReturn(List.of(yesterdayDocument));
 
         // when
         UserCigaretteHistoryGraphResponse results = userCigaretteHistoryService.findGraphByPeriod(PeriodType.WEEKLY);
 
         // then
-        assertThat(results).isNotNull();
-        // WEEKLY는 오늘을 포함한 최근 7일이다.
         assertThat(results.getCigarette().getDate()).hasSize(7);
-        assertThat(results.getCigarette().getDate().get(0).getDate())
-                .isEqualTo(LocalDate.now().minusDays(6).toString());
-
-        // 오늘 날짜 라벨로 당일 3개 데이터 확인
-        String todayLabel = LocalDate.now().toString();
         assertThat(results.getCigarette().getDate())
-                .filteredOn(d -> d.getDate().equals(todayLabel))
+                .filteredOn(d -> d.getDate().equals(yesterday.toString()))
                 .hasSize(1)
                 .first()
                 .extracting("value")

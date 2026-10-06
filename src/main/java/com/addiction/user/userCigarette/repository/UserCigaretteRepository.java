@@ -31,5 +31,6 @@ public interface UserCigaretteRepository {
 	List<UserCigarette> findAllByUserIdAndCreatedDateBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
 	Optional<UserCigarette> findTopByUserIdOrderBySmokeTimeDescIdDesc(Long userId);
+	List<LocalDateTime> findSmokeTimesByUserIdAndPeriod(Long userId, LocalDateTime start, LocalDateTime end);
 
 }

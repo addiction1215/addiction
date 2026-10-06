@@ -1,6 +1,7 @@
 package com.addiction.user.users.controller.request;
 
 import com.addiction.user.users.service.request.UserUpdateInfoServiceRequest;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,10 +12,13 @@ import lombok.NoArgsConstructor;
 public class UserUpdateInfoRequest {
 
     @NotNull(message = "비밀번호는 필수입니다.")
+    @Schema(description = "저장할 비밀번호", example = "newPassword123!")
     private String password;
     @NotNull(message = "핸드폰번호는 필수입니다.")
+    @Schema(description = "변경할 휴대폰 번호", example = "010-1234-5678")
     private String phoneNumber;
     @NotNull(message = "이메일은 필수입니다.")
+    @Schema(description = "변경할 이메일", example = "user@example.com")
     private String email;
 
     @Builder

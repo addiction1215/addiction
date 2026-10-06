@@ -27,4 +27,8 @@ public interface UserCigaretteJpaRepository extends JpaRepository<UserCigarette,
 
 	Optional<UserCigarette> findTopByUserIdOrderBySmokeTimeDescIdDesc(Long userId);
 
+	@Query("select c.smokeTime from UserCigarette c where c.user.id = :userId and c.smokeTime >= :start and c.smokeTime < :end")
+	List<LocalDateTime> findSmokeTimesByUserIdAndPeriod(@Param("userId") Long userId,
+		@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
 }
