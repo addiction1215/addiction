@@ -130,12 +130,13 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public List<UserCigaretteHistoryResponse> findHistoryByDate(String date) {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        String today = LocalDate.now().format(BASIC_ISO_DATE);
+        LocalDate currentDate = LocalDate.now(koreaClock);
+        String today = currentDate.format(BASIC_ISO_DATE);
 
         // 당일 데이터인 경우 RDBMS에서 조회
         if (date.equals(today)) {
-            LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-            LocalDateTime endOfDay = LocalDate.now().plusDays(ONE_DAY).atStartOfDay();
+            LocalDateTime startOfDay = currentDate.atStartOfDay();
+            LocalDateTime endOfDay = currentDate.plusDays(ONE_DAY).atStartOfDay();
 
             return userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay)
                     .stream()
@@ -206,7 +207,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildMonthlyGraph(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
         LocalDate currentMonday = today.with(DayOfWeek.MONDAY);
 
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
@@ -243,7 +244,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildMonthAggGraph(Long userId, int months) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
 
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
         List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
@@ -376,7 +377,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      * 지난주 월요일 ~ 일요일의 데이터를 MongoDB에서 조회
      */
     private List<CigaretteHistoryDocument> getLastWeekDocuments(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
 
         // 이번주 월요일 계산
         LocalDate thisWeekMonday = today.with(DayOfWeek.MONDAY);
@@ -397,7 +398,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      * 오늘: RDBMS
      */
     private List<CigaretteHistoryDocument> getThisWeekDocuments(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
 
         // 이번주 월요일 계산
         LocalDate thisWeekMonday = today.with(DayOfWeek.MONDAY);
@@ -436,7 +437,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      * @return 변환된 CigaretteHistoryDocument
      */
     private CigaretteHistoryDocument convertToCigaretteHistoryDocument(List<UserCigarette> cigarettes, Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
 
         // UserCigarette -> History 변환
         List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
@@ -466,7 +467,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public WeeklyCigaretteResponse findThisWeekCigarettes() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
 
         // 이번 주 일요일 계산 (DayOfWeek.SUNDAY는 7)
         LocalDate thisSunday = today.with(DayOfWeek.SUNDAY);
@@ -523,7 +524,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public SmokingFeedbackResponse getSmokingFeedback() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(koreaClock);
         LocalDate yesterday = today.minusDays(ONE_DAY);
         LocalDate dayBeforeYesterday = today.minusDays(ONE_DAY * 2);
 
