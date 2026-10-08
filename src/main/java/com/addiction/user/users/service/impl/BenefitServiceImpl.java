@@ -1,6 +1,7 @@
 package com.addiction.user.users.service.impl;
 
 import com.addiction.global.security.SecurityService;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.users.entity.User;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -23,7 +23,7 @@ public class BenefitServiceImpl implements BenefitService {
     private final SecurityService securityService;
     private final UserReadService userReadService;
     private final UserCigaretteReadService userCigaretteReadService;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Override
     public BenefitResponse findMyBenefit() {
@@ -31,7 +31,7 @@ public class BenefitServiceImpl implements BenefitService {
         User user = userReadService.findById(userId);
 
         LocalDate lastSmokeDate = findLastSmokeDate(userId, user);
-        long nonSmokingDays = ChronoUnit.DAYS.between(lastSmokeDate, LocalDate.now(koreaClock));
+        long nonSmokingDays = ChronoUnit.DAYS.between(lastSmokeDate, koreaTime.today());
 
         // 설문 1번은 한 갑 가격이 아니라 하루 평균 담배 지출액이다.
         long dailySavedMoney = user.getCigarettePrice();

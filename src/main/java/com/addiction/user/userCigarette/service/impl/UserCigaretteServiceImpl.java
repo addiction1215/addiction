@@ -1,6 +1,7 @@
 package com.addiction.user.userCigarette.service.impl;
 
 import com.addiction.global.security.SecurityService;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.repository.UserCigaretteRepository;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,13 +33,13 @@ public class UserCigaretteServiceImpl implements UserCigaretteService {
     private final UserCigaretteRepository userCigaretteRepository;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final UserRepository userRepository;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Override
     public Long changeCigarette(UserCigaretteChangeServiceRequest userCigaretteChangeServiceRequest) {
         User user = userReadService.findById(securityService.getCurrentLoginUserInfo().getUserId());
         if (userCigaretteChangeServiceRequest.getChangeType().equals(ChangeType.ADD)) {
-            LocalDateTime now = LocalDateTime.now(koreaClock);
+            LocalDateTime now = koreaTime.now();
             // 직전 흡연 기록을 찾지 못한 경우 사용할 기본값이다.
             // 아래 lastSmokeAt 조회와 RDBMS 최근 기록 조회가 모두 실패하면 이 값이 그대로 저장된다.
             long intervalSeconds = 0;

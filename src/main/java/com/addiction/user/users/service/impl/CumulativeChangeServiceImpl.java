@@ -1,6 +1,7 @@
 package com.addiction.user.users.service.impl;
 
 import com.addiction.global.security.SecurityService;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.smokefree.service.SmokeFreeConfirmationReadService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -33,7 +33,7 @@ public class CumulativeChangeServiceImpl implements CumulativeChangeService {
     private final UserCigaretteReadService userCigaretteReadService;
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final SmokeFreeConfirmationReadService smokeFreeConfirmationReadService;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Override
     public CumulativeChangeResponse findCumulativeChange() {
@@ -41,7 +41,7 @@ public class CumulativeChangeServiceImpl implements CumulativeChangeService {
         User user = userReadService.findById(userId);
         BenefitResponse benefit = benefitService.findMyBenefit();
         long totalSmokeFreeDays = smokeFreeConfirmationReadService.findSuccessfulDates(
-                userId, user.getCreatedDate().toLocalDate(), LocalDate.now(koreaClock)).size();
+                userId, user.getCreatedDate().toLocalDate(), koreaTime.today()).size();
 
         return CumulativeChangeResponse.builder()
                 .savedMoney((long) user.getCigarettePrice() * totalSmokeFreeDays)
@@ -55,7 +55,7 @@ public class CumulativeChangeServiceImpl implements CumulativeChangeService {
     private Long findLongestAbstinenceSeconds(Long userId) {
         Long historyMax = userCigaretteHistoryRepository.findMaxSmokePatienceTimeByUserId(userId);
 
-        LocalDate today = LocalDate.now(koreaClock);
+        LocalDate today = koreaTime.today();
         List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(
                 userId, today.atStartOfDay(), today.plusDays(1).atStartOfDay());
         Long todayMax = todayCigarettes.stream()
