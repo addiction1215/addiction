@@ -2,6 +2,7 @@ package com.addiction.smokefree.service.impl;
 
 import com.addiction.global.exception.AddictionException;
 import com.addiction.global.security.SecurityService;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.smokefree.entity.SmokeFreeConfirmation;
 import com.addiction.smokefree.repository.SmokeFreeConfirmationRepository;
 import com.addiction.smokefree.service.SmokeFreeConfirmationService;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -30,7 +30,7 @@ public class SmokeFreeConfirmationServiceImpl implements SmokeFreeConfirmationSe
     private final UserCigaretteHistoryService userCigaretteHistoryService;
     private final SecurityService securityService;
     private final UserReadService userReadService;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Override
     public SmokeFreeConfirmationResponse confirm(SmokeFreeConfirmationServiceRequest request) {
@@ -61,7 +61,7 @@ public class SmokeFreeConfirmationServiceImpl implements SmokeFreeConfirmationSe
     }
 
     private void validateConfirmable(User user, LocalDate confirmedDate) {
-        LocalDate today = LocalDate.now(koreaClock);
+        LocalDate today = koreaTime.today();
         if (confirmedDate.isAfter(today)) {
             throw new AddictionException("미래 날짜는 금연일로 확정할 수 없습니다.");
         }

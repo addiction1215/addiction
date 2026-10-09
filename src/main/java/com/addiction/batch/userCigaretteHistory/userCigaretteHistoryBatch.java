@@ -2,7 +2,6 @@ package com.addiction.batch.userCigaretteHistory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.addiction.global.time.KoreaTime;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
 import com.addiction.user.userCigarette.service.UserCigaretteService;
@@ -34,7 +34,7 @@ public class userCigaretteHistoryBatch {
 	private final UserCigaretteReadService userCigaretteReadService;
 	private final UserCigaretteService userCigaretteService;
 	private final UserReadService userReadService;
-	private final Clock koreaClock;
+	private final KoreaTime koreaTime;
 
 	/**
 	 * 전날의 실시간 흡연 원본(UserCigarette)을 사용자별 일별 통계(CigaretteHistoryDocument)로 이관한다.
@@ -44,7 +44,7 @@ public class userCigaretteHistoryBatch {
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void userCigaretteHistory() {
 		// 한국 시간 자정에 실행되므로 집계 대상은 항상 전날 00:00:00 ~ 당일 00:00:00 직전이다.
-		LocalDate yesterday = LocalDate.now(koreaClock).minusDays(1);
+		LocalDate yesterday = koreaTime.yesterday();
 		String dateStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
 		String monthStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMM")); // yyyyMM
 

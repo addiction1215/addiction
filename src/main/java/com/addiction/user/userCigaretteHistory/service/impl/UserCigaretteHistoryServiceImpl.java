@@ -1,6 +1,7 @@
 package com.addiction.user.userCigaretteHistory.service.impl;
 
 import com.addiction.global.security.SecurityService;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.smokefree.service.SmokeFreeConfirmationReadService;
 import com.addiction.user.userCigarette.entity.UserCigarette;
 import com.addiction.user.userCigarette.service.UserCigaretteReadService;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,7 +58,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     private final UserCigaretteHistoryRepository userCigaretteHistoryRepository;
     private final UserReadService userReadService;
     private final SmokeFreeConfirmationReadService smokeFreeConfirmationReadService;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Override
     public void save(String monthStr, String dateStr, Long userId, Integer smokeCount, Long avgPatienceTime,
@@ -118,7 +118,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         }
 
         // 당일 데이터 추가 (RDBMS에서 조회)
-        LocalDate currentDate = LocalDate.now(koreaClock);
+        LocalDate currentDate = koreaTime.today();
         String today = currentDate.format(BASIC_ISO_DATE);
         String todayMonth = currentDate.format(MONTH_FORMATTER);
 
@@ -144,12 +144,13 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public List<UserCigaretteHistoryResponse> findHistoryByDate(String date) {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        String today = LocalDate.now().format(BASIC_ISO_DATE);
+        LocalDate currentDate = koreaTime.today();
+        String today = currentDate.format(BASIC_ISO_DATE);
 
         // 당일 데이터인 경우 RDBMS에서 조회
         if (date.equals(today)) {
-            LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-            LocalDateTime endOfDay = LocalDate.now().plusDays(ONE_DAY).atStartOfDay();
+            LocalDateTime startOfDay = currentDate.atStartOfDay();
+            LocalDateTime endOfDay = currentDate.plusDays(ONE_DAY).atStartOfDay();
 
             return userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay)
                     .stream()
@@ -187,7 +188,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildWeeklyGraph(Long userId) {
-        LocalDate endDate = LocalDate.now(koreaClock).minusDays(ONE_DAY);
+        LocalDate endDate = koreaTime.yesterday();
         LocalDate startDate = endDate.minusDays(DAYS_IN_WEEK - 1L);
 
         Map<String, CigaretteHistoryDocument> docMap = new HashMap<>();
@@ -214,7 +215,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildMonthlyGraph(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = koreaTime.today();
         LocalDate currentMonday = today.with(DayOfWeek.MONDAY);
 
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
@@ -251,7 +252,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     }
 
     private UserCigaretteHistoryGraphResponse buildMonthAggGraph(Long userId, int months) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = koreaTime.today();
 
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
         List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
@@ -290,7 +291,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(ONE_DAY).atStartOfDay();
         List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
-        return todayCigarettes.isEmpty() ? null : convertToCigaretteHistoryDocument(todayCigarettes, userId);
+        return todayCigarettes.isEmpty() ? null : convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
     }
 
     private UserCigaretteHistoryGraphResponse buildGraphResponse(
@@ -384,7 +385,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      * 지난주 월요일 ~ 일요일의 데이터를 MongoDB에서 조회
      */
     private List<CigaretteHistoryDocument> getLastWeekDocuments(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = koreaTime.today();
 
         // 이번주 월요일 계산
         LocalDate thisWeekMonday = today.with(DayOfWeek.MONDAY);
@@ -405,7 +406,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      * 오늘: RDBMS
      */
     private List<CigaretteHistoryDocument> getThisWeekDocuments(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = koreaTime.today();
 
         // 이번주 월요일 계산
         LocalDate thisWeekMonday = today.with(DayOfWeek.MONDAY);
@@ -429,7 +430,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
 
         // 오늘 데이터를 Document로 변환하여 추가
         if (!todayCigarettes.isEmpty()) {
-            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId);
+            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
             thisWeekDocs.add(todayDoc);
         }
 
@@ -441,11 +442,12 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
      *
      * @param cigarettes 담배 흡연 기록 리스트
      * @param userId     사용자 ID
+     * @param today      호출한 쪽에서 확정한 기준 날짜(한국 시간).
+     *                   자정 경계에서 호출부와 날짜가 어긋나지 않도록 여기서 다시 읽지 않고 전달받는다.
      * @return 변환된 CigaretteHistoryDocument
      */
-    private CigaretteHistoryDocument convertToCigaretteHistoryDocument(List<UserCigarette> cigarettes, Long userId) {
-        LocalDate today = LocalDate.now();
-
+    private CigaretteHistoryDocument convertToCigaretteHistoryDocument(List<UserCigarette> cigarettes, Long userId,
+                                                                      LocalDate today) {
         // UserCigarette -> History 변환
         List<CigaretteHistoryDocument.History> historyList = cigarettes.stream()
                 .map(c -> CigaretteHistoryDocument.History.builder()
@@ -474,7 +476,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public WeeklyCigaretteResponse findThisWeekCigarettes() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        LocalDate today = LocalDate.now();
+        LocalDate today = koreaTime.today();
 
         // 이번 주 일요일 계산 (DayOfWeek.SUNDAY는 7)
         LocalDate thisSunday = today.with(DayOfWeek.SUNDAY);
@@ -500,7 +502,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         );
 
         if (!todayCigarettes.isEmpty()) {
-            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId);
+            CigaretteHistoryDocument todayDoc = convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
             weekDocs.add(todayDoc);
         }
 
@@ -531,7 +533,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     @Override
     public SmokingFeedbackResponse getSmokingFeedback() {
         Long userId = securityService.getCurrentLoginUserInfo().getUserId();
-        LocalDate today = LocalDate.now();
+        LocalDate today = koreaTime.today();
         LocalDate yesterday = today.minusDays(ONE_DAY);
         LocalDate dayBeforeYesterday = today.minusDays(ONE_DAY * 2);
 

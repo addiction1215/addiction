@@ -5,6 +5,7 @@ import com.addiction.common.enums.DailySmokingFeedbackGrade;
 import com.addiction.alertSetting.service.AlertSettingReadService;
 import com.addiction.dailySmokingPush.entity.DailySmokingPushSchedule;
 import com.addiction.dailySmokingPush.repository.DailySmokingPushScheduleJpaRepository;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.pushOutbox.service.PushOutboxService;
 import com.addiction.user.userCigaretteHistory.document.CigaretteHistoryDocument;
 import com.addiction.user.userCigaretteHistory.repository.UserCigaretteHistoryRepository;
@@ -15,7 +16,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -30,7 +30,7 @@ public class DailySmokingPushBatch {
     private final AlertSettingReadService alertSettingReadService;
     private final DailySmokingFeedbackMessageSelector messageSelector;
     private final PushOutboxService pushOutboxService;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul")
     public void sendDailySmokingFeedback() {
@@ -38,7 +38,7 @@ public class DailySmokingPushBatch {
 
         try {
             // DB의 send_time은 분 단위(예: 12:30:00)이므로, 배치 실행 시각의 초/나노초를 제거해 정확히 비교한다.
-            LocalDateTime now = LocalDateTime.now(koreaClock).withSecond(0).withNano(0);
+            LocalDateTime now = koreaTime.now().withSecond(0).withNano(0);
             LocalDate today = now.toLocalDate();
             LocalDate yesterday = today.minusDays(1);
             String yesterdayStr = yesterday.format(DateTimeFormatter.BASIC_ISO_DATE);

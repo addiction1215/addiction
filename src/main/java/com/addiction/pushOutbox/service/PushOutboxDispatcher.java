@@ -3,6 +3,7 @@ package com.addiction.pushOutbox.service;
 import com.addiction.expo.ExpoNotiService;
 import com.addiction.firebase.request.SendFirebaseDataDto;
 import com.addiction.firebase.request.SendFirebaseServiceRequest;
+import com.addiction.global.time.KoreaTime;
 import com.addiction.pushOutbox.entity.PushOutbox;
 import com.addiction.user.push.entity.Push;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,11 +23,11 @@ public class PushOutboxDispatcher {
 
     private final PushOutboxService pushOutboxService;
     private final ExpoNotiService expoNotiService;
-    private final Clock koreaClock;
+    private final KoreaTime koreaTime;
 
     @Scheduled(fixedDelay = 5_000)
     public void dispatch() {
-        LocalDateTime now = LocalDateTime.now(koreaClock);
+        LocalDateTime now = koreaTime.now();
         pushOutboxService.recoverStaleProcessing(now);
 
         List<PushOutbox> candidates = pushOutboxService.findDispatchCandidates(now, DISPATCH_BATCH_SIZE);
@@ -44,10 +44,10 @@ public class PushOutboxDispatcher {
 
                 // Outbox는 실패 시 재시도해야 하므로 Expo 전송 예외를 그대로 받는다.
                 expoNotiService.sendBatchPushNotificationForOutbox(requests);
-                pushOutboxService.markSent(outbox.getId(), LocalDateTime.now(koreaClock));
+                pushOutboxService.markSent(outbox.getId(), koreaTime.now());
             } catch (Exception e) {
                 log.warn("Outbox 푸시 발송 실패 - outboxId: {}", outbox.getId(), e);
-                pushOutboxService.retryOrFail(outbox.getId(), LocalDateTime.now(koreaClock), e.getMessage());
+                pushOutboxService.retryOrFail(outbox.getId(), koreaTime.now(), e.getMessage());
             }
         }
     }
