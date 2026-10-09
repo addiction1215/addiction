@@ -161,12 +161,12 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("그래프 데이터"),
                                 fieldWithPath("data.cigarette").type(JsonFieldType.OBJECT).description("흡연량 그래프"),
                                 fieldWithPath("data.cigarette.avgCigaretteCount").type(JsonFieldType.NUMBER).description("주 평균 흡연 개수"),
-                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("최근 7일의 일별 흡연 데이터"),
+                                fieldWithPath("data.cigarette.date").type(JsonFieldType.ARRAY).description("어제까지 최근 7일의 일별 흡연 데이터"),
                                 fieldWithPath("data.cigarette.date[].date").type(JsonFieldType.STRING).description("날짜 (yyyy-MM-dd)"),
                                 fieldWithPath("data.cigarette.date[].value").type(JsonFieldType.NUMBER).description("해당 날짜 흡연 개수"),
                                 fieldWithPath("data.patient").type(JsonFieldType.OBJECT).description("참은 시간 그래프"),
                                 fieldWithPath("data.patient.avgSmokePatientTime").type(JsonFieldType.NUMBER).description("주 평균 참은 시간(초)"),
-                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("최근 7일의 일별 참은 시간 데이터"),
+                                fieldWithPath("data.patient.date").type(JsonFieldType.ARRAY).description("어제까지 최근 7일의 일별 참은 시간 데이터"),
                                 fieldWithPath("data.patient.date[].date").type(JsonFieldType.STRING).description("날짜 (yyyy-MM-dd)"),
                                 fieldWithPath("data.patient.date[].value").type(JsonFieldType.NUMBER).description("해당 날짜 평균 참은 시간(초)")
                         )
