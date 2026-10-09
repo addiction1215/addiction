@@ -327,4 +327,62 @@ public class UserCigaretteHistoryServiceTest extends IntegrationTestSupport {
                 .extracting("value")
                 .isEqualTo(3L);
     }
+
+    @DisplayName("1개월 그래프는 이번 주를 제외하고 지난주까지의 완료된 5주를 조회한다")
+    @Test
+    void 월간_그래프는_진행_중인_이번_주를_제외한다() {
+        // given
+        User user = createUser("monthly@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(user.getId()));
+        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(anyLong(), anyString(), anyString()))
+                .willReturn(List.of());
+
+        LocalDate today = LocalDate.now(koreaClock);
+        LocalDate lastCompletedWeekStart = today.with(java.time.DayOfWeek.MONDAY).minusWeeks(1);
+
+        // when
+        UserCigaretteHistoryGraphResponse results = userCigaretteHistoryService.findGraphByPeriod(PeriodType.MONTHLY);
+
+        // then
+        assertThat(results.getCigarette().getDate()).hasSize(5);
+        assertThat(results.getCigarette().getDate().get(0).getDate())
+                .isEqualTo(lastCompletedWeekStart.minusWeeks(4).format(DateTimeFormatter.ofPattern("MM/dd")));
+        assertThat(results.getCigarette().getDate().get(4).getDate())
+                .isEqualTo(lastCompletedWeekStart.format(DateTimeFormatter.ofPattern("MM/dd")));
+    }
+
+    @DisplayName("6개월과 1년 그래프는 이번 달을 제외하고 지난달까지의 완료된 월을 조회한다")
+    @Test
+    void 장기_그래프는_진행_중인_이번_달을_제외한다() {
+        // given
+        User user = createUser("long-term@test.com", "1234", SnsType.KAKAO, SettingStatus.INCOMPLETE);
+        userRepository.save(user);
+        given(securityService.getCurrentLoginUserInfo())
+                .willReturn(createLoginUserInfo(user.getId()));
+        given(userCigaretteHistoryRepository.findByUserIdAndDateBetween(anyLong(), anyString(), anyString()))
+                .willReturn(List.of());
+
+        LocalDate lastCompletedMonth = LocalDate.now(koreaClock).withDayOfMonth(1).minusMonths(1);
+
+        // when
+        UserCigaretteHistoryGraphResponse sixMonthResults =
+                userCigaretteHistoryService.findGraphByPeriod(PeriodType.SIXMONTHLY);
+        UserCigaretteHistoryGraphResponse yearlyResults =
+                userCigaretteHistoryService.findGraphByPeriod(PeriodType.YEARLY);
+
+        // then
+        assertThat(sixMonthResults.getCigarette().getDate()).hasSize(6);
+        assertThat(sixMonthResults.getCigarette().getDate().get(0).getDate())
+                .isEqualTo(lastCompletedMonth.minusMonths(5).format(DateTimeFormatter.ofPattern("yyyyMM")));
+        assertThat(sixMonthResults.getCigarette().getDate().get(5).getDate())
+                .isEqualTo(lastCompletedMonth.format(DateTimeFormatter.ofPattern("yyyyMM")));
+
+        assertThat(yearlyResults.getCigarette().getDate()).hasSize(12);
+        assertThat(yearlyResults.getCigarette().getDate().get(0).getDate())
+                .isEqualTo(lastCompletedMonth.minusMonths(11).format(DateTimeFormatter.ofPattern("yyyyMM")));
+        assertThat(yearlyResults.getCigarette().getDate().get(11).getDate())
+                .isEqualTo(lastCompletedMonth.format(DateTimeFormatter.ofPattern("yyyyMM")));
+    }
 }

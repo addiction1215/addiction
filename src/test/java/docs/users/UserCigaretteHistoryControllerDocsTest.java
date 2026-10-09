@@ -210,7 +210,7 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("periodType").description("기간 타입 (MONTHLY: 현재 주 포함 최근 5주 주별 집계)")
+                                parameterWithName("periodType").description("기간 타입 (MONTHLY: 지난주까지 최근 5주 주별 집계)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
@@ -270,7 +270,7 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("periodType").description("기간 타입 (SIXMONTHLY: 현재 달 포함 최근 6개월 월별 집계)")
+                                parameterWithName("periodType").description("기간 타입 (SIXMONTHLY: 지난달까지 최근 6개월 월별 집계)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
@@ -342,7 +342,7 @@ public class UserCigaretteHistoryControllerDocsTest extends RestDocsSupport {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("periodType").description("기간 타입 (YEARLY: 현재 달 포함 최근 12개월 월별 집계)")
+                                parameterWithName("periodType").description("기간 타입 (YEARLY: 지난달까지 최근 12개월 월별 집계)")
                         ),
                         responseFields(
                                 fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("응답 코드"),

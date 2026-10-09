@@ -49,6 +49,7 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
     private static final int DAYS_IN_WEEK = 7;
     private static final int DAYS_FROM_SUNDAY_TO_SATURDAY = 6;
     private static final int ONE_WEEK = 1;
+    private static final int ONE_MONTH = 1;
 
     // 퍼센트 계산 상수
     private static final double PERCENTAGE_MULTIPLIER = 100.0;
@@ -214,31 +215,35 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
         return buildGraphResponse(countList, patientList);
     }
 
+    /**
+     * 최근 완료된 5주를 주 단위로 집계해 그래프 응답을 만든다.
+     * 각 주의 흡연 횟수 합계와 기록된 일별 참은 시간의 평균을 오래된 주부터 반환한다.
+     */
     private UserCigaretteHistoryGraphResponse buildMonthlyGraph(Long userId) {
-        LocalDate today = koreaTime.today();
-        LocalDate currentMonday = today.with(DayOfWeek.MONDAY);
+        // 진행 중인 이번 주는 제외하고, 마지막으로 완료된 지난주부터 5주를 조회한다.
+        // 예: 오늘이 2026-10-09(금)이면 이번 주 월요일(10-05)에서 1주를 빼 2026-09-28(월)을 구한다.
+        LocalDate lastCompletedWeekStart = koreaTime.today()
+                .with(DayOfWeek.MONDAY)
+                .minusWeeks(ONE_WEEK);
 
+        // x축에 표시할 주별 흡연 횟수와 평균 참은 시간을 오래된 주부터 저장한다.
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
         List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
 
+        // w를 4부터 0까지 감소시켜 5주 전 데이터부터 지난주 데이터 순으로 그래프를 구성한다.
         for (int w = 4; w >= 0; w--) {
-            LocalDate weekStart = currentMonday.minusWeeks(w);
+            // 예: lastCompletedWeekStart가 2026-09-28이고 w가 2이면 weekStart는 2026-09-14이다.
+            LocalDate weekStart = lastCompletedWeekStart.minusWeeks(w);
+            // 예: weekStart가 월요일(09-14)이면 6일 뒤인 일요일(09-20)까지 해당 주 범위로 조회한다.
             LocalDate weekEnd = weekStart.plusDays(DAYS_FROM_SUNDAY_TO_SATURDAY);
+            // 예: 2026-09-14는 그래프 라벨 "09/14"로 표시한다.
             String label = weekStart.format(DateTimeFormatter.ofPattern("MM/dd"));
 
-            List<CigaretteHistoryDocument> docs = new ArrayList<>();
+            // 해당 주의 월요일부터 일요일까지 저장된 일별 흡연 기록을 모두 조회한다.
+            List<CigaretteHistoryDocument> docs = userCigaretteHistoryRepository.findByUserIdAndDateBetween(
+                    userId, weekStart.format(BASIC_ISO_DATE), weekEnd.format(BASIC_ISO_DATE));
 
-            if (weekStart.isBefore(today)) {
-                LocalDate mongoEnd = weekEnd.isBefore(today) ? weekEnd : today.minusDays(ONE_DAY);
-                docs.addAll(userCigaretteHistoryRepository.findByUserIdAndDateBetween(
-                        userId, weekStart.format(BASIC_ISO_DATE), mongoEnd.format(BASIC_ISO_DATE)));
-            }
-
-            if (!today.isBefore(weekStart) && !today.isAfter(weekEnd)) {
-                CigaretteHistoryDocument todayDoc = buildTodayDocument(userId, today);
-                if (todayDoc != null) docs.add(todayDoc);
-            }
-
+            // 기록이 없는 날은 조회 결과에 없으므로, 있는 기록의 흡연 횟수만 합산한다.
             long totalCount = docs.stream().mapToLong(CigaretteHistoryDocument::getSmokeCount).sum();
             // [평균 참은 시간 계산 3/4] 기간 버킷(주/월)에 포함된 일별 avgPatienceTime을 평균 내어
             // 그래프의 각 구간 값(patient.date[].value)을 만든다. 소수점 이하는 버린다.
@@ -248,33 +253,39 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, avgPatience));
         }
 
+        // 흡연 횟수와 평균 참은 시간을 각각 그래프의 두 데이터 계열로 묶어 반환한다.
         return buildGraphResponse(countList, patientList);
     }
 
+    /**
+     * 최근 완료된 {@code months}개월을 월 단위로 집계해 그래프 응답을 만든다.
+     * 각 달의 흡연 횟수 합계와 기록된 일별 참은 시간의 평균을 오래된 달부터 반환한다.
+     */
     private UserCigaretteHistoryGraphResponse buildMonthAggGraph(Long userId, int months) {
-        LocalDate today = koreaTime.today();
+        // 진행 중인 이번 달은 제외하고, 마지막으로 완료된 지난달부터 월별 집계를 조회한다.
+        // 예: 오늘이 2026-10-09이면 이번 달 1일(10-01)에서 1개월을 빼 2026-09-01을 구한다.
+        LocalDate lastCompletedMonth = koreaTime.today()
+                .withDayOfMonth(1)
+                .minusMonths(ONE_MONTH);
 
+        // x축에 표시할 월별 흡연 횟수와 평균 참은 시간을 오래된 달부터 저장한다.
         List<UserCigaretteHistoryGraphDateResponse> countList = new ArrayList<>();
         List<UserCigaretteHistoryGraphDateResponse> patientList = new ArrayList<>();
 
+        // m을 months - 1부터 0까지 감소시켜 요청한 기간 중 가장 오래된 달부터 지난달 순으로 구성한다.
         for (int m = months - 1; m >= 0; m--) {
-            LocalDate monthStart = today.withDayOfMonth(1).minusMonths(m);
+            // 예: lastCompletedMonth가 2026-09-01이고 m이 2이면 monthStart는 2026-07-01이다.
+            LocalDate monthStart = lastCompletedMonth.minusMonths(m);
+            // 예: 2026-07-01의 마지막 날은 해당 월의 일수(31일)를 사용해 2026-07-31로 구한다.
             LocalDate monthEnd = monthStart.withDayOfMonth(monthStart.lengthOfMonth());
+            // 예: 2026-07-01은 MONTH_FORMATTER 형식의 그래프 라벨로 표시한다.
             String label = monthStart.format(MONTH_FORMATTER);
 
-            List<CigaretteHistoryDocument> docs = new ArrayList<>();
+            // 해당 달의 1일부터 마지막 날까지 저장된 일별 흡연 기록을 모두 조회한다.
+            List<CigaretteHistoryDocument> docs = userCigaretteHistoryRepository.findByUserIdAndDateBetween(
+                    userId, monthStart.format(BASIC_ISO_DATE), monthEnd.format(BASIC_ISO_DATE));
 
-            LocalDate mongoEnd = monthEnd.isBefore(today) ? monthEnd : today.minusDays(ONE_DAY);
-            if (!mongoEnd.isBefore(monthStart)) {
-                docs.addAll(userCigaretteHistoryRepository.findByUserIdAndDateBetween(
-                        userId, monthStart.format(BASIC_ISO_DATE), mongoEnd.format(BASIC_ISO_DATE)));
-            }
-
-            if (m == 0) {
-                CigaretteHistoryDocument todayDoc = buildTodayDocument(userId, today);
-                if (todayDoc != null) docs.add(todayDoc);
-            }
-
+            // 기록이 없는 날은 조회 결과에 없으므로, 있는 기록의 흡연 횟수만 합산한다.
             long totalCount = docs.stream().mapToLong(CigaretteHistoryDocument::getSmokeCount).sum();
             // [평균 참은 시간 계산 3/4] 기간 버킷(주/월)에 포함된 일별 avgPatienceTime을 평균 내어
             // 그래프의 각 구간 값(patient.date[].value)을 만든다. 소수점 이하는 버린다.
@@ -284,14 +295,8 @@ public class UserCigaretteHistoryServiceImpl implements UserCigaretteHistoryServ
             patientList.add(UserCigaretteHistoryGraphDateResponse.createResponse(label, avgPatience));
         }
 
+        // 흡연 횟수와 평균 참은 시간을 각각 그래프의 두 데이터 계열로 묶어 반환한다.
         return buildGraphResponse(countList, patientList);
-    }
-
-    private CigaretteHistoryDocument buildTodayDocument(Long userId, LocalDate today) {
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(ONE_DAY).atStartOfDay();
-        List<UserCigarette> todayCigarettes = userCigaretteReadService.findAllByUserIdAndCreatedDateBetween(userId, startOfDay, endOfDay);
-        return todayCigarettes.isEmpty() ? null : convertToCigaretteHistoryDocument(todayCigarettes, userId, today);
     }
 
     private UserCigaretteHistoryGraphResponse buildGraphResponse(
