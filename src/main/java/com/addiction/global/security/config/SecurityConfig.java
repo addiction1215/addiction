@@ -43,8 +43,9 @@ public class SecurityConfig {
 			config.setAllowedHeaders(Collections.singletonList("*"));
 			config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowedOrigins(Arrays.asList(
-                    "https://www.quitmate.co.kr",
-                    "https://quitmate.co.kr",
+//                    "https://www.quitmate.co.kr",
+                    "https://prod.quitmate.co.kr",
+//                    "https://quitmate.co.kr",
                     "http://localhost:8081"
             ));
 			config.setAllowCredentials(true);
